@@ -1,5 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import AppLayout from "@/layouts/AppLayout";
+import AppLayout from "@/layouts/app-layout";
 
 const Products = () => {
   return (

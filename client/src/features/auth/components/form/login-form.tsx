@@ -10,16 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
-import { toast } from "sonner";
-import { loginFormSchema } from "../schemas";
-import { login } from "../server/api";
-import { TLoginFormSchema } from "../types";
+import { Link } from "react-router";
+import { loginFormSchema } from "../../schemas";
+import { useLogin } from "../../server/mutations";
+import { TLoginFormSchema } from "../../types";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
   const form = useForm<TLoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -28,27 +25,7 @@ const LoginForm = () => {
     },
   });
 
-  const { mutateAsync: loginMutation, isPending } = useMutation({
-    mutationFn: login,
-    onSuccess: (data) => {
-      form.reset();
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
-      navigate("/dashboard", { replace: true });
-    },
-    onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
-    },
-  });
+  const { mutateAsync: loginMutation, isPending } = useLogin(form.reset);
 
   const onSubmit = async (values: TLoginFormSchema) => {
     await loginMutation(values);

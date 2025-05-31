@@ -1,7 +1,12 @@
-import AuthLayout from "@/layouts/AuthLayout";
+import AuthLayout from "@/layouts/auth-layout";
+import RegisterForm from "../components/form/register-form";
 
 const Register = () => {
-  return <AuthLayout>Register Form</AuthLayout>;
+  return (
+    <AuthLayout>
+      <RegisterForm />
+    </AuthLayout>
+  );
 };
 
 export default Register;

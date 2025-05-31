@@ -2,9 +2,11 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Login from "./features/auth/pages/login";
 import Register from "./features/auth/pages/register";
 import Products from "./features/products/pages/products";
+import Dashboard from "./features/dashboard/pages/dashboard";
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   { path: "/register", element: <Register /> },
+  { path: "/dashboard", element: <Dashboard /> },
   { path: "/products", element: <Products /> },
 ]);
 
