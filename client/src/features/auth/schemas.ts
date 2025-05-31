@@ -41,6 +41,7 @@ export const registerFormSchema = z
         if (value.startsWith("+63")) return value;
         if (value.startsWith("63")) return `+${value}`;
         if (value.startsWith("0")) return `+63${value.slice(1)}`;
+        return value;
       }),
   })
   .merge(loginFormSchema);

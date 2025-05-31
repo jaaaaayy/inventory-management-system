@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { login } from "./api";
+import { login, register } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { UseFormReset } from "react-hook-form";
@@ -35,7 +35,7 @@ export const useRegister = (reset: UseFormReset<TRegisterFormSchema>) => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: login,
+    mutationFn: register,
     onSuccess: (data) => {
       reset();
       toast.success(data.message, {
