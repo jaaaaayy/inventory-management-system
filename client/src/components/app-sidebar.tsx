@@ -54,18 +54,18 @@ const data = {
       icon: ShoppingCart,
       items: [
         {
-          title: "Customer",
-          url: "/sales/customer",
+          title: "Customers",
+          url: "/sales/customers",
         },
         {
-          title: "Sales Order",
-          url: "/sales/order",
+          title: "Sales Orders",
+          url: "/sales/orders",
         },
       ],
     },
     {
-      title: "Category",
-      url: "/category",
+      title: "Categories",
+      url: "/categories",
       icon: Folder,
     },
     {
@@ -84,7 +84,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-14 lg:h-16 px-3 justify-center border-b">
+      <SidebarHeader className="h-16 px-3 justify-center">
         <Link to={"/dashboard"} className="flex items-center gap-2">
           <Package2 className="shrink-0" />
           {state !== "collapsed" && (
@@ -98,7 +98,7 @@ const AppSidebar = () => {
             <SidebarMenu>
               {data.navMain.map((item) =>
                 item.items?.length ? (
-                  <Collapsible className="group/collapsible">
+                  <Collapsible key={item.title} className="group/collapsible">
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton>
@@ -116,7 +116,7 @@ const AppSidebar = () => {
                                 asChild
                                 isActive={isActive(item.url)}
                               >
-                                <a href={item.url}>{item.title}</a>
+                                <Link to={item.url}>{item.title}</Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}
@@ -125,13 +125,13 @@ const AppSidebar = () => {
                     </SidebarMenuItem>
                   </Collapsible>
                 ) : (
-                  <SidebarMenu>
-                    <SidebarMenuItem key={item.title}>
+                  <SidebarMenu key={item.title}>
+                    <SidebarMenuItem>
                       <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                        <a href={item.url}>
+                        <Link to={item.url}>
                           <item.icon />
                           <span>{item.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   </SidebarMenu>

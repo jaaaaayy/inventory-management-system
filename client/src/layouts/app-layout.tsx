@@ -1,12 +1,14 @@
 import AppSidebar from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { ReactNode } from "react";
+import { Outlet } from "react-router";
 
-const AppLayout = ({ children }: { children: ReactNode }) => {
+const AppLayout = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>{children}</main>
+      <main className="w-full">
+        <Outlet />
+      </main>
     </SidebarProvider>
   );
 };

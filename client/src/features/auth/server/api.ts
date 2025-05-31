@@ -10,6 +10,7 @@ export const login = async (credentials: TLoginFormSchema) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(credentials),
   });
 
@@ -28,6 +29,7 @@ export const register = async (user: TRegisterFormSchema) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(user),
   });
 
