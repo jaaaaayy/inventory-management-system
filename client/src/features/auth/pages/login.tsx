@@ -3,7 +3,7 @@ import LoginForm from "../components/form/login-form";
 
 const Login = () => {
   return (
-    <AuthLayout maxWidth="max-w-sm">
+    <AuthLayout maxWidth="max-w-[400px]">
       <LoginForm />
     </AuthLayout>
   );

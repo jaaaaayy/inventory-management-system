@@ -35,6 +35,6 @@ export const register = async (user: TRegisterFormSchema) => {
     throw await response.json();
   }
 
-  const data = await response.json();
+  const data: TFormError = await response.json();
   return data;
 };

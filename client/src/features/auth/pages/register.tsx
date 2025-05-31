@@ -3,7 +3,7 @@ import RegisterForm from "../components/form/register-form";
 
 const Register = () => {
   return (
-    <AuthLayout>
+    <AuthLayout maxWidth="max-w-[800px]">
       <RegisterForm />
     </AuthLayout>
   );

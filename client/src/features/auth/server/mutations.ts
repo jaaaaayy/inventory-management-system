@@ -2,8 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import { login, register } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
-import { UseFormReset } from "react-hook-form";
+import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TLoginFormSchema, TRegisterFormSchema } from "../types";
+import { Dispatch, SetStateAction } from "react";
+import { TFormError } from "@/types";
 
 export const useLogin = (reset: UseFormReset<TLoginFormSchema>) => {
   const navigate = useNavigate();
@@ -31,7 +33,11 @@ export const useLogin = (reset: UseFormReset<TLoginFormSchema>) => {
   });
 };
 
-export const useRegister = (reset: UseFormReset<TRegisterFormSchema>) => {
+export const useRegister = (
+  reset: UseFormReset<TRegisterFormSchema>,
+  setFormError: Dispatch<SetStateAction<TFormError | null>>,
+  setFocus: UseFormSetFocus<TRegisterFormSchema>
+) => {
   const navigate = useNavigate();
 
   return useMutation({
@@ -46,7 +52,18 @@ export const useRegister = (reset: UseFormReset<TRegisterFormSchema>) => {
       });
       navigate("/dashboard", { replace: true });
     },
-    onError: (error) => {
+    onError: (error: TFormError) => {
+      if (error.errors && Object.entries(error.errors).length > 0) {
+        setFormError(error);
+
+        const [firstErrorField] = Object.keys(error.errors);
+        if (firstErrorField) {
+          setFocus(firstErrorField as keyof TRegisterFormSchema);
+        }
+
+        return;
+      }
+
       toast.error(error.message, {
         style: {
           backgroundColor: "red",

@@ -50,6 +50,7 @@ const LoginForm = () => {
                       placeholder="Enter your username"
                       {...field}
                       autoComplete="off"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -67,6 +68,7 @@ const LoginForm = () => {
                       type="password"
                       placeholder="Enter your password"
                       {...field}
+                      required
                     />
                   </FormControl>
                   <FormMessage />
