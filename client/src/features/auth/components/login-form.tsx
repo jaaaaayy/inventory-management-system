@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,12 +10,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { loginFormSchema } from "../schemas";
+import { login } from "../server/api";
 import { TLoginFormSchema } from "../types";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const form = useForm<TLoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -30,17 +28,36 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: TLoginFormSchema) => {
-    console.log(values);
+  const { mutateAsync: loginMutation, isPending } = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      form.reset();
+      toast.success(data.message, {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
+      navigate("/dashboard", { replace: true });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+    },
+  });
+
+  const onSubmit = async (values: TLoginFormSchema) => {
+    await loginMutation(values);
   };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -52,7 +69,11 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your username" {...field} />
+                    <Input
+                      placeholder="Enter your username"
+                      {...field}
+                      autoComplete="off"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -75,7 +96,9 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Logging in..." : "Login"}
+            </Button>
             <div className="text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link to="/register" className="underline underline-offset-4">
