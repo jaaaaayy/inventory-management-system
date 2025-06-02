@@ -39,6 +39,14 @@ export const register = async (request, response) => {
     });
     await newUser.save();
 
+    request.session.user = { id: newUser._id, role: newUser.role };
+
+    await User.findByIdAndUpdate(
+      newUser._id,
+      { lastLogin: new Date() },
+      { new: true }
+    );
+
     response.status(201).json({ message: "Registered successfully." });
   } catch (error) {
     console.log(error);

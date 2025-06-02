@@ -6,7 +6,7 @@ const AppLayout = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
+      <main className="grow flex flex-col">
         <Outlet />
       </main>
     </SidebarProvider>

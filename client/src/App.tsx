@@ -5,6 +5,7 @@ import Categories from "./features/category/pages/categories";
 import Dashboard from "./features/dashboard/pages/dashboard";
 import Products from "./features/products/pages/products";
 import AppLayout from "./layouts/app-layout";
+import Vendors from "./features/vendors/pages/vendors";
 const App = () => {
   return (
     <BrowserRouter>
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/vendors" element={<Vendors />} />
         </Route>
       </Routes>
     </BrowserRouter>

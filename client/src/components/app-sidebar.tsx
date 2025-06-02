@@ -84,7 +84,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-16 px-3 justify-center">
+      <SidebarHeader className="h-14 lg:h-16 px-3 justify-center">
         <Link to={"/dashboard"} className="flex items-center gap-2">
           <Package2 className="shrink-0" />
           {state !== "collapsed" && (

@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import CategoryList from "../components/category-list";
+import Header from "@/components/header";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,39 +9,30 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import CategoryList from "../components/category-list";
 
 const Categories = () => {
   return (
     <>
-      <div className="p-4 space-y-2 border-b">
-        <div className="flex items-center">
-          <SidebarTrigger />
-          <Separator
-            orientation="vertical"
-            className="mx-2 data-[orientation=vertical]:h-4"
-          />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+      <Header>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Categories</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </Header>
+      <div className="p-2 lg:p-4 grow flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Categories</h1>
-          <Button size="sm">New Category</Button>
+          <h1 className="text-2xl font-semibold">Categories</h1>
+          <Button>New Category</Button>
         </div>
+        <CategoryList />
       </div>
-      <CategoryList />
     </>
   );
 };
