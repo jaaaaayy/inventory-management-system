@@ -14,7 +14,7 @@ router.get(
   "/",
   isAuthenticated,
   checkPermissions(["Admin", "User"]),
-  categoryController.getAllCategories
+  categoryController.getCategories
 );
 
 router.get(
@@ -27,7 +27,7 @@ router.get(
 router.post(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin"]),
+  checkPermissions(["User"]),
   checkSchema(categoryValidationSchema),
   validate(),
   categoryController.createCategory
@@ -36,14 +36,14 @@ router.post(
 router.patch(
   "/:id",
   isAuthenticated,
-  checkPermissions(["Admin"]),
+  checkPermissions(["User"]),
   categoryController.updateCategory
 );
 
 router.delete(
   "/:id",
   isAuthenticated,
-  checkPermissions(["Admin"]),
+  checkPermissions(["User"]),
   categoryController.deleteCategory
 );
 

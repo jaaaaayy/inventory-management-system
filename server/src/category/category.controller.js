@@ -1,8 +1,11 @@
 import Category from "./category.model.js";
 
-export const getAllCategories = async (request, response) => {
+export const getCategories = async (request, response) => {
+  const userId = request.session.user.id;
   try {
-    const categories = await Category.find().sort({ createdAt: -1 });
+    const categories = await Category.find({ user: userId }).sort({
+      createdAt: -1,
+    });
 
     response.json({ categories });
   } catch (error) {
@@ -32,17 +35,9 @@ export const getCategoryById = async (request, response) => {
 
 export const createCategory = async (request, response) => {
   try {
-    const { name, description } = request.body;
+    const { name, description, user } = request.body;
 
-    const findCategory = await Category.findOne({ name });
-
-    if (findCategory) {
-      return response
-        .status(409)
-        .json({ message: `Category "${name}" already exists.` });
-    }
-
-    const newCategory = new Category({ name, description });
+    const newCategory = new Category({ name, description, user });
     await newCategory.save();
 
     response.status(201).json({

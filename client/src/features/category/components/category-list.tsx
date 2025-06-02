@@ -5,9 +5,13 @@ import { columns } from "../columns";
 import { useFetchCategoryList } from "../server/queries";
 
 const CategoryList = () => {
-  const { isLoading, data } = useFetchCategoryList();
+  const { isLoading, isPending, isError, error, data } = useFetchCategoryList();
 
-  if (isLoading) {
+  if (isError && error) {
+    <p>{error.message}</p>;
+  }
+
+  if (isLoading || isPending) {
     return (
       <div className="p-4 flex flex-col gap-2 items-center justify-center">
         <LoaderCircle className="animate-spin" />

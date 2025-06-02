@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import CategoryList from "../components/category-list";
 import Header from "@/components/header";
 import {
   Breadcrumb,
@@ -9,6 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Link } from "react-router";
+import CategoryList from "../components/category-list";
+import { Plus } from "lucide-react";
 
 const Categories = () => {
   return (
@@ -26,10 +29,16 @@ const Categories = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow flex flex-col gap-4">
+      <div className="p-2 lg:p-4 grow flex flex-col min-h-0 gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Categories</h1>
-          <Button>New Category</Button>
+          <Link
+            to="/categories/new"
+            className={cn(buttonVariants({ variant: "default" }))}
+          >
+            <Plus />
+            New Category
+          </Link>
         </div>
         <CategoryList />
       </div>
