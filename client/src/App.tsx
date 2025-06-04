@@ -7,6 +7,7 @@ import Products from "./features/products/pages/products";
 import AppLayout from "./layouts/app-layout";
 import Vendors from "./features/vendors/pages/vendors";
 import CreateCategory from "./features/category/pages/create-category";
+import UpdateCategory from "./features/category/pages/update-category";
 const App = () => {
   return (
     <BrowserRouter>
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/new" element={<CreateCategory />} />
+          <Route path="/categories/:id/update" element={<UpdateCategory />} />
           <Route path="/vendors" element={<Vendors />} />
         </Route>
       </Routes>

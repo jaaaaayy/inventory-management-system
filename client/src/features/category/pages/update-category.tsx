@@ -1,4 +1,6 @@
+import Error from "@/components/error";
 import Header from "@/components/header";
+import Loading from "@/components/loading";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,13 +9,19 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
-import CreateCategoryForm from "../components/form/create-category-form";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
+import UpdateCategoryForm from "../components/form/update-category-form";
+import { useFetchCategory } from "../server/queries";
 
-const CreateCategory = () => {
+const UpdateCategory = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  const { isLoading, isPending, isError, error, data } = useFetchCategory(
+    params.id
+  );
+
   return (
     <>
       <Header>
@@ -28,23 +36,29 @@ const CreateCategory = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>New Category</BreadcrumbPage>
+              <BreadcrumbPage>Update Category</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
       <div className="p-2 lg:p-4 grow flex flex-col min-h-0 gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">New Category</h1>
+          <h1 className="text-2xl font-semibold">Update Category</h1>
           <Button variant="secondary" onClick={() => navigate("/categories")}>
             <ArrowLeft />
             Back to Categories
           </Button>
         </div>
-        <CreateCategoryForm />
+        {isLoading || isPending ? (
+          <Loading feature="category" />
+        ) : isError && error ? (
+          <Error message={error.message} />
+        ) : (
+          <UpdateCategoryForm category={data.category} />
+        )}
       </div>
     </>
   );
 };
 
-export default CreateCategory;
+export default UpdateCategory;

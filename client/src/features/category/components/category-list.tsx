@@ -1,6 +1,8 @@
+import Error from "@/components/error";
+import Loading from "@/components/loading";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
-import { LoaderCircle, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { columns } from "../columns";
 import { useFetchCategoryList } from "../server/queries";
 
@@ -8,16 +10,11 @@ const CategoryList = () => {
   const { isLoading, isPending, isError, error, data } = useFetchCategoryList();
 
   if (isError && error) {
-    <p>{error.message}</p>;
+    return <Error message={error.message} />;
   }
 
   if (isLoading || isPending) {
-    return (
-      <div className="p-4 flex flex-col gap-2 items-center justify-center">
-        <LoaderCircle className="animate-spin" />
-        <p>Loading categories...</p>
-      </div>
-    );
+    return <Loading feature="categories" />;
   }
 
   return (

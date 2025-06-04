@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         {children}
       </ThemeProvider>
-      {/* <ReactQueryDevtools /> */}
+      <ReactQueryDevtools />
       <Toaster />
     </QueryClientProvider>
   );

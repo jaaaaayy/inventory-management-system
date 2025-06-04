@@ -1,4 +1,5 @@
 import Category from "./category.model.js";
+import mongoose from "mongoose";
 
 export const getCategories = async (request, response) => {
   const userId = request.session.user.id;
@@ -18,7 +19,15 @@ export const getCategories = async (request, response) => {
 
 export const getCategoryById = async (request, response) => {
   try {
-    const findCategory = await Category.findById(request.params.id);
+    const categoryId = request.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return response.status(400).json({
+        message: "Invalid category id.",
+      });
+    }
+
+    const findCategory = await Category.findById(categoryId);
 
     if (!findCategory) {
       return response.status(404).json({ message: "Category not found." });
@@ -26,7 +35,7 @@ export const getCategoryById = async (request, response) => {
 
     response.json({ category: findCategory });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to get category. Please try again.",
     });
@@ -35,9 +44,13 @@ export const getCategoryById = async (request, response) => {
 
 export const createCategory = async (request, response) => {
   try {
-    const { name, description, user } = request.body;
+    const { name, description } = request.body;
 
-    const newCategory = new Category({ name, description, user });
+    const newCategory = new Category({
+      name,
+      description,
+      user: request.session.user.id,
+    });
     await newCategory.save();
 
     response.status(201).json({

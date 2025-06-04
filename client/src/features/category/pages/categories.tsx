@@ -7,13 +7,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Link } from "react-router";
-import CategoryList from "../components/category-list";
+import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router";
+import CategoryList from "../components/category-list";
 
 const Categories = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Header>
@@ -32,13 +33,10 @@ const Categories = () => {
       <div className="p-2 lg:p-4 grow flex flex-col min-h-0 gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Categories</h1>
-          <Link
-            to="/categories/new"
-            className={cn(buttonVariants({ variant: "default" }))}
-          >
+          <Button onClick={() => navigate("/categories/new")}>
             <Plus />
             New Category
-          </Link>
+          </Button>
         </div>
         <CategoryList />
       </div>
