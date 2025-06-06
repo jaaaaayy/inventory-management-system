@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import UpdateCategoryForm from "../components/form/update-category-form";
-import { useFetchCategory } from "../server/queries";
+import { useFetchCategory } from "../services/queries";
 
 const UpdateCategory = () => {
   const navigate = useNavigate();

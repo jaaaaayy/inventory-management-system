@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { TRegisterFormSchema } from "../../types";
 import { registerFormSchema } from "../../schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRegister } from "../../server/mutations";
+import { useRegister } from "../../services/mutations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,

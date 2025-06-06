@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { loginFormSchema } from "../../schemas";
-import { useLogin } from "../../server/mutations";
+import { useLogin } from "../../services/mutations";
 import { TLoginFormSchema } from "../../types";
 
 const LoginForm = () => {

@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { categoryFormSchema } from "../../schemas";
 import { TCategory, TCategoryFormSchema } from "../../types";
-import { useUpdateCategory } from "../../server/mutations";
+import { useUpdateCategory } from "../../services/mutations";
 import { Textarea } from "@/components/ui/textarea";
 
 const UpdateCategoryForm = ({ category }: { category: TCategory }) => {

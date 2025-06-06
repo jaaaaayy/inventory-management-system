@@ -1,12 +1,13 @@
 import Error from "@/components/error";
 import Loading from "@/components/loading";
+import Searchbar from "@/components/searchbar";
 import { DataTable } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
-import { SearchIcon } from "lucide-react";
 import { columns } from "../columns";
-import { useFetchCategoryList } from "../server/queries";
+import { useFetchCategoryList } from "../services/queries";
+import { useState } from "react";
 
 const CategoryList = () => {
+  const [globalFilter, setGlobalFilter] = useState("");
   const { isLoading, isPending, isError, error, data } = useFetchCategoryList();
 
   if (isError && error) {
@@ -19,11 +20,17 @@ const CategoryList = () => {
 
   return (
     <>
-      <div className="relative w-xs">
-        <SearchIcon className="size-4 absolute left-2.5 top-1/2 -translate-y-1/2" />
-        <Input className="pl-8" placeholder="Search category..." />
-      </div>
-      <DataTable columns={columns} data={data.categories} />
+      <Searchbar
+        feature="category"
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
+      />
+      <DataTable
+        columns={columns}
+        data={data.categories}
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
+      />
     </>
   );
 };

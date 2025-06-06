@@ -4,15 +4,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCategory, deleteCategory, updateCategory } from "./api";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router";
 
 export const useCreateCategory = (reset: UseFormReset<TCategoryFormSchema>) => {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: createCategory,
     onSuccess: (data) => {
       reset();
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      navigate("/categories");
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
@@ -35,14 +36,13 @@ export const useUpdateCategory = (
   reset: UseFormReset<TCategoryFormSchema>,
   id: string
 ) => {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (values: TCategoryFormSchema) => updateCategory(values, id),
     onSuccess: (data) => {
       reset();
-      queryClient.invalidateQueries({ queryKey: ["category", id] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      navigate("/categories");
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
