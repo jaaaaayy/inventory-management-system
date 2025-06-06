@@ -36,7 +36,7 @@ const CreateCategory = () => {
       <div className="p-2 lg:p-4 grow flex flex-col min-h-0 gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">New Category</h1>
-          <Button variant="secondary" onClick={() => navigate("/categories")}>
+          <Button variant="ghost" onClick={() => navigate("/categories")}>
             <ArrowLeft />
             Back to Categories
           </Button>

@@ -68,3 +68,21 @@ export const updateCategory = async (
   const data = await response.json();
   return data;
 };
+
+export const deleteCategory = async (id: string) => {
+  const response = await fetch(`${API_URL}api/categories/${id}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
+  return data;
+};

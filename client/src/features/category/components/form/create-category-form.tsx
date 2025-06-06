@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { categoryFormSchema } from "../../schemas";
 import { TCategoryFormSchema } from "../../types";
 import { useCreateCategory } from "../../server/mutations";
+import { Textarea } from "@/components/ui/textarea";
 
 const CreateCategoryForm = () => {
   const form = useForm<TCategoryFormSchema>({
@@ -58,7 +59,7 @@ const CreateCategoryForm = () => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   placeholder="Enter the description"
                   {...field}
                   autoComplete="off"

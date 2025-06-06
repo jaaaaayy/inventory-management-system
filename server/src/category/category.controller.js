@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 export const getCategories = async (request, response) => {
   const userId = request.session.user.id;
+
   try {
     const categories = await Category.find({ user: userId }).sort({
       createdAt: -1,
@@ -10,24 +11,26 @@ export const getCategories = async (request, response) => {
 
     response.json({ categories });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
-      message: "Failed to get all categories. Please try again.",
+      message: "Failed to get categories. Please try again.",
     });
   }
 };
 
 export const getCategoryById = async (request, response) => {
-  try {
-    const categoryId = request.params.id;
+  const {
+    params: { id },
+  } = request;
 
-    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return response.status(400).json({
         message: "Invalid category id.",
       });
     }
 
-    const findCategory = await Category.findById(categoryId);
+    const findCategory = await Category.findById(id);
 
     if (!findCategory) {
       return response.status(404).json({ message: "Category not found." });
@@ -43,9 +46,9 @@ export const getCategoryById = async (request, response) => {
 };
 
 export const createCategory = async (request, response) => {
-  try {
-    const { name, description } = request.body;
+  const { name, description } = request.body;
 
+  try {
     const newCategory = new Category({
       name,
       description,
@@ -58,7 +61,7 @@ export const createCategory = async (request, response) => {
       category: newCategory,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to create category. Please try again.",
     });
@@ -66,11 +69,17 @@ export const createCategory = async (request, response) => {
 };
 
 export const updateCategory = async (request, response) => {
+  const {
+    params: { id },
+    body,
+  } = request;
+
   try {
-    const {
-      params: { id },
-      body,
-    } = request;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid category id.",
+      });
+    }
 
     const updatedCategory = await Category.findByIdAndUpdate(id, body, {
       new: true,
@@ -86,7 +95,7 @@ export const updateCategory = async (request, response) => {
       category: updatedCategory,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to update category. Please try again.",
     });
@@ -94,8 +103,18 @@ export const updateCategory = async (request, response) => {
 };
 
 export const deleteCategory = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
   try {
-    const deletedCategory = await Category.findByIdAndDelete(request.params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid category id.",
+      });
+    }
+
+    const deletedCategory = await Category.findByIdAndDelete(id);
 
     if (!deletedCategory) {
       return response.status(404).json({ message: "Category not found." });
@@ -103,7 +122,7 @@ export const deleteCategory = async (request, response) => {
 
     response.json({ message: "Category deleted successfully." });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to delete category. Please try again.",
     });
