@@ -1,5 +1,7 @@
-import { commonUserInfoValidationSchema } from "../auth/auth.validation.js";
-import { addressValidationSchema } from "../customer/customer.validation.js";
+import {
+  addressValidationSchema,
+  commonUserInfoValidationSchema,
+} from "../shared/validators.js";
 
 const vendorValidationSchema = {
   name: {

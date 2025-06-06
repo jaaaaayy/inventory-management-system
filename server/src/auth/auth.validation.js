@@ -1,3 +1,5 @@
+import { commonUserInfoValidationSchema } from "../shared/validators.js";
+
 export const loginValidationSchema = {
   username: {
     notEmpty: {
@@ -24,61 +26,6 @@ export const loginValidationSchema = {
       errorMessage: "Username must be at least 8 characters long.",
     },
     trim: true,
-  },
-};
-
-export const commonUserInfoValidationSchema = {
-  firstName: {
-    notEmpty: {
-      errorMessage: "First name is required.",
-    },
-    isString: {
-      errorMessage: "First name must be a string.",
-    },
-    isLength: {
-      options: { max: 50 },
-      errorMessage: "First name must be at most 50 characters long.",
-    },
-    trim: true,
-  },
-  lastName: {
-    notEmpty: {
-      errorMessage: "Last name is required.",
-    },
-    isString: {
-      errorMessage: "Last name must be a string.",
-    },
-    isLength: {
-      options: { max: 50 },
-      errorMessage: "Last name must be at most 50 characters long.",
-    },
-    trim: true,
-  },
-  email: {
-    notEmpty: {
-      errorMessage: "Email is required.",
-    },
-    isString: {
-      errorMessage: "Email must be a string.",
-    },
-    trim: true,
-  },
-  mobileNumber: {
-    notEmpty: {
-      errorMessage: "Mobile number is required.",
-    },
-    isString: {
-      errorMessage: "Mobile number must be a string.",
-    },
-    trim: true,
-    isLength: {
-      options: { min: 10, max: 15 },
-      errorMessage: "Mobile number must be between 10 and 15 characters long.",
-    },
-    matches: {
-      options: /^(?:\+63|63|0)9\d{9}$/,
-      errorMessage: "Invalid mobile number.",
-    },
   },
 };
 
