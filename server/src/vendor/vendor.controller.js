@@ -1,5 +1,47 @@
 import Vendor from "./vendor.model.js";
 
+export const getVendors = async (request, response) => {
+  try {
+    const vendors = await Vendor.find({ user: request.session.user.id }).sort({
+      createdAt: -1,
+    });
+
+    response.send({ vendors });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to get vendors. Please try again.",
+    });
+  }
+};
+
+export const getVendorById = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid vendor id.",
+      });
+    }
+
+    const findVendor = await Vendor.findById(id);
+
+    if (!findVendor) {
+      return response.status(404).json({ message: "Vendor not found." });
+    }
+
+    response.json({ vendor: findVendor });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to get vendor. Please try again.",
+    });
+  }
+};
+
 export const createVendor = async (request, response) => {
   try {
     const { name, email, mobileNumber, address } = request.body;
@@ -26,6 +68,7 @@ export const createVendor = async (request, response) => {
       email,
       mobileNumber,
       address,
+      user: request.session.user.id,
     });
     await newVendor.save();
 
@@ -33,22 +76,70 @@ export const createVendor = async (request, response) => {
       .status(201)
       .send({ message: "Vendor created successfully.", vendor: newVendor });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to create vendor. Please try again.",
     });
   }
 };
 
-export const getAllVendors = async (request, response) => {
-  try {
-    const vendors = await Vendor.find().sort({ createdAt: -1 });
+export const updateVendor = async (request, response) => {
+  const {
+    params: { id },
+    body,
+  } = request;
 
-    response.send({ vendors });
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid vendor id.",
+      });
+    }
+
+    const updatedVendor = await Vendor.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedVendor) {
+      return response.status(404).json({ message: "Vendor not found." });
+    }
+
+    response.json({
+      message: "Vendor updated successfully.",
+      vendor: updatedVendor,
+    });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
-      message: "Failed to get all vendors. Please try again.",
+      message: "Failed to update vendor. Please try again.",
+    });
+  }
+};
+
+export const deleteVendor = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid vendor id.",
+      });
+    }
+
+    const deletedVendor = await Vendor.findByIdAndDelete(id);
+
+    if (!deletedVendor) {
+      return response.status(404).json({ message: "Vendor not found." });
+    }
+
+    response.json({ message: "Vendor deleted successfully." });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to delete vendor. Please try again.",
     });
   }
 };

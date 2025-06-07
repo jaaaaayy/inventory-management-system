@@ -6,6 +6,7 @@ const vendorsSchema = new mongoose.Schema(
       required: true,
       type: String,
       trime: true,
+      maxlength: 50,
     },
     email: {
       required: true,
@@ -51,6 +52,11 @@ const vendorsSchema = new mongoose.Schema(
         maxlength: 10,
         trim: true,
       },
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

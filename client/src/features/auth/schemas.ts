@@ -30,7 +30,7 @@ export const registerFormSchema = z
         /^[A-Za-z\s\-']+$/,
         "First name can only contain letters, spaces, hyphens, or apostrophes."
       ),
-    email: z.string().email("Invalid email address.").trim(),
+    email: z.string().trim().email("Invalid email address."),
     mobileNumber: z
       .string()
       .trim()

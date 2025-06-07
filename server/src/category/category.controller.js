@@ -2,10 +2,10 @@ import Category from "./category.model.js";
 import mongoose from "mongoose";
 
 export const getCategories = async (request, response) => {
-  const userId = request.session.user.id;
-
   try {
-    const categories = await Category.find({ user: userId }).sort({
+    const categories = await Category.find({
+      user: request.session.user.id,
+    }).sort({
       createdAt: -1,
     });
 

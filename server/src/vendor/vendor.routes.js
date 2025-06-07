@@ -6,24 +6,45 @@ import {
   isAuthenticated,
   checkPermissions,
 } from "../utils/middlewares.js";
-import * as VendorController from "./vendor.controller.js";
+import * as vendorController from "./vendor.controller.js";
 
 const router = Router();
-
-router.post(
-  "/",
-  isAuthenticated,
-  checkPermissions(["Admin", "Staff"]),
-  checkSchema(vendorValidationSchema),
-  validate(),
-  VendorController.createVendor
-);
 
 router.get(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin", "Staff"]),
-  VendorController.getAllVendors
+  checkPermissions(["Admin", "User"]),
+  vendorController.getVendors
+);
+
+router.get(
+  "/:id",
+  isAuthenticated,
+  checkPermissions(["Admin", "User"]),
+  vendorController.getVendorById
+);
+
+router.post(
+  "/",
+  isAuthenticated,
+  checkPermissions(["User"]),
+  checkSchema(vendorValidationSchema),
+  validate(),
+  vendorController.createVendor
+);
+
+router.patch(
+  "/:id",
+  isAuthenticated,
+  checkPermissions(["User"]),
+  vendorController.updateVendor
+);
+
+router.delete(
+  "/:id",
+  isAuthenticated,
+  checkPermissions(["User"]),
+  vendorController.deleteVendor
 );
 
 export default router;
