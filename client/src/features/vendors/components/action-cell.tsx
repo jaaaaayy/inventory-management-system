@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
-// import DeleteCategoryDialog from "./delete-category-dialog";
+// import DeleteVendorDialog from "./delete-vendor-dialog";
 import { useState } from "react";
 
 export const ActionsCell = ({ id }: { id: string }) => {
@@ -29,11 +29,11 @@ export const ActionsCell = ({ id }: { id: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem>View category</DropdownMenuItem>
+        <DropdownMenuItem>View vendor</DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate(`/categories/${id}/update`)}>
-          Update category
+          Update vendor
         </DropdownMenuItem>
-        {/* <DeleteCategoryDialog
+        {/* <DeleteVendorDialog
           openDeleteDialog={openDeleteDialog}
           setOpenDeleteDialog={setOpenDeleteDialog}
           setOpenActionsDropdown={setOpenActionsDropdown}

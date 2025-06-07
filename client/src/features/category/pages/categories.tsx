@@ -30,7 +30,7 @@ const Categories = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow flex flex-col min-h-0 gap-4">
+      <div className="p-4 lg:p-6 grow flex flex-col min-h-0 gap-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Categories</h1>
           <Button onClick={() => navigate("/categories/new")}>

@@ -23,14 +23,6 @@ const categoryValidationSchema = {
       errorMessage: "Description must be at most 200 characters long.",
     },
   },
-  user: {
-    notEmpty: {
-      errorMessage: "User id is required.",
-    },
-    isMongoId: {
-      errorMessage: "User must be a valid MongoDB ObjectId.",
-    },
-  },
 };
 
 export default categoryValidationSchema;

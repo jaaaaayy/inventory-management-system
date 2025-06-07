@@ -21,14 +21,6 @@ const vendorValidationSchema = {
     mobileNumber: commonUserInfoValidationSchema.mobileNumber,
   },
   ...addressValidationSchema,
-  user: {
-    notEmpty: {
-      errorMessage: "User id is required.",
-    },
-    isMongoId: {
-      errorMessage: "User must be a valid MongoDB ObjectId.",
-    },
-  },
 };
 
 export default vendorValidationSchema;
