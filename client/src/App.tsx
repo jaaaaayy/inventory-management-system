@@ -11,6 +11,7 @@ import EditCategory from "./features/category/pages/edit-category";
 import CreateVendor from "./features/vendors/pages/create-vendor";
 import ViewCategory from "./features/category/pages/view-category";
 import EditVendor from "./features/vendors/pages/edit-vendor";
+import ViewVendor from "./features/vendors/pages/view-vendor";
 const App = () => {
   return (
     <BrowserRouter>
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/categories/:id/edit" element={<EditCategory />} />
           <Route path="/vendors" element={<Vendors />} />
           <Route path="/vendors/new" element={<CreateVendor />} />
+          <Route path="/vendors/:id" element={<ViewVendor />} />
           <Route path="/vendors/:id/edit" element={<EditVendor />} />
         </Route>
       </Routes>

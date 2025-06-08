@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import VendorList from "../components/vendor-list";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Vendors = () => {
   const navigate = useNavigate();
@@ -32,14 +32,14 @@ const Vendors = () => {
         </Breadcrumb>
       </Header>
       <div className="p-2 lg:p-4 grow space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Vendors</h1>
-          <Button onClick={() => navigate("/vendors/new")}>
-            <Plus />
-            New Vendor
-          </Button>
-        </div>
         <Card>
+          <CardHeader className="flex items-center justify-between">
+            <CardTitle className="text-2xl">Vendors</CardTitle>
+            <Button onClick={() => navigate("/vendors/new")}>
+              <Plus />
+              New Vendor
+            </Button>
+          </CardHeader>
           <CardContent className="space-y-6">
             <VendorList />
           </CardContent>

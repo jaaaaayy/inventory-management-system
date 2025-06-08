@@ -11,9 +11,8 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { vendorFormSchema } from "../../schemas";
-import { TVendor, TVendorFormSchema } from "../../types";
 import { useUpdateVendor } from "../../services/mutations";
-import { Textarea } from "@/components/ui/textarea";
+import { TVendor, TVendorFormSchema } from "../../types";
 
 const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
   const form = useForm<TVendorFormSchema>({
@@ -71,7 +70,7 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Textarea
+                <Input
                   placeholder="Enter the email"
                   {...field}
                   autoComplete="off"
@@ -86,7 +85,7 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
           name="mobileNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mobile number</FormLabel>
+              <FormLabel>Mobile Number</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the mobile number"
@@ -104,7 +103,7 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
           name="address.addressLine1"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address line 1</FormLabel>
+              <FormLabel>Address Line 1</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the address line 1"
@@ -122,7 +121,7 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
           name="address.addressLine2"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address line 2 (optional)</FormLabel>
+              <FormLabel>Address Line 2 (Optional)</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the address line 2"
@@ -175,7 +174,7 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
           name="address.postalCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Postal code</FormLabel>
+              <FormLabel>Postal Code</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the postal code"

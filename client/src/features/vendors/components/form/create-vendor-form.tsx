@@ -86,7 +86,7 @@ const CreateVendorForm = () => {
           name="mobileNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mobile number</FormLabel>
+              <FormLabel>Mobile Number</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the mobile number"
@@ -104,7 +104,7 @@ const CreateVendorForm = () => {
           name="address.addressLine1"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address line 1</FormLabel>
+              <FormLabel>Address Line 1</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the address line 1"
@@ -122,7 +122,7 @@ const CreateVendorForm = () => {
           name="address.addressLine2"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address line 2 (optional)</FormLabel>
+              <FormLabel>Address Line 2 (Optional)</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the address line 2"
@@ -175,7 +175,7 @@ const CreateVendorForm = () => {
           name="address.postalCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Postal code</FormLabel>
+              <FormLabel>Postal Code</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the postal code"

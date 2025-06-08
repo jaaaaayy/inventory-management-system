@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
-// import DeleteVendorDialog from "./delete-vendor-dialog";
+import DeleteVendorDialog from "./delete-vendor-dialog";
 import { useState } from "react";
 
 export const ActionsCell = ({ id }: { id: string }) => {
-  // const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openActionsDropdown, setOpenActionsDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -29,16 +29,18 @@ export const ActionsCell = ({ id }: { id: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem>View vendor</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/vendors/${id}`)}>
+          View vendor
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate(`/vendors/${id}/edit`)}>
           Edit vendor
         </DropdownMenuItem>
-        {/* <DeleteVendorDialog
+        <DeleteVendorDialog
           openDeleteDialog={openDeleteDialog}
           setOpenDeleteDialog={setOpenDeleteDialog}
           setOpenActionsDropdown={setOpenActionsDropdown}
           id={id}
-        /> */}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

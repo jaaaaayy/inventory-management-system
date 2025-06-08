@@ -12,13 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
-import CategoryDetails from "../components/category-details";
-import { useFetchCategory } from "../services/queries";
+import VendorDetails from "../components/vendor-details";
+import { useFetchVendor } from "../services/queries";
 
-const ViewCategory = () => {
+const ViewVendor = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const { isLoading, isPending, isError, error, data } = useFetchCategory(
+  const { isLoading, isPending, isError, error, data } = useFetchVendor(
     params.id
   );
 
@@ -32,30 +32,30 @@ const ViewCategory = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/categories">Categories</BreadcrumbLink>
+              <BreadcrumbLink href="/vendors">Vendors</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>View Category</BreadcrumbPage>
+              <BreadcrumbPage>View Vendor</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
       <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
-        <Button variant="ghost" onClick={() => navigate("/categories")}>
+        <Button variant="ghost" onClick={() => navigate("/vendors")}>
           <ArrowLeft />
-          Back to Categories
+          Back to Vendors
         </Button>
         {isLoading || isPending ? (
-          <Loading feature="category" />
+          <Loading feature="vendor" />
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <CategoryDetails category={data.category} />
+          <VendorDetails vendor={data.vendor} />
         )}
       </div>
     </>
   );
 };
 
-export default ViewCategory;
+export default ViewVendor;
