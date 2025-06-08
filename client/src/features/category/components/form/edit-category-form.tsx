@@ -15,7 +15,7 @@ import { TCategory, TCategoryFormSchema } from "../../types";
 import { useUpdateCategory } from "../../services/mutations";
 import { Textarea } from "@/components/ui/textarea";
 
-const UpdateCategoryForm = ({ category }: { category: TCategory }) => {
+const EditCategoryForm = ({ category }: { category: TCategory }) => {
   const form = useForm<TCategoryFormSchema>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
@@ -71,11 +71,11 @@ const UpdateCategoryForm = ({ category }: { category: TCategory }) => {
           )}
         />
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? "Updating..." : "Update"}
         </Button>
       </form>
     </Form>
   );
 };
 
-export default UpdateCategoryForm;
+export default EditCategoryForm;

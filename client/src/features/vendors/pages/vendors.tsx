@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import VendorList from "../components/vendor-list";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Vendors = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Vendors = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-4 lg:p-6 grow flex flex-col min-h-0 gap-6">
+      <div className="p-2 lg:p-4 grow space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Vendors</h1>
           <Button onClick={() => navigate("/vendors/new")}>
@@ -38,7 +39,11 @@ const Vendors = () => {
             New Vendor
           </Button>
         </div>
-        <VendorList />
+        <Card>
+          <CardContent className="space-y-6">
+            <VendorList />
+          </CardContent>
+        </Card>
       </div>
     </>
   );

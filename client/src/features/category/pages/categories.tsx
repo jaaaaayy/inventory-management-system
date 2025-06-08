@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import CategoryList from "../components/category-list";
@@ -30,7 +31,7 @@ const Categories = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-4 lg:p-6 grow flex flex-col min-h-0 gap-6">
+      <div className="p-2 lg:p-4 grow space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Categories</h1>
           <Button onClick={() => navigate("/categories/new")}>
@@ -38,7 +39,11 @@ const Categories = () => {
             New Category
           </Button>
         </div>
-        <CategoryList />
+        <Card>
+          <CardContent className="space-y-6">
+            <CategoryList />
+          </CardContent>
+        </Card>
       </div>
     </>
   );

@@ -1,4 +1,6 @@
+import Error from "@/components/error";
 import Header from "@/components/header";
+import Loading from "@/components/loading";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,14 +9,20 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
-import CreateCategoryForm from "../components/form/create-category-form";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
+import EditCategoryForm from "../components/form/edit-category-form";
+import { useFetchCategory } from "../services/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const CreateCategory = () => {
+const EditCategory = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  const { isLoading, isPending, isError, error, data } = useFetchCategory(
+    params.id
+  );
+
   return (
     <>
       <Header>
@@ -29,7 +37,7 @@ const CreateCategory = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>New Category</BreadcrumbPage>
+              <BreadcrumbPage>Edit Category</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -39,17 +47,23 @@ const CreateCategory = () => {
           <ArrowLeft />
           Back to Categories
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">New Category</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CreateCategoryForm />
-          </CardContent>
-        </Card>
+        {isLoading || isPending ? (
+          <Loading feature="category" />
+        ) : isError && error ? (
+          <Error message={error.message} />
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Edit Category</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EditCategoryForm category={data.category} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </>
   );
 };
 
-export default CreateCategory;
+export default EditCategory;

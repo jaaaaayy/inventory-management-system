@@ -30,8 +30,8 @@ export const ActionsCell = ({ id }: { id: string }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem>View vendor</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(`/categories/${id}/update`)}>
-          Update vendor
+        <DropdownMenuItem onClick={() => navigate(`/categories/${id}/edit`)}>
+          Edit vendor
         </DropdownMenuItem>
         {/* <DeleteVendorDialog
           openDeleteDialog={openDeleteDialog}

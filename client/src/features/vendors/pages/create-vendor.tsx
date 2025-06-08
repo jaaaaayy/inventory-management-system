@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import CreateVendorForm from "../components/form/create-vendor-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CreateVendor = () => {
   const navigate = useNavigate();
@@ -33,15 +34,19 @@ const CreateVendor = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-4 lg:p-6 grow flex flex-col min-h-0 gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">New Vendor</h1>
-          <Button variant="ghost" onClick={() => navigate("/vendors")}>
-            <ArrowLeft />
-            Back to Vendors
-          </Button>
-        </div>
-        <CreateVendorForm />
+      <div className="p-2 lg:p-4 grow space-y-4">
+        <Button variant="ghost" onClick={() => navigate("/vendors")}>
+          <ArrowLeft />
+          Back to Vendors
+        </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">New Vendor</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <CreateVendorForm />
+          </CardContent>
+        </Card>
       </div>
     </>
   );

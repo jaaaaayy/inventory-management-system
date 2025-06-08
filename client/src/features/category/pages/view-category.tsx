@@ -12,10 +12,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
-import UpdateCategoryForm from "../components/form/update-category-form";
+import CategoryDetails from "../components/category-details";
 import { useFetchCategory } from "../services/queries";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const UpdateCategory = () => {
+const ViewCategory = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { isLoading, isPending, isError, error, data } = useFetchCategory(
@@ -36,29 +37,33 @@ const UpdateCategory = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Update Category</BreadcrumbPage>
+              <BreadcrumbPage>View Category</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-4 lg:p-6 grow flex flex-col min-h-0 gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Update Category</h1>
-          <Button variant="ghost" onClick={() => navigate("/categories")}>
-            <ArrowLeft />
-            Back to Categories
-          </Button>
-        </div>
+      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+        <Button variant="ghost" onClick={() => navigate("/categories")}>
+          <ArrowLeft />
+          Back to Categories
+        </Button>
         {isLoading || isPending ? (
           <Loading feature="category" />
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <UpdateCategoryForm category={data.category} />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Category Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CategoryDetails category={data.category} />
+            </CardContent>
+          </Card>
         )}
       </div>
     </>
   );
 };
 
-export default UpdateCategory;
+export default ViewCategory;

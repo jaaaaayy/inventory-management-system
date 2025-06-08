@@ -29,9 +29,11 @@ export const ActionsCell = ({ id }: { id: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem>View category</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(`/categories/${id}/update`)}>
-          Update category
+        <DropdownMenuItem onClick={() => navigate(`/categories/${id}`)}>
+          View category
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/categories/${id}/edit`)}>
+          Edit category
         </DropdownMenuItem>
         <DeleteCategoryDialog
           openDeleteDialog={openDeleteDialog}
