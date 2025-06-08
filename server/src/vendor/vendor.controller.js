@@ -1,4 +1,5 @@
 import Vendor from "./vendor.model.js";
+import mongoose from "mongoose";
 
 export const getVendors = async (request, response) => {
   try {
