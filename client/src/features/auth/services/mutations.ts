@@ -44,13 +44,13 @@ export const useRegister = (
     mutationFn: register,
     onSuccess: (data) => {
       reset();
+      navigate("/dashboard", { replace: true });
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
           color: "white",
         },
       });
-      navigate("/dashboard", { replace: true });
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {

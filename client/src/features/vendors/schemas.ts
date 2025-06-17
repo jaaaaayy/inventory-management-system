@@ -2,10 +2,7 @@ import { addressSchema } from "@/shared/schemas";
 import { z } from "zod";
 
 export const vendorFormSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .max(50, "Vendor name must be at most 50 characters long."),
+  name: z.string().trim().max(50, "Name must be at most 50 characters long."),
   email: z.string().trim().email("Invalid email address."),
   mobileNumber: z
     .string()

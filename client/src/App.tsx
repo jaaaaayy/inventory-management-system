@@ -1,17 +1,19 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import Login from "./features/auth/pages/login";
 import Register from "./features/auth/pages/register";
-import Categories from "./features/category/pages/categories";
+import Categories from "./features/categories/pages/categories";
 import Dashboard from "./features/dashboard/pages/dashboard";
 import Products from "./features/products/pages/products";
 import AppLayout from "./layouts/app-layout";
 import Vendors from "./features/vendors/pages/vendors";
-import CreateCategory from "./features/category/pages/create-category";
-import EditCategory from "./features/category/pages/edit-category";
+import CreateCategory from "./features/categories/pages/create-category";
+import EditCategory from "./features/categories/pages/edit-category";
 import CreateVendor from "./features/vendors/pages/create-vendor";
-import ViewCategory from "./features/category/pages/view-category";
+import ViewCategory from "./features/categories/pages/view-category";
 import EditVendor from "./features/vendors/pages/edit-vendor";
 import ViewVendor from "./features/vendors/pages/view-vendor";
+import Customers from "./features/customers/pages/customers";
+import CreateCustomer from "./features/customers/pages/create-customer";
 const App = () => {
   return (
     <BrowserRouter>
@@ -21,6 +23,8 @@ const App = () => {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/sales/customers" element={<Customers />} />
+          <Route path="/sales/customers/new" element={<CreateCustomer />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/new" element={<CreateCategory />} />
           <Route path="/categories/:id" element={<ViewCategory />} />

@@ -1,8 +1,10 @@
 import Customer from "./customer.model.js";
 
-export const getAllCustomers = async (request, response) => {
+export const getCustomers = async (request, response) => {
   try {
-    const customers = await Customer.find().sort({ createdAt: -1 });
+    const customers = await Customer.find({
+      user: request.session.user.id,
+    }).sort({ createdAt: -1 });
 
     response.send({ customers });
   } catch (error) {
@@ -15,7 +17,7 @@ export const getAllCustomers = async (request, response) => {
 
 export const createCustomer = async (request, response) => {
   try {
-    const { firstName, lastName, address, mobileNumber, email } = request.body;
+    const { firstName, lastName, mobileNumber, email, address } = request.body;
     const errors = {};
 
     const existingEmail = await Customer.findOne({ email });
@@ -46,9 +48,10 @@ export const createCustomer = async (request, response) => {
       },
       mobileNumber,
       email,
+      user: request.session.user.id,
     });
-
     await newCustomer.save();
+
     response.status(201).send({
       message: "Customer created successfully.",
       customer: newCustomer,
@@ -62,8 +65,18 @@ export const createCustomer = async (request, response) => {
 };
 
 export const getCustomerById = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
   try {
-    const findCustomer = await Customer.findById(request.params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid customer id.",
+      });
+    }
+
+    const findCustomer = await Customer.findById(id);
 
     if (!findCustomer) {
       return response.status(404).send({ message: "Customer not found." });
@@ -79,11 +92,17 @@ export const getCustomerById = async (request, response) => {
 };
 
 export const updateCustomer = async (request, response) => {
+  const {
+    params: { id },
+    body,
+  } = request;
+
   try {
-    const {
-      params: { id },
-      body,
-    } = request;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid customer id.",
+      });
+    }
 
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
@@ -108,8 +127,18 @@ export const updateCustomer = async (request, response) => {
 };
 
 export const deleteCustomer = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
   try {
-    const deletedCustomer = await Customer.findByIdAndDelete(request.params.id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid customer id.",
+      });
+    }
+
+    const deletedCustomer = await Customer.findByIdAndDelete(id);
 
     if (!deletedCustomer) {
       return response.status(404).send({ message: "Customer not found." });

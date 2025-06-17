@@ -6,14 +6,14 @@ import {
 const vendorValidationSchema = {
   name: {
     notEmpty: {
-      errorMessage: "Vendor name is required.",
+      errorMessage: "Name is required.",
     },
     isString: {
-      errorMessage: "Vendor name must be a string.",
+      errorMessage: "Name must be a string.",
     },
     isLength: {
       options: { max: 50 },
-      errorMessage: "Vendor name must be at most 50 characters long.",
+      errorMessage: "Name must be at most 50 characters long.",
     },
   },
   ...{

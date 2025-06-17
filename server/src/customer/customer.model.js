@@ -60,6 +60,11 @@ const customerSchema = new mongoose.Schema(
       trim: true,
       unique: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

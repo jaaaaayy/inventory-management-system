@@ -1,14 +1,14 @@
 const productValidationSchema = {
   name: {
     notEmpty: {
-      errorMessage: "Product name is required.",
+      errorMessage: "Name is required.",
     },
     isString: {
-      errorMessage: "Product name must be a string.",
+      errorMessage: "Name must be a string.",
     },
     isLength: {
       options: { max: 100 },
-      errorMessage: "Product name must be at most 100 characters long.",
+      errorMessage: "Name must be at most 100 characters long.",
     },
   },
   stockKeepingUnit: {

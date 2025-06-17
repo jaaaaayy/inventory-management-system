@@ -13,14 +13,14 @@ const router = Router();
 router.get(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin", "User"]),
-  customerController.getAllCustomers
+  checkPermissions(["User"]),
+  customerController.getCustomers
 );
 
 router.post(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin", "User"]),
+  checkPermissions(["User"]),
   checkSchema(customerValidationSchema),
   validate(),
   customerController.createCustomer
@@ -29,21 +29,21 @@ router.post(
 router.get(
   "/:id",
   isAuthenticated,
-  checkPermissions(["Admin", "User"]),
+  checkPermissions(["User"]),
   customerController.getCustomerById
 );
 
 router.patch(
   "/:id",
   isAuthenticated,
-  checkPermissions(["Admin"]),
+  checkPermissions(["User"]),
   customerController.updateCustomer
 );
 
 router.delete(
   "/:id",
   isAuthenticated,
-  checkPermissions(["Admin"]),
+  checkPermissions(["User"]),
   customerController.deleteCustomer
 );
 

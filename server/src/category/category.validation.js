@@ -1,14 +1,14 @@
 const categoryValidationSchema = {
   name: {
     notEmpty: {
-      errorMessage: "Category is required.",
+      errorMessage: "Name is required.",
     },
     isString: {
-      errorMessage: "Category must be a string.",
+      errorMessage: "Name must be a string.",
     },
     isLength: {
       options: { max: 50 },
-      errorMessage: "Category must be at most 50 characters long.",
+      errorMessage: "Name must be at most 50 characters long.",
     },
   },
   description: {
