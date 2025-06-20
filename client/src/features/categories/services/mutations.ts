@@ -8,11 +8,13 @@ import { useNavigate } from "react-router";
 
 export const useCreateCategory = (reset: UseFormReset<TCategoryFormSchema>) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createCategory,
     onSuccess: (data) => {
       reset();
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       navigate("/categories");
       toast.success(data.message, {
         style: {
@@ -37,11 +39,14 @@ export const useUpdateCategory = (
   id: string
 ) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (values: TCategoryFormSchema) => updateCategory(values, id),
     onSuccess: (data) => {
       reset();
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["category", id] });
       navigate("/categories");
       toast.success(data.message, {
         style: {

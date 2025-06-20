@@ -8,11 +8,13 @@ import { useNavigate } from "react-router";
 
 export const useCreateVendor = (reset: UseFormReset<TVendorFormSchema>) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createVendor,
     onSuccess: (data) => {
       reset();
+      queryClient.invalidateQueries({ queryKey: ["vendors"] });
       navigate("/vendors");
       toast.success(data.message, {
         style: {
@@ -37,11 +39,14 @@ export const useUpdateVendor = (
   id: string
 ) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (values: TVendorFormSchema) => updateVendor(values, id),
     onSuccess: (data) => {
       reset();
+      queryClient.invalidateQueries({ queryKey: ["vendors"] });
+      queryClient.invalidateQueries({ queryKey: ["vendor", id] });
       navigate("/vendors");
       toast.success(data.message, {
         style: {

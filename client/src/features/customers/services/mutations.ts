@@ -13,11 +13,13 @@ export const useCreateCustomer = (
   setFocus: UseFormSetFocus<TCustomerFormSchema>
 ) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createCustomer,
     onSuccess: (data) => {
       reset();
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
       navigate("/sales/customers");
       toast.success(data.message, {
         style: {
@@ -50,15 +52,21 @@ export const useCreateCustomer = (
 
 export const useUpdateCustomer = (
   reset: UseFormReset<TCustomerFormSchema>,
+  setFormError: Dispatch<SetStateAction<TFormError | null>>,
+  setFocus: UseFormSetFocus<TCustomerFormSchema>,
   id: string
 ) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (values: TCustomerFormSchema) => updateCustomer(values, id),
     onSuccess: (data) => {
       reset();
-      navigate("/customers");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      queryClient.invalidateQueries({ queryKey: ["customer", id] });
+
+      navigate("/sales/customers");
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
@@ -66,7 +74,18 @@ export const useUpdateCustomer = (
         },
       });
     },
-    onError: (error) => {
+    onError: (error: TFormError) => {
+      if (error.errors && Object.entries(error.errors).length > 0) {
+        setFormError(error);
+
+        const [firstErrorField] = Object.keys(error.errors);
+        if (firstErrorField) {
+          setFocus(firstErrorField as keyof TCustomerFormSchema);
+        }
+
+        return;
+      }
+
       toast.error(error.message, {
         style: {
           backgroundColor: "red",
