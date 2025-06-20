@@ -31,7 +31,7 @@ const Customers = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow space-y-4">
+      <div className="p-2 lg:p-4 grow">
         <Card>
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="text-2xl">Customers</CardTitle>

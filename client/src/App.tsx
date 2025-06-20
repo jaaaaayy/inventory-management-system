@@ -14,6 +14,7 @@ import EditVendor from "./features/vendors/pages/edit-vendor";
 import ViewVendor from "./features/vendors/pages/view-vendor";
 import Customers from "./features/customers/pages/customers";
 import CreateCustomer from "./features/customers/pages/create-customer";
+import ViewCustomer from "./features/customers/pages/view-customer";
 const App = () => {
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/sales/customers" element={<Customers />} />
+          <Route path="/sales/customers/:id" element={<ViewCustomer />} />
           <Route path="/sales/customers/new" element={<CreateCustomer />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/new" element={<CreateCategory />} />

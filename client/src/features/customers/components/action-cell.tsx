@@ -29,10 +29,12 @@ export const ActionsCell = ({ id }: { id: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigate(`/categories/${id}`)}>
+        <DropdownMenuItem onClick={() => navigate(`/sales/customers/${id}`)}>
           View customer
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(`/categories/${id}/edit`)}>
+        <DropdownMenuItem
+          onClick={() => navigate(`/sales/customers/${id}/edit`)}
+        >
           Edit customer
         </DropdownMenuItem>
         {/* <DeleteCustomerDialog

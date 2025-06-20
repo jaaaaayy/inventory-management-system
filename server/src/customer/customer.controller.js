@@ -1,4 +1,5 @@
 import Customer from "./customer.model.js";
+import mongoose from "mongoose";
 
 export const getCustomers = async (request, response) => {
   try {

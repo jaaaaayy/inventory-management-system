@@ -18,8 +18,6 @@ const CustomerList = () => {
     return <Loading feature="customers" />;
   }
 
-  console.log(data);
-
   return (
     <>
       <Searchbar
