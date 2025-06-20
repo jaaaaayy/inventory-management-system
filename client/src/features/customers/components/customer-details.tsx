@@ -6,12 +6,12 @@ const CustomerDetails = ({ customer }: { customer: TCustomer }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Customer Details</CardTitle>
+        <CardTitle className="text-2xl">Customer Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-6">
-            <h1 className="text-lg font-semibold">Personal Information</h1>
+            <h1 className="text-lg font-medium">Personal Information</h1>
             <div className="grid grid-cols-2 gap-6 text-sm">
               <div className="grid gap-2">
                 <Label>First Name</Label>
@@ -32,7 +32,7 @@ const CustomerDetails = ({ customer }: { customer: TCustomer }) => {
             </div>
           </div>
           <div className="space-y-6">
-            <h1 className="text-lg font-semibold">Address</h1>
+            <h1 className="text-lg font-medium">Address</h1>
             <div className="space-y-6 text-sm">
               <div className="grid grid-cols-3 gap-6">
                 <div className="grid gap-2">
@@ -64,7 +64,7 @@ const CustomerDetails = ({ customer }: { customer: TCustomer }) => {
           </div>
         </div>
         <div className="space-y-6 w-1/2 pr-6">
-          <h1 className="text-lg font-semibold">Account Information</h1>
+          <h1 className="text-lg font-medium">Timestamps</h1>
           <div className="grid grid-cols-2 gap-6">
             <div className="grid gap-2">
               <Label>Created</Label>
