@@ -15,7 +15,7 @@ const router = Router();
 router.post(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin", "Staff"]),
+  checkPermissions(["User"]),
   upload.single("image"),
   checkSchema(productValidationSchema),
   checkSchema(inventoryValidationSchema),
@@ -26,8 +26,8 @@ router.post(
 router.get(
   "/",
   isAuthenticated,
-  checkPermissions(["Admin", "Staff"]),
-  productController.getAllProducts
+  checkPermissions(["User"]),
+  productController.getProducts
 );
 
 export default router;

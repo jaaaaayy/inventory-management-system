@@ -46,6 +46,10 @@ const productValidationSchema = {
     isString: {
       errorMessage: "Unit must be a string.",
     },
+    isLength: {
+      options: { max: 10 },
+      errorMessage: "Unit must be at most 10 characters long.",
+    },
   },
   category: {
     notEmpty: {

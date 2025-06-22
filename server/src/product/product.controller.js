@@ -71,7 +71,7 @@ export const createProduct = async (request, response) => {
       costPrice,
       sellingPrice,
       unit,
-      image: savedImagePath,
+      imageUrl: savedImagePath,
       category,
       vendor,
     });
@@ -89,14 +89,14 @@ export const createProduct = async (request, response) => {
       inventory: newInventory,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to create product. Please try again.",
     });
   }
 };
 
-export const getAllProducts = async (request, response) => {
+export const getProducts = async (request, response) => {
   try {
     const products = await Product.aggregate([
       {
@@ -147,7 +147,7 @@ export const getAllProducts = async (request, response) => {
           costPrice: { $toDouble: "$costPrice" },
           sellingPrice: { $toDouble: "$sellingPrice" },
           unit: 1,
-          image_url: 1,
+          imageUrl: 1,
           category: "$category.name",
           vendor: "$vendor.name",
           quantity: "$inventory.quantity",
@@ -160,7 +160,7 @@ export const getAllProducts = async (request, response) => {
 
     response.send({ products });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     response.status(500).json({
       message: "Failed to get all products. Please try again.",
     });
