@@ -67,8 +67,8 @@ const VendorDetails = ({ vendor }: { vendor: TVendor }) => {
               <p>{new Date(vendor.createdAt).toLocaleString()}</p>
             </div>
             <div className="grid gap-2">
-              <Label>Postal Code</Label>
-              <p>{new Date(vendor.createdAt).toLocaleString()}</p>
+              <Label>Updated</Label>
+              <p>{new Date(vendor.updatedAt).toLocaleString()}</p>
             </div>
           </div>
         </div>

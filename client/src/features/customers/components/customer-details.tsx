@@ -71,8 +71,8 @@ const CustomerDetails = ({ customer }: { customer: TCustomer }) => {
               <p>{new Date(customer.createdAt).toLocaleString()}</p>
             </div>
             <div className="grid gap-2">
-              <Label>Postal Code</Label>
-              <p>{new Date(customer.createdAt).toLocaleString()}</p>
+              <Label>Updated</Label>
+              <p>{new Date(customer.updatedAt).toLocaleString()}</p>
             </div>
           </div>
         </div>
