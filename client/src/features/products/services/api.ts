@@ -1,5 +1,3 @@
-import { TProductFormSchema } from "../types";
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchProductList = async () => {
@@ -28,14 +26,11 @@ export const fetchProductList = async () => {
 //   return data;
 // };
 
-export const createProduct = async (product: TProductFormSchema) => {
+export const createProduct = async (formData: FormData) => {
   const response = await fetch(`${API_URL}api/products`, {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
     credentials: "include",
-    body: JSON.stringify(product),
+    body: formData,
   });
 
   if (!response.ok) {

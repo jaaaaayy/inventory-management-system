@@ -34,7 +34,7 @@ const CreateCustomer = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+      <div className="p-2 lg:p-4 grow space-y-4">
         <Button variant="ghost" onClick={() => navigate("/sales/customers")}>
           <ArrowLeft />
           Back to Customers

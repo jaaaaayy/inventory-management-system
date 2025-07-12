@@ -13,8 +13,12 @@ import { useForm } from "react-hook-form";
 import { vendorFormSchema } from "../../schemas";
 import { useCreateVendor } from "../../services/mutations";
 import { TVendorFormSchema } from "../../types";
+import InputError from "@/components/input-error";
+import { TFormError } from "@/types";
+import { useState } from "react";
 
 const CreateVendorForm = () => {
+  const [formError, setFormError] = useState<TFormError | null>(null);
   const form = useForm<TVendorFormSchema>({
     resolver: zodResolver(vendorFormSchema),
     defaultValues: {
@@ -32,7 +36,9 @@ const CreateVendorForm = () => {
   });
 
   const { mutateAsync: createVendorMutation, isPending } = useCreateVendor(
-    form.reset
+    form.reset,
+    setFormError,
+    form.setFocus
   );
 
   const onSubmit = async (values: TVendorFormSchema) => {
@@ -78,6 +84,7 @@ const CreateVendorForm = () => {
                 />
               </FormControl>
               <FormMessage />
+              <InputError message={formError?.errors?.email} />
             </FormItem>
           )}
         />
@@ -96,6 +103,7 @@ const CreateVendorForm = () => {
                 />
               </FormControl>
               <FormMessage />
+              <InputError message={formError?.errors?.mobileNumber} />
             </FormItem>
           )}
         />

@@ -1,12 +1,17 @@
-import { UseFormReset } from "react-hook-form";
+import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TVendorFormSchema } from "../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, deleteVendor, updateVendor } from "./api";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router";
+import { TFormError } from "@/types";
 
-export const useCreateVendor = (reset: UseFormReset<TVendorFormSchema>) => {
+export const useCreateVendor = (
+  reset: UseFormReset<TVendorFormSchema>,
+  setFormError: Dispatch<SetStateAction<TFormError | null>>,
+  setFocus: UseFormSetFocus<TVendorFormSchema>
+) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -23,7 +28,18 @@ export const useCreateVendor = (reset: UseFormReset<TVendorFormSchema>) => {
         },
       });
     },
-    onError: (error) => {
+    onError: (error: TFormError) => {
+      if (error.errors && Object.entries(error.errors).length > 0) {
+        setFormError(error);
+
+        const [firstErrorField] = Object.keys(error.errors);
+        if (firstErrorField) {
+          setFocus(firstErrorField as keyof TVendorFormSchema);
+        }
+
+        return;
+      }
+
       toast.error(error.message, {
         style: {
           backgroundColor: "red",

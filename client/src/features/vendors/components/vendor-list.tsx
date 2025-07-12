@@ -18,8 +18,6 @@ const VendorList = () => {
     return <Loading feature="vendors" />;
   }
 
-  console.log(data);
-
   return (
     <>
       <Searchbar
