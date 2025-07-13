@@ -7,9 +7,13 @@ const SalesOrderSchema = new mongoose.Schema(
       ref: "Customer",
       required: true,
     },
+    orderDate: {
+      type: Date,
+      required: true,
+    },
     deliveryDate: {
       type: Date,
-      default: null,
+      required: true,
     },
     status: {
       type: String,

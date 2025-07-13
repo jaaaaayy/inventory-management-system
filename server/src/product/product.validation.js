@@ -27,16 +27,19 @@ const productValidationSchema = {
     notEmpty: {
       errorMessage: "Cost price is required.",
     },
-    isFloat: {
-      errorMessage: "Cost price must be a decimal.",
+    isDecimal: {
+      options: { decimal_digits: "0,2" },
+      errorMessage: "Cost price must be a decimal with up to 2 decimal places.",
     },
   },
   sellingPrice: {
     notEmpty: {
       errorMessage: "Selling price is required.",
     },
-    isFloat: {
-      errorMessage: "Selling price must be a decimal.",
+    isDecimal: {
+      options: { decimal_digits: "0,2" },
+      errorMessage:
+        "Selling price must be a decimal with up to 2 decimal places.",
     },
   },
   unit: {

@@ -7,8 +7,18 @@ export const salesOrderValidationSchema = {
       errorMessage: "Customer must be a valid MongoDB ObjectId.",
     },
   },
+  orderDate: {
+    notEmpty: {
+      errorMessage: "Order date is required.",
+    },
+    isISO8601: {
+      errorMessage: "Order date must be a valid ISO8601 date.",
+    },
+  },
   deliveryDate: {
-    optional: true,
+    notEmpty: {
+      errorMessage: "Delivery date is required.",
+    },
     isISO8601: {
       errorMessage: "Delivery date must be a valid ISO8601 date.",
     },
@@ -23,9 +33,10 @@ export const salesOrderValidationSchema = {
   },
   totalAmount: {
     optional: true,
-    isFloat: {
-      errorMessage: "Total amount must be a valid float.",
-      options: { min: 0 },
+    isDecimal: {
+      options: { decimal_digits: "0,2" },
+      errorMessage:
+        "Total amount must be a decimal with up to 2 decimal places.",
     },
   },
 };

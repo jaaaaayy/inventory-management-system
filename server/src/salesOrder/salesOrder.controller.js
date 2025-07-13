@@ -6,7 +6,7 @@ import SalesOrder from "./salesOrder.model.js";
 
 export const createSalesOrder = async (request, response) => {
   try {
-    const { customer, items } = request.body;
+    const { customer, orderDate, deliveryDate, items } = request.body;
 
     const findCustomer = await Customer.findById(customer);
 
@@ -14,17 +14,8 @@ export const createSalesOrder = async (request, response) => {
       return response.status(400).send({ message: "Customer not found." });
     }
 
-    const products = await Product.find({
-      _id: { $in: items.map((item) => item.product) },
-    });
-
-    const totalAmount = items.reduce((total, item) => {
-      const product = products.find((product) => product._id == item.product);
-
-      return total + parseInt(product.sellingPrice);
-    }, 0);
-
     const newSalesItems = [];
+    let totalAmount = 0;
 
     for (const item of items) {
       const findInventory = await Inventory.findOne({ product: item.product });
@@ -35,26 +26,31 @@ export const createSalesOrder = async (request, response) => {
         });
       }
 
+      const findProduct = await Product.findById(item.product);
+      const totalPrice = findProduct.sellingPrice * item.quantity;
+      totalAmount += totalPrice;
+
       newSalesItems.push({
         salesOrder: null,
         product: item.product,
         quantity: item.quantity,
+        totalPrice,
       });
 
       findInventory.quantity -= item.quantity;
+      await findInventory.save();
     }
 
     const newSalesOrder = new SalesOrder({
       customer,
-      totalAmount: totalAmount,
+      orderDate,
+      deliveryDate,
+      totalAmount,
     });
     await newSalesOrder.save();
 
     for (const item of newSalesItems) {
       item.salesOrder = newSalesOrder._id;
-      const findInventory = await Inventory.findOne({ product: item.product });
-      findInventory.quantity -= item.quantity;
-      await findInventory.save();
     }
 
     await SalesItem.insertMany(newSalesItems);
@@ -86,7 +82,6 @@ export const getAllSalesOrders = async (request, response) => {
       {
         $unwind: {
           path: "$customer",
-          presponseerveNullAndEmptyArrays: true,
         },
       },
       {
@@ -129,6 +124,7 @@ export const getAllSalesOrders = async (request, response) => {
                   ],
                 },
                 quantity: "$$item.quantity",
+                totalPrice: "$$item.totalPrice",
               },
             },
           },
@@ -140,12 +136,13 @@ export const getAllSalesOrders = async (request, response) => {
           customer: {
             $concat: ["$customer.firstName", " ", "$customer.lastName"],
           },
-          status: 1,
+          orderDate: 1,
+          deliveryDate: 1,
           totalAmount: 1,
-          paymentStatus: 1,
+          status: 1,
+          salesItems: 1,
           createdAt: 1,
           updatedAt: 1,
-          salesItems: 1,
         },
       },
       {

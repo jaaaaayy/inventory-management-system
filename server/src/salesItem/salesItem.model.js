@@ -16,6 +16,10 @@ const SalesItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    totalPrice: {
+      type: mongoose.Schema.Types.Decimal128,
+      default: null,
+    },
   },
   { timestamps: true }
 );

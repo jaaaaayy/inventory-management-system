@@ -19,8 +19,17 @@ export const salesItemValidationSchema = {
     notEmpty: {
       errorMessage: "Quantity is required.",
     },
-    isFloat: {
-      errorMessage: "Customer must be a float.",
+    isDecimal: {
+      options: { decimal_digits: "0,2" },
+      errorMessage: "Quantity must be a decimal with up to 2 decimal places.",
+    },
+  },
+  "items.*.totalPrice": {
+    optional: true,
+    isDecimal: {
+      options: { decimal_digits: "0,2" },
+      errorMessage:
+        "Total price must be a decimal with up to 2 decimal places.",
     },
   },
 };
