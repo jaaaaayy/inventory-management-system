@@ -15,6 +15,6 @@ router.use("/api/categories", categoryRouter);
 router.use("/api/customers", customerRouter);
 router.use("/api/products", productRouter);
 router.use("/api/vendors", vendorRouter);
-router.use("/api/sales/order", salesOrderRouter);
+router.use("/api/sales/orders", salesOrderRouter);
 
 export default router;

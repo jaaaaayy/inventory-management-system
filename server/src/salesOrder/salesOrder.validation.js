@@ -31,12 +31,4 @@ export const salesOrderValidationSchema = {
         "Status must be one of 'Pending', 'Shipped', 'Delivered', or 'Cancelled'.",
     },
   },
-  totalAmount: {
-    optional: true,
-    isDecimal: {
-      options: { decimal_digits: "0,2" },
-      errorMessage:
-        "Total amount must be a decimal with up to 2 decimal places.",
-    },
-  },
 };

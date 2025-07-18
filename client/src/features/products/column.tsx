@@ -30,10 +30,28 @@ export const columns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "costPrice",
     header: "Cost Price",
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("costPrice"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "PHP",
+      }).format(amount);
+
+      return <p>{formatted}</p>;
+    },
   },
   {
     accessorKey: "sellingPrice",
     header: "Selling Price",
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("sellingPrice"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "PHP",
+      }).format(amount);
+
+      return <p>{formatted}</p>;
+    },
   },
   {
     accessorKey: "unit",

@@ -17,6 +17,8 @@ import CreateCustomer from "./features/customers/pages/create-customer";
 import ViewCustomer from "./features/customers/pages/view-customer";
 import EditCustomer from "./features/customers/pages/edit-customer";
 import CreateProduct from "./features/products/pages/create-product";
+import SalesOrders from "./features/salesOrders/pages/sales-orders";
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -31,6 +33,7 @@ const App = () => {
           <Route path="/sales/customers/:id" element={<ViewCustomer />} />
           <Route path="/sales/customers/new" element={<CreateCustomer />} />
           <Route path="/sales/customers/:id/edit" element={<EditCustomer />} />
+          <Route path="/sales/orders" element={<SalesOrders />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/new" element={<CreateCategory />} />
           <Route path="/categories/:id" element={<ViewCategory />} />

@@ -138,7 +138,7 @@ export const getAllSalesOrders = async (request, response) => {
           },
           orderDate: 1,
           deliveryDate: 1,
-          totalAmount: 1,
+          totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
           salesItems: 1,
           createdAt: 1,
@@ -150,7 +150,7 @@ export const getAllSalesOrders = async (request, response) => {
       },
     ]);
 
-    response.json(salesOrders);
+    response.json({ salesOrders });
   } catch (error) {
     console.log(error.message);
     response.status(500).json({
