@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  fetchProduct,
   // fetchProduct,
   fetchProductList,
 } from "./api";
@@ -14,19 +15,19 @@ export const useFetchProductList = () => {
   return { isLoading, isPending, isError, error, data };
 };
 
-// export const useFetchProduct = (id?: string) => {
-//   const { isLoading, isPending, isError, error, data } = useQuery({
-//     queryKey: ["product", id],
-//     queryFn: () => {
-//       if (!id) {
-//         throw new Error("No product id provided.");
-//       }
+export const useFetchProduct = (id?: string) => {
+  const { isLoading, isPending, isError, error, data } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => {
+      if (!id) {
+        throw new Error("No product id provided.");
+      }
 
-//       return fetchProduct(id);
-//     },
-//     enabled: !!id,
-//     refetchOnWindowFocus: false,
-//   });
+      return fetchProduct(id);
+    },
+    enabled: !!id,
+    refetchOnWindowFocus: false,
+  });
 
-//   return { isLoading, isPending, isError, error, data };
-// };
+  return { isLoading, isPending, isError, error, data };
+};

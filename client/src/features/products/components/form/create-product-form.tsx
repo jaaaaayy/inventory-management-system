@@ -145,13 +145,86 @@ const CreateProductForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-6 items-start">
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the name"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="stockKeepingUnit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Stock Keeping Unit</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the stock keeping unit"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <InputError message={formError?.errors?.stockKeepingUnit} />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="costPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cost Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter the cost price"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sellingPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Selling Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter the selling price"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="image"
             render={() => (
               <FormItem>
-                <FormLabel>Product Image</FormLabel>
+                <FormLabel>Image</FormLabel>
                 <FormControl>
                   <div
                     className={cn(
@@ -228,81 +301,8 @@ const CreateProductForm = () => {
               </FormItem>
             )}
           />
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the name"
-                      {...field}
-                      autoComplete="off"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="stockKeepingUnit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stock Keeping Unit</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the stock keeping unit"
-                      {...field}
-                      autoComplete="off"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <InputError message={formError?.errors?.stockKeepingUnit} />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="costPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cost Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter the cost price"
-                      {...field}
-                      autoComplete="off"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
         <div className="grid grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="sellingPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Selling Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter the selling price"
-                    {...field}
-                    autoComplete="off"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="unit"

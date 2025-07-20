@@ -13,18 +13,18 @@ export const fetchProductList = async () => {
   return data;
 };
 
-// export const fetchProduct = async (id: string) => {
-//   const response = await fetch(`${API_URL}api/products/${id}`, {
-//     credentials: "include",
-//   });
+export const fetchProduct = async (id: string) => {
+  const response = await fetch(`${API_URL}api/products/${id}`, {
+    credentials: "include",
+  });
 
-//   if (!response.ok) {
-//     throw await response.json();
-//   }
+  if (!response.ok) {
+    throw await response.json();
+  }
 
-//   const data = await response.json();
-//   return data;
-// };
+  const data = await response.json();
+  return data;
+};
 
 export const createProduct = async (formData: FormData) => {
   const response = await fetch(`${API_URL}api/products`, {

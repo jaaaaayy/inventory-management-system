@@ -30,4 +30,11 @@ router.get(
   productController.getProducts
 );
 
+router.get(
+  "/:id",
+  isAuthenticated,
+  checkPermissions(["User"]),
+  productController.getProductById
+);
+
 export default router;

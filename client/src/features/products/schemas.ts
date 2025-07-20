@@ -3,19 +3,25 @@ import { z } from "zod";
 // Custom file validation function
 const validateImageFile = (file: File | null) => {
   if (!file) return true; // Optional field
-  
+
   // Check file type
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+  ];
   if (!allowedTypes.includes(file.type)) {
     return false;
   }
-  
+
   // Check file size (5MB limit)
   const maxSize = 5 * 1024 * 1024; // 5MB
   if (file.size > maxSize) {
     return false;
   }
-  
+
   return true;
 };
 
@@ -44,10 +50,7 @@ export const productFormSchema = z.object({
     .positive({ message: "Quantity must be greater than 0." }),
   category: z.string().trim(),
   vendor: z.string().trim(),
-  image: z
-    .any()
-    .refine(validateImageFile, {
-      message: "Please upload a valid image file (JPG, PNG, GIF, WebP) under 5MB"
-    })
-    .optional(),
+  image: z.any().refine(validateImageFile, {
+    message: "Please upload a valid image file (JPG, PNG, GIF, WebP) under 5MB",
+  }),
 });

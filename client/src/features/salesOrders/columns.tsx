@@ -1,24 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { TSalesOrder } from "./types";
-// import { ActionsCell } from "./components/action-cell";
+import { TSalesItem, TSalesOrder } from "./types";
+import { ActionsCell } from "./components/action-cell";
 
 export const columns: ColumnDef<TSalesOrder>[] = [
-  // {
-  //   header: "Image",
-  //   cell: ({ row }) => {
-  //     const image = row.original.imageUrl;
-  //     const name = row.original.name;
-  //     console.log(`http://localhost:3000/${image}`);
-
-  //     return (
-  //       <img
-  //         src={`http://localhost:3000/${image}`}
-  //         alt={name}
-  //         className="h-12 object-contain rounded-md"
-  //       />
-  //     );
-  //   },
-  // },
   {
     accessorKey: "customer",
     header: "Customer",
@@ -42,6 +26,11 @@ export const columns: ColumnDef<TSalesOrder>[] = [
     header: "Status",
   },
   {
+    accessorKey: "salesItems",
+    header: "Items",
+    cell: ({ row }) => row.getValue<TSalesItem[]>("salesItems").length,
+  },
+  {
     accessorKey: "totalAmount",
     header: "Total Amount",
     cell: ({ row }) => {
@@ -56,6 +45,6 @@ export const columns: ColumnDef<TSalesOrder>[] = [
   },
   {
     id: "actions",
-    // cell: ({ row }) => <ActionsCell id={row.original._id} />,
+    cell: ({ row }) => <ActionsCell id={row.original._id} />,
   },
 ];

@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import Inventory from "../inventory/inventory.model.js";
 import Product from "./product.model.js";
+import mongoose from "mongoose";
 
 export const createProduct = async (request, response) => {
   try {
@@ -80,6 +81,7 @@ export const createProduct = async (request, response) => {
     const newInventory = new Inventory({
       product: newProduct._id,
       quantity,
+      lastStockUpdate: new Date(),
     });
     await newInventory.save();
 
@@ -163,6 +165,98 @@ export const getProducts = async (request, response) => {
     console.log(error.message);
     response.status(500).json({
       message: "Failed to get all products. Please try again.",
+    });
+  }
+};
+
+export const getProductById = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid product id.",
+      });
+    }
+
+    const products = await Product.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId.createFromHexString(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "inventories",
+          localField: "_id",
+          foreignField: "product",
+          as: "inventory",
+        },
+      },
+      {
+        $unwind: {
+          path: "$inventory",
+        },
+      },
+      {
+        $lookup: {
+          from: "vendors",
+          localField: "vendor",
+          foreignField: "_id",
+          as: "vendor",
+        },
+      },
+      {
+        $unwind: {
+          path: "$vendor",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $unwind: {
+          path: "$category",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          stockKeepingUnit: 1,
+          costPrice: { $toDouble: "$costPrice" },
+          sellingPrice: { $toDouble: "$sellingPrice" },
+          unit: 1,
+          imageUrl: 1,
+          category: "$category.name",
+          vendor: "$vendor.name",
+          quantity: "$inventory.quantity",
+          lastStockUpdate: "$inventory.lastStockUpdate",
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    if (products.length === 0) {
+      return response.status(404).json({ message: "Product not found." });
+    }
+
+    const product = products[0];
+
+    response.json({ product });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to get product. Please try again.",
     });
   }
 };
