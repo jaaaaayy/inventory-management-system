@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, type ReactNode } from "react";
 import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { UserProvider } from "./context/user-provider";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -10,7 +11,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        {children}
+        <UserProvider>{children}</UserProvider>
       </ThemeProvider>
       <ReactQueryDevtools />
       <Toaster />

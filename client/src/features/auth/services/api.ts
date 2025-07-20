@@ -1,4 +1,3 @@
-import { TFormError } from "@/types";
 import { TLoginFormSchema, TRegisterFormSchema } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -18,7 +17,7 @@ export const login = async (credentials: TLoginFormSchema) => {
     throw await response.json();
   }
 
-  const data: TFormError = await response.json();
+  const data = await response.json();
   return data;
 };
 
@@ -37,6 +36,24 @@ export const register = async (user: TRegisterFormSchema) => {
     throw await response.json();
   }
 
-  const data: TFormError = await response.json();
+  const data = await response.json();
+  return data;
+};
+
+export const logout = async () => {
+  const response = await fetch(`${API_URL}api/auth/logout`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
   return data;
 };

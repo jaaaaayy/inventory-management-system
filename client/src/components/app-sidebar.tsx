@@ -30,13 +30,9 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "./ui/sidebar";
+import { useUser } from "@/hooks/use-user";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -77,6 +73,7 @@ const data = {
 };
 
 const AppSidebar = () => {
+  const { user } = useUser();
   const location = useLocation();
   const { state } = useSidebar();
 
@@ -142,7 +139,7 @@ const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

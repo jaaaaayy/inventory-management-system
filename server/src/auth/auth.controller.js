@@ -84,6 +84,10 @@ export const login = async (request, response) => {
 
     response.json({
       message: "Logged in successfully.",
+      user: {
+        name: findUser.firstName + " " + findUser.lastName,
+        email: findUser.email,
+      },
       session: request.session,
     });
   } catch (error) {

@@ -1,19 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
-import { login, register } from "./api";
+import { login, logout, register } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TLoginFormSchema, TRegisterFormSchema } from "../types";
 import { Dispatch, SetStateAction } from "react";
 import { TFormError } from "@/types";
+import { useUser } from "@/hooks/use-user";
 
 export const useLogin = (reset: UseFormReset<TLoginFormSchema>) => {
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
       reset();
+      setUser(data.user);
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
@@ -64,6 +67,33 @@ export const useRegister = (
         return;
       }
 
+      toast.error(error.message, {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+    },
+  });
+};
+
+export const useLogout = () => {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: (data) => {
+      setUser(null);
+      toast.success(data.message, {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
+      navigate("/", { replace: true });
+    },
+    onError: (error) => {
       toast.error(error.message, {
         style: {
           backgroundColor: "red",
