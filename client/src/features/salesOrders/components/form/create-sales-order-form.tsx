@@ -1,0 +1,426 @@
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { salesOrderFormSchema } from "../../schemas";
+import { TSalesOrderFormSchema } from "../../types";
+import { useCreateSalesOrder } from "../../services/mutations";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
+import { TCustomer } from "@/features/customers/types";
+import { useFetchCustomerList } from "@/features/customers/services/queries";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronsUpDownIcon,
+  PhilippinePeso,
+  Plus,
+  Trash,
+} from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TProduct } from "@/features/products/types";
+import { useFetchProductList } from "@/features/products/services/queries";
+import { Input } from "@/components/ui/input";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const CreateSalesOrderForm = () => {
+  const [openDeliveryDatePicker, setOpenDeliveryDatePicker] = useState(false);
+  const [openOrderDatePicker, setOpenOrderDatePicker] = useState(false);
+  const [openProductDropdown, setOpenProductDropdown] = useState(false);
+  const [openCustomerDropdown, setOpenCustomerDropdown] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<TCustomer | null>(
+    null
+  );
+
+  const { data: productData, isLoading: productIsLoading } =
+    useFetchProductList();
+  console.log("productData", productData);
+  const { data: customerData, isLoading: customerIsLoading } =
+    useFetchCustomerList();
+
+  const form = useForm<TSalesOrderFormSchema>({
+    resolver: zodResolver(salesOrderFormSchema),
+    defaultValues: {
+      customer: "",
+      orderDate: new Date(),
+      deliveryDate: new Date(),
+      items: {
+        product: "",
+        quantity: 1,
+      },
+    },
+  });
+
+  const { mutateAsync: createSalesOrderMutation, isPending } =
+    useCreateSalesOrder(form.reset);
+
+  const onSubmit = async (values: TSalesOrderFormSchema) => {
+    await createSalesOrderMutation(values);
+  };
+
+  const quantity = form.watch("items.quantity");
+  const sellingPrice = selectedProduct?.sellingPrice ?? 0;
+  const amount = Number(quantity) * Number(sellingPrice);
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="w-1/2 mr-6 space-y-6">
+          <FormField
+            control={form.control}
+            name="customer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Customer</FormLabel>
+                <FormControl>
+                  <Popover
+                    open={openCustomerDropdown}
+                    onOpenChange={setOpenCustomerDropdown}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openCustomerDropdown}
+                        className="justify-between"
+                      >
+                        {selectedCustomer
+                          ? selectedCustomer.firstName +
+                            " " +
+                            selectedCustomer.lastName
+                          : "Select customer..."}
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search customer..." />
+                        <CommandList>
+                          <CommandEmpty>
+                            {customerIsLoading
+                              ? "Loading customers..."
+                              : "No customer found."}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {customerData?.customers?.map(
+                              (customer: TCustomer) => (
+                                <CommandItem
+                                  key={customer._id}
+                                  value={customer._id}
+                                  onSelect={(currentValue) => {
+                                    setSelectedCustomer(
+                                      currentValue === selectedCustomer?._id
+                                        ? null
+                                        : customer
+                                    );
+                                    setOpenCustomerDropdown(false);
+                                    field.onChange(currentValue);
+                                  }}
+                                >
+                                  <CheckIcon
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      selectedCustomer?.firstName ===
+                                        customer.firstName &&
+                                        selectedCustomer?.lastName ===
+                                          customer.lastName
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {customer.firstName} {customer.lastName}
+                                </CommandItem>
+                              )
+                            )}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="orderDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Order Date</FormLabel>
+                <FormControl>
+                  <Popover
+                    open={openOrderDatePicker}
+                    onOpenChange={setOpenOrderDatePicker}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        id="date"
+                        className="justify-between font-normal"
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Select date</span>
+                        )}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setOpenOrderDatePicker(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="deliveryDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Delivery Date</FormLabel>
+                <FormControl>
+                  <Popover
+                    open={openDeliveryDatePicker}
+                    onOpenChange={setOpenDeliveryDatePicker}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        id="date"
+                        className="justify-between font-normal"
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Select date</span>
+                        )}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setOpenDeliveryDatePicker(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="font-medium">Line Items</h1>
+            <Button variant="secondary">
+              <Plus />
+              Add New Row
+            </Button>
+          </div>
+          <Table className="border">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="border">Item</TableHead>
+                <TableHead className="border">Quantity</TableHead>
+                <TableHead className="border">Amount</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="p-0 border">
+                  <FormField
+                    control={form.control}
+                    name="items.product"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Popover
+                            open={openProductDropdown}
+                            onOpenChange={setOpenProductDropdown}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={openProductDropdown}
+                                className="justify-between border-none shadow-none !px-2 h-auto !bg-transparent hover:!bg-transparent"
+                              >
+                                {selectedProduct ? (
+                                  <div className="flex items-center gap-2">
+                                    <img
+                                      className="size-8 rounded object-cover"
+                                      src={`${API_URL}${selectedProduct.imageUrl}`}
+                                      alt={selectedProduct.name}
+                                    />
+                                    <span>{selectedProduct.name}</span>
+                                  </div>
+                                ) : (
+                                  "Select product..."
+                                )}
+                                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                              <Command>
+                                <CommandInput placeholder="Search product..." />
+                                <CommandList>
+                                  <CommandEmpty>
+                                    {productIsLoading
+                                      ? "Loading products..."
+                                      : "No product found."}
+                                  </CommandEmpty>
+                                  <CommandGroup>
+                                    {productData?.products?.map(
+                                      (product: TProduct) => (
+                                        <CommandItem
+                                          key={product._id}
+                                          value={product._id}
+                                          onSelect={(currentValue) => {
+                                            setSelectedProduct(
+                                              currentValue ===
+                                                selectedProduct?._id
+                                                ? null
+                                                : product
+                                            );
+                                            setOpenProductDropdown(false);
+                                            field.onChange(currentValue);
+                                          }}
+                                        >
+                                          <CheckIcon
+                                            className={cn(
+                                              "mr-2 h-4 w-4",
+                                              selectedProduct?.name ===
+                                                product.name
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                            )}
+                                          />
+                                          {product.name}
+                                        </CommandItem>
+                                      )
+                                    )}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell className="p-0 border">
+                  <FormField
+                    control={form.control}
+                    name="items.quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            className="border-none focus-visible:ring-0 shadow-none p-2 !bg-transparent hover:!bg-transparent"
+                            {...field}
+                            autoComplete="off"
+                            required
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell className="p-0 border">
+                  <div className="p-2 text-right tabular-nums">
+                    {amount.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </div>
+                </TableCell>
+                <TableCell className="p-0 border">
+                  <div className="flex items-center justify-center">
+                    <Trash className="size-4 text-muted-foreground hover:text-destructive/90" />
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <div className="w-1/2 mr-6 text-sm">
+            <div className="flex gap-2">
+              <h1 className="font-medium">Sub Total:</h1>
+              <p>{123.0}</p>
+            </div>
+            <div className="flex gap-2">
+              <h1 className="font-medium flex items-center">
+                Total ({<PhilippinePeso className="size-4" />}):
+              </h1>
+              <p>{123.0}</p>
+            </div>
+          </div>
+        </div>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Saving..." : "Save"}
+        </Button>
+      </form>
+    </Form>
+  );
+};
+
+export default CreateSalesOrderForm;

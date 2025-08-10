@@ -7,15 +7,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router";
-import SalesOrderList from "../components/sales-order-list";
+import CreateSalesOrderForm from "../components/form/create-sales-order-form";
 
-const SalesOrders = () => {
+const CreateSalesOrder = () => {
   const navigate = useNavigate();
-
   return (
     <>
       <Header>
@@ -26,22 +25,26 @@ const SalesOrders = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Sales Orders</BreadcrumbPage>
+              <BreadcrumbLink href="/sales/orders">Sales orders</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>New Sales Order</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow">
+      <div className="p-2 lg:p-4 grow space-y-4">
+        <Button variant="ghost" onClick={() => navigate("/sales/orders")}>
+          <ArrowLeft />
+          Back to Sales orders
+        </Button>
         <Card>
-          <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-2xl">Sales Orders</CardTitle>
-            <Button onClick={() => navigate("/sales/orders/new")}>
-              <Plus />
-              New Sales Order
-            </Button>
+          <CardHeader>
+            <CardTitle className="text-2xl">New Sales Order</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <SalesOrderList />
+          <CardContent>
+            <CreateSalesOrderForm />
           </CardContent>
         </Card>
       </div>
@@ -49,4 +52,4 @@ const SalesOrders = () => {
   );
 };
 
-export default SalesOrders;
+export default CreateSalesOrder;

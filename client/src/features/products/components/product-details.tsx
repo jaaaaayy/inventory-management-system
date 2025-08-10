@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { TProduct } from "../types";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ProductDetails = ({ product }: { product: TProduct }) => {
   return (
     <Card>
@@ -38,14 +40,12 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
           </div>
           <div className="grid gap-2">
             <Label>Image</Label>
-            <div className="size-60 border-2 border-dashed transition-colors rounded-md flex items-center justify-center cursor-pointer">
-              <div className="relative size-full">
-                <img
-                  src={`http://localhost:3000/${product.imageUrl}`}
-                  alt={product.name}
-                  className="size-full object-cover rounded-md"
-                />
-              </div>
+            <div className="size-60 rounded-md flex items-center justify-center">
+              <img
+                src={`${API_URL}${product.imageUrl}`}
+                alt={product.name}
+                className="size-full object-cover rounded-md"
+              />
             </div>
           </div>
         </div>
