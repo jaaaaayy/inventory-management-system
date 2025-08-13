@@ -19,6 +19,9 @@ export const createSalesOrder = async (salesOrder: TSalesOrderFormSchema) => {
   const response = await fetch(`${API_URL}api/sales/orders`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(salesOrder),
   });
 

@@ -4,11 +4,15 @@ export const salesOrderFormSchema = z.object({
   customer: z.string().trim(),
   orderDate: z.date(),
   deliveryDate: z.date(),
-  items: z.object({
-    product: z.string().trim(),
-    quantity: z.coerce
-      .number()
-      .int({ message: "Quantity must be an integer." })
-      .positive({ message: "Quantity must be greater than 0." }),
-  }),
+  items: z
+    .array(
+      z.object({
+        product: z.string().trim(),
+        quantity: z.coerce
+          .number()
+          .int({ message: "Quantity must be an integer." })
+          .positive({ message: "Quantity must be greater than 0." }),
+      })
+    )
+    .min(1, { message: "At least one item is required." }),
 });

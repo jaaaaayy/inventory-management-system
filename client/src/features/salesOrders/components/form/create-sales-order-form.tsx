@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { salesOrderFormSchema } from "../../schemas";
 import { TSalesOrderFormSchema } from "../../types";
 import { useCreateSalesOrder } from "../../services/mutations";
@@ -56,16 +56,16 @@ const API_URL = import.meta.env.VITE_API_URL;
 const CreateSalesOrderForm = () => {
   const [openDeliveryDatePicker, setOpenDeliveryDatePicker] = useState(false);
   const [openOrderDatePicker, setOpenOrderDatePicker] = useState(false);
-  const [openProductDropdown, setOpenProductDropdown] = useState(false);
+  const [openProductDropdownIndex, setOpenProductDropdownIndex] = useState<
+    number | null
+  >(null);
   const [openCustomerDropdown, setOpenCustomerDropdown] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<TCustomer | null>(
     null
   );
 
   const { data: productData, isLoading: productIsLoading } =
     useFetchProductList();
-  console.log("productData", productData);
   const { data: customerData, isLoading: customerIsLoading } =
     useFetchCustomerList();
 
@@ -75,11 +75,18 @@ const CreateSalesOrderForm = () => {
       customer: "",
       orderDate: new Date(),
       deliveryDate: new Date(),
-      items: {
-        product: "",
-        quantity: 1,
-      },
+      items: [
+        {
+          product: "",
+          quantity: 1,
+        },
+      ],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "items",
   });
 
   const { mutateAsync: createSalesOrderMutation, isPending } =
@@ -89,9 +96,23 @@ const CreateSalesOrderForm = () => {
     await createSalesOrderMutation(values);
   };
 
-  const quantity = form.watch("items.quantity");
-  const sellingPrice = selectedProduct?.sellingPrice ?? 0;
-  const amount = Number(quantity) * Number(sellingPrice);
+  const watchedItems = form.watch("items") || [];
+  const subtotal = watchedItems.reduce(
+    (
+      accumulator: number,
+      item: {
+        product: string;
+        quantity: number;
+      }
+    ) => {
+      const product = productData?.products?.find(
+        (p: TProduct) => p._id === item.product
+      );
+      const price = product?.sellingPrice ?? 0;
+      return accumulator + Number(item?.quantity || 0) * Number(price);
+    },
+    0
+  );
 
   return (
     <Form {...form}>
@@ -267,7 +288,11 @@ const CreateSalesOrderForm = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="font-medium">Line Items</h1>
-            <Button variant="secondary">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => append({ product: "", quantity: 1 })}
+            >
               <Plus />
               Add New Row
             </Button>
@@ -282,137 +307,164 @@ const CreateSalesOrderForm = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="p-0 border">
-                  <FormField
-                    control={form.control}
-                    name="items.product"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Popover
-                            open={openProductDropdown}
-                            onOpenChange={setOpenProductDropdown}
-                          >
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={openProductDropdown}
-                                className="justify-between border-none shadow-none !px-2 h-auto !bg-transparent hover:!bg-transparent"
+              {fields.map((fieldItem, index) => {
+                const productFieldName = `items.${index}.product` as const;
+                const quantityFieldName = `items.${index}.quantity` as const;
+
+                const productId = form.watch(productFieldName);
+                const selectedProduct = productData?.products?.find(
+                  (p: TProduct) => p._id === productId
+                );
+                const quantity = Number(form.watch(quantityFieldName) || 0);
+                const amount =
+                  quantity * Number(selectedProduct?.sellingPrice ?? 0);
+
+                return (
+                  <TableRow key={fieldItem.id}>
+                    <TableCell className="p-0 border">
+                      <FormField
+                        control={form.control}
+                        name={productFieldName}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Popover
+                                open={openProductDropdownIndex === index}
+                                onOpenChange={(open) =>
+                                  setOpenProductDropdownIndex(
+                                    open ? index : null
+                                  )
+                                }
                               >
-                                {selectedProduct ? (
-                                  <div className="flex items-center gap-2">
-                                    <img
-                                      className="size-8 rounded object-cover"
-                                      src={`${API_URL}${selectedProduct.imageUrl}`}
-                                      alt={selectedProduct.name}
-                                    />
-                                    <span>{selectedProduct.name}</span>
-                                  </div>
-                                ) : (
-                                  "Select product..."
-                                )}
-                                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                              <Command>
-                                <CommandInput placeholder="Search product..." />
-                                <CommandList>
-                                  <CommandEmpty>
-                                    {productIsLoading
-                                      ? "Loading products..."
-                                      : "No product found."}
-                                  </CommandEmpty>
-                                  <CommandGroup>
-                                    {productData?.products?.map(
-                                      (product: TProduct) => (
-                                        <CommandItem
-                                          key={product._id}
-                                          value={product._id}
-                                          onSelect={(currentValue) => {
-                                            setSelectedProduct(
-                                              currentValue ===
-                                                selectedProduct?._id
-                                                ? null
-                                                : product
-                                            );
-                                            setOpenProductDropdown(false);
-                                            field.onChange(currentValue);
-                                          }}
-                                        >
-                                          <CheckIcon
-                                            className={cn(
-                                              "mr-2 h-4 w-4",
-                                              selectedProduct?.name ===
-                                                product.name
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                            )}
-                                          />
-                                          {product.name}
-                                        </CommandItem>
-                                      )
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={
+                                      openProductDropdownIndex === index
+                                    }
+                                    className="justify-between border-none shadow-none !px-2 h-auto !bg-transparent hover:!bg-transparent"
+                                  >
+                                    {selectedProduct ? (
+                                      <div className="flex items-center gap-2">
+                                        <img
+                                          className="size-8 rounded object-cover"
+                                          src={`${API_URL}${selectedProduct.imageUrl}`}
+                                          alt={selectedProduct.name}
+                                        />
+                                        <span>{selectedProduct.name}</span>
+                                      </div>
+                                    ) : (
+                                      "Select product..."
                                     )}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TableCell>
-                <TableCell className="p-0 border">
-                  <FormField
-                    control={form.control}
-                    name="items.quantity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            className="border-none focus-visible:ring-0 shadow-none p-2 !bg-transparent hover:!bg-transparent"
-                            {...field}
-                            autoComplete="off"
-                            required
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                  <Command>
+                                    <CommandInput placeholder="Search product..." />
+                                    <CommandList>
+                                      <CommandEmpty>
+                                        {productIsLoading
+                                          ? "Loading products..."
+                                          : "No product found."}
+                                      </CommandEmpty>
+                                      <CommandGroup>
+                                        {productData?.products?.map(
+                                          (product: TProduct) => (
+                                            <CommandItem
+                                              key={product._id}
+                                              value={product._id}
+                                              onSelect={(currentValue) => {
+                                                field.onChange(currentValue);
+                                                setOpenProductDropdownIndex(
+                                                  null
+                                                );
+                                              }}
+                                            >
+                                              <CheckIcon
+                                                className={cn(
+                                                  "mr-2 h-4 w-4",
+                                                  selectedProduct?.name ===
+                                                    product.name
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                )}
+                                              />
+                                              {product.name}
+                                            </CommandItem>
+                                          )
+                                        )}
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell className="p-0 border">
+                      <FormField
+                        control={form.control}
+                        name={quantityFieldName}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                className="border-none focus-visible:ring-0 shadow-none p-2 !bg-transparent hover:!bg-transparent"
+                                {...field}
+                                autoComplete="off"
+                                required
+                                min={1}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell className="p-0 border">
+                      <div className="p-2 text-right tabular-nums">
+                        {amount.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-0 border">
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => remove(index)}
+                          disabled={fields.length === 1}
+                        >
+                          <Trash
+                            className={`!disabled:pointer-events-none disabled:opacity-50 size-4 text-muted-foreground ${
+                              fields.length !== 1 && "hover:text-destructive/90"
+                            }`}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TableCell>
-                <TableCell className="p-0 border">
-                  <div className="p-2 text-right tabular-nums">
-                    {amount.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </div>
-                </TableCell>
-                <TableCell className="p-0 border">
-                  <div className="flex items-center justify-center">
-                    <Trash className="size-4 text-muted-foreground hover:text-destructive/90" />
-                  </div>
-                </TableCell>
-              </TableRow>
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
-          <div className="w-1/2 mr-6 text-sm">
-            <div className="flex gap-2">
-              <h1 className="font-medium">Sub Total:</h1>
-              <p>{123.0}</p>
-            </div>
-            <div className="flex gap-2">
-              <h1 className="font-medium flex items-center">
-                Total ({<PhilippinePeso className="size-4" />}):
-              </h1>
-              <p>{123.0}</p>
-            </div>
+          <div className="text-sm font-medium flex gap-2">
+            <span className="flex items-center">
+              Total (<PhilippinePeso className="size-4" />
+              ):{" "}
+            </span>
+            <span className="tabular-nums">
+              {subtotal.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
           </div>
         </div>
         <Button type="submit" disabled={isPending}>

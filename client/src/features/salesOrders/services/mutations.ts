@@ -15,8 +15,8 @@ export const useCreateSalesOrder = (
     mutationFn: createSalesOrder,
     onSuccess: (data) => {
       reset();
-      queryClient.invalidateQueries({ queryKey: ["salesOrder"] });
-      navigate("/sales/order");
+      queryClient.invalidateQueries({ queryKey: ["salesOrders"] });
+      navigate("/sales/orders");
       toast.success(data.message, {
         style: {
           backgroundColor: "green",
