@@ -29,7 +29,7 @@ export const ActionsCell = ({ id }: { id: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigate(`/sales/order/${id}`)}>
+        <DropdownMenuItem onClick={() => navigate(`/sales/orders/${id}`)}>
           View sales order
         </DropdownMenuItem>
         {/* <DropdownMenuItem onClick={() => navigate(`/sales/order/${id}/edit`)}>

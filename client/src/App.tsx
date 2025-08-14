@@ -19,7 +19,8 @@ import EditCustomer from "./features/customers/pages/edit-customer";
 import CreateProduct from "./features/products/pages/create-product";
 import SalesOrders from "./features/salesOrders/pages/sales-orders";
 import ViewProduct from "./features/products/pages/view-product";
-import CreateSalesOrder from "./features/salesOrders/pages/create-sales-orders";
+import CreateSalesOrder from "./features/salesOrders/pages/create-sales-order";
+import ViewSalesOrder from "./features/salesOrders/pages/view-sales-order";
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/sales/customers/:id/edit" element={<EditCustomer />} />
           <Route path="/sales/orders" element={<SalesOrders />} />
           <Route path="/sales/orders/new" element={<CreateSalesOrder />} />
+          <Route path="/sales/orders/:id" element={<ViewSalesOrder />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/new" element={<CreateCategory />} />
           <Route path="/categories/:id" element={<ViewCategory />} />

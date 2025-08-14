@@ -3,6 +3,7 @@ import Inventory from "../inventory/inventory.model.js";
 import Product from "../product/product.model.js";
 import SalesItem from "../salesItem/salesItem.model.js";
 import SalesOrder from "./salesOrder.model.js";
+import mongoose from "mongoose";
 
 export const createSalesOrder = async (request, response) => {
   try {
@@ -89,22 +90,22 @@ export const getAllSalesOrders = async (request, response) => {
           from: "salesitems",
           localField: "_id",
           foreignField: "salesOrder",
-          as: "salesItems",
+          as: "items",
         },
       },
       {
         $lookup: {
           from: "products",
-          localField: "salesItems.product",
+          localField: "items.product",
           foreignField: "_id",
           as: "productDetails",
         },
       },
       {
         $addFields: {
-          salesItems: {
+          items: {
             $map: {
-              input: "$salesItems",
+              input: "$items",
               as: "item",
               in: {
                 product: {
@@ -140,7 +141,7 @@ export const getAllSalesOrders = async (request, response) => {
           deliveryDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
-          salesItems: 1,
+          items: 1,
           createdAt: 1,
           updatedAt: 1,
         },
@@ -155,6 +156,107 @@ export const getAllSalesOrders = async (request, response) => {
     console.log(error.message);
     response.status(500).json({
       message: "Failed to get all sales orders. Please try again.",
+    });
+  }
+};
+
+export const getSalesOrder = async (request, response) => {
+  const {
+    params: { id },
+  } = request;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid sales order id.",
+      });
+    }
+
+    const salesOrders = await SalesOrder.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId.createFromHexString(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "customer",
+          foreignField: "_id",
+          as: "customer",
+        },
+      },
+      {
+        $unwind: {
+          path: "$customer",
+        },
+      },
+      {
+        $lookup: {
+          from: "salesitems",
+          localField: "_id",
+          foreignField: "salesOrder",
+          as: "items",
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      {
+        $addFields: {
+          items: {
+            $map: {
+              input: "$items",
+              as: "item",
+              in: {
+                _id: "$$item._id",
+                product: {
+                  $arrayElemAt: [
+                    "$productDetails.name",
+                    {
+                      $indexOfArray: ["$productDetails._id", "$$item.product"],
+                    },
+                  ],
+                },
+                quantity: "$$item.quantity",
+                totalPrice: "$$item.totalPrice",
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          customer: {
+            $concat: ["$customer.firstName", " ", "$customer.lastName"],
+          },
+          orderDate: 1,
+          deliveryDate: 1,
+          totalAmount: { $toDouble: "$totalAmount" },
+          status: 1,
+          items: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    if (salesOrders.length === 0) {
+      return response.status(404).json({ message: "Sales order not found." });
+    }
+
+    const salesOrder = salesOrders[0];
+    response.json({ salesOrder });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to get sales order. Please try again.",
     });
   }
 };

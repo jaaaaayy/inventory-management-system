@@ -1,20 +1,21 @@
 import { z } from "zod";
 import { salesOrderFormSchema } from "./schemas";
 
-export type TSalesItem = {
+export type TSalesOrderFormSchema = z.infer<typeof salesOrderFormSchema>;
+
+type TSalesOrderFormSchemaItem = TSalesOrderFormSchema["items"][number];
+
+export type TSalesItem = TSalesOrderFormSchemaItem & {
   _id: string;
-  product: string;
-  quantity: number;
   totalPrice: number;
 };
 
-export type TSalesOrderFormSchema = z.infer<typeof salesOrderFormSchema>;
-
-export type TSalesOrder = {
+export type TSalesOrder = Omit<TSalesOrderFormSchema, "items"> & {
+  items: TSalesItem[];
+} & {
   _id: string;
   status: string;
   totalAmount: string;
-  salesItems: TSalesItem[];
   createdAt: string;
   updatedAt: string;
-} & TSalesOrderFormSchema;
+};

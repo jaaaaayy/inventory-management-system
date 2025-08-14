@@ -28,4 +28,11 @@ router.post(
   SalesOrderController.createSalesOrder
 );
 
+router.get(
+  "/:id",
+  isAuthenticated,
+  checkPermissions(["User"]),
+  SalesOrderController.getSalesOrder
+);
+
 export default router;

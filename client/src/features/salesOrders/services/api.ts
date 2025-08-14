@@ -32,3 +32,16 @@ export const createSalesOrder = async (salesOrder: TSalesOrderFormSchema) => {
   const data = await response.json();
   return data;
 };
+
+export const fetchSalesOrder = async (id: string) => {
+  const response = await fetch(`${API_URL}api/sales/orders/${id}`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
+  return data;
+};

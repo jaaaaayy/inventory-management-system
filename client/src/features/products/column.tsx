@@ -8,7 +8,6 @@ export const columns: ColumnDef<TProduct>[] = [
     cell: ({ row }) => {
       const image = row.original.imageUrl;
       const name = row.original.name;
-      console.log(`http://localhost:3000/${image}`);
 
       return (
         <img

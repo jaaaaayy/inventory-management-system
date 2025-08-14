@@ -1,10 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchSalesOrderList } from "./api";
+import { fetchSalesOrder, fetchSalesOrderList } from "./api";
 
 export const useFetchSalesOrderList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["salesOrders"],
     queryFn: fetchSalesOrderList,
+    refetchOnWindowFocus: false,
+  });
+
+  return { isLoading, isPending, isError, error, data };
+};
+
+export const useFetchSalesOrder = (id?: string) => {
+  const { isLoading, isPending, isError, error, data } = useQuery({
+    queryKey: ["salesOrder", id],
+    queryFn: () => {
+      if (!id) {
+        throw new Error("No sales order id provided.");
+      }
+
+      return fetchSalesOrder(id);
+    },
+    enabled: !!id,
     refetchOnWindowFocus: false,
   });
 

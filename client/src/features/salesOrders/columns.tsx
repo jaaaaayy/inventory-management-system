@@ -26,9 +26,12 @@ export const columns: ColumnDef<TSalesOrder>[] = [
     header: "Status",
   },
   {
-    accessorKey: "salesItems",
+    accessorKey: "items",
     header: "Items",
-    cell: ({ row }) => row.getValue<TSalesItem[]>("salesItems").length,
+    cell: ({ row }) => {
+      const items = row.getValue<TSalesItem[]>("items");
+      return items.length;
+    },
   },
   {
     accessorKey: "totalAmount",
