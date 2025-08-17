@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { TProduct } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -8,69 +7,42 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Product Details</CardTitle>
+        <CardTitle className="text-2xl">Product</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
-          <div className="grid grid-cols-2 gap-2 items-start">
-            <div className="grid gap-2">
-              <Label>Name</Label>
-              <p>{product.name}</p>
-            </div>
-            <div className="grid gap-2">
-              <Label>Stock Keeping Unit</Label>
-              <p>{product.stockKeepingUnit}</p>
-            </div>
-            <div className="grid gap-2">
-              <Label>Cost Price</Label>
-              <p>{product.costPrice}</p>
-            </div>
-            <div className="grid gap-2">
-              <Label>Selling Price</Label>
-              <p>{product.sellingPrice}</p>
-            </div>
-            <div className="grid gap-2">
-              <Label>Unit</Label>
-              <p>{product.unit}</p>
-            </div>
-            <div className="grid gap-2">
-              <Label>Quantity</Label>
-              <p>{product.quantity}</p>
-            </div>
+      <CardContent className="grid grid-cols-2 gap-6 text-sm">
+        <div className="flex gap-6">
+          <div className="space-y-4">
+            <p className="font-medium">Name</p>
+            <p className="font-medium">Stock Keeping Unit</p>
+            <p className="font-medium">Cost Price</p>
+            <p className="font-medium">Selling Price</p>
+            <p className="font-medium">Unit</p>
+            <p className="font-medium">Quantity</p>
+            <p className="font-medium">Category</p>
+            <p className="font-medium">Vendor</p>
+            <p className="font-medium">LastStockUpdate</p>
+            <p className="font-medium">Created</p>
+            <p className="font-medium">Updated</p>
           </div>
-          <div className="grid gap-2">
-            <Label>Image</Label>
-            <div className="size-60 rounded-md flex items-center justify-center">
-              <img
-                src={`${API_URL}${product.imageUrl}`}
-                alt={product.name}
-                className="size-full object-cover rounded-md"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-4 gap-6">
-          <div className="grid gap-2">
-            <Label>Category</Label>
+          <div className="space-y-4">
+            <p>{product.name}</p>
+            <p>{product.stockKeepingUnit}</p>
+            <p>{product.costPrice}</p>
+            <p>{product.sellingPrice}</p>
+            <p>{product.unit}</p>
+            <p>{product.quantity}</p>
             <p>{product.category}</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>Vendor</Label>
             <p>{product.vendor}</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>LastStockUpdate</Label>
             <p>{new Date(product.lastStockUpdate).toLocaleString()}</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>Created</Label>
             <p>{new Date(product.createdAt).toLocaleString()}</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>Updated</Label>
             <p>{new Date(product.updatedAt).toLocaleString()}</p>
           </div>
         </div>
+        <img
+          src={`${API_URL}${product.imageUrl}`}
+          alt={product.name}
+          className="size-60 object-cover rounded-md"
+        />
       </CardContent>
     </Card>
   );

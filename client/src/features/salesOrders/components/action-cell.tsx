@@ -8,11 +8,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
-// import DeleteSalesOrderDialog from "./delete-sales-order-dialog";
 import { useState } from "react";
 
 export const ActionsCell = ({ id }: { id: string }) => {
-  // const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openActionsDropdown, setOpenActionsDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -32,15 +30,6 @@ export const ActionsCell = ({ id }: { id: string }) => {
         <DropdownMenuItem onClick={() => navigate(`/sales/orders/${id}`)}>
           View sales order
         </DropdownMenuItem>
-        {/* <DropdownMenuItem onClick={() => navigate(`/sales/order/${id}/edit`)}>
-          Edit sales order
-        </DropdownMenuItem> */}
-        {/* <DeleteSalesOrderDialog
-          openDeleteDialog={openDeleteDialog}
-          setOpenDeleteDialog={setOpenDeleteDialog}
-          setOpenActionsDropdown={setOpenActionsDropdown}
-          id={id}
-        /> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

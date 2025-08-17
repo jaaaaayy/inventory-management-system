@@ -217,14 +217,14 @@ export const getSalesOrder = async (request, response) => {
                 _id: "$$item._id",
                 product: {
                   $arrayElemAt: [
-                    "$productDetails.name",
+                    "$productDetails",
                     {
                       $indexOfArray: ["$productDetails._id", "$$item.product"],
                     },
                   ],
                 },
                 quantity: "$$item.quantity",
-                totalPrice: "$$item.totalPrice",
+                totalPrice: { $toDouble: "$$item.totalPrice" },
               },
             },
           },
@@ -233,9 +233,7 @@ export const getSalesOrder = async (request, response) => {
       {
         $project: {
           _id: 1,
-          customer: {
-            $concat: ["$customer.firstName", " ", "$customer.lastName"],
-          },
+          customer: 1,
           orderDate: 1,
           deliveryDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },

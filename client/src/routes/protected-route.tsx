@@ -1,3 +1,4 @@
+import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { useAuthStatus } from "@/features/auth/services/queries";
 import { Navigate, Outlet } from "react-router";
@@ -16,7 +17,7 @@ const ProtectedRoute = () => {
   if (isError && error) {
     return (
       <div className="h-svh flex items-center justify-center">
-        <p>{error.message}</p>
+        <Error message={error.message} />
       </div>
     );
   }

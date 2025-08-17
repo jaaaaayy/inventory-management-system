@@ -15,7 +15,7 @@ export const columns: ColumnDef<TProduct>[] = [
         <img
           src={`${API_URL}${image}`}
           alt={name}
-          className="h-12 object-contain rounded"
+          className="size-12 object-cover rounded"
         />
       );
     },

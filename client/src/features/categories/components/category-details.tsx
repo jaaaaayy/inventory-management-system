@@ -1,33 +1,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { TCategory } from "../types";
 
 const CategoryDetails = ({ category }: { category: TCategory }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Category Details</CardTitle>
+        <CardTitle className="text-2xl">Category</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-6">
-        <div className="space-y-6">
-          <h1 className="text-xl font-medium">Category Information</h1>
-          <div className="grid gap-2">
-            <Label>Name</Label>
-            <p>{category.name}</p>
+      <CardContent className="space-y-6 text-sm">
+        <div className="flex gap-6">
+          <div className="space-y-4">
+            <p className="font-medium">Name</p>
+            <p className="font-medium">Description</p>
           </div>
-          <div className="grid gap-2">
-            <Label>Description</Label>
+          <div className="space-y-4">
+            <p>{category.name}</p>
             <p>{category.description}</p>
           </div>
         </div>
-        <div className="space-y-6">
-          <h1 className="text-xl font-medium">Timestamps</h1>
-          <div className="grid gap-2">
-            <Label>Created</Label>
-            <p>{new Date(category.createdAt).toLocaleString()}</p>
+        <div className="flex gap-6">
+          <div className="space-y-4">
+            <p className="font-medium">Created</p>
+            <p className="font-medium">Updated</p>
           </div>
-          <div className="grid gap-2">
-            <Label>Updated</Label>
+          <div className="space-y-4">
+            <p>{new Date(category.createdAt).toLocaleString()}</p>
             <p>{new Date(category.updatedAt).toLocaleString()}</p>
           </div>
         </div>

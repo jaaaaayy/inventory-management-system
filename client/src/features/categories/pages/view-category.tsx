@@ -36,7 +36,7 @@ const ViewCategory = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>View Category</BreadcrumbPage>
+              <BreadcrumbPage>{data?.category._id}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
