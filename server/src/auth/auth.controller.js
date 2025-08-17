@@ -103,7 +103,7 @@ export const authStatus = (request, response) => {
     return response.json({ loggedIn: true });
   }
 
-  response.status(401).json({ loggedIn: false });
+  response.json({ loggedIn: false });
 };
 
 export const logout = (request, response) => {

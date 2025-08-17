@@ -21,33 +21,43 @@ import SalesOrders from "./features/salesOrders/pages/sales-orders";
 import ViewProduct from "./features/products/pages/view-product";
 import CreateSalesOrder from "./features/salesOrders/pages/create-sales-order";
 import ViewSalesOrder from "./features/salesOrders/pages/view-sales-order";
+import ProtectedRoute from "./routes/protected-route";
+import PublicRoute from "./routes/public-route";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ViewProduct />} />
-          <Route path="/products/new" element={<CreateProduct />} />
-          <Route path="/sales/customers" element={<Customers />} />
-          <Route path="/sales/customers/:id" element={<ViewCustomer />} />
-          <Route path="/sales/customers/new" element={<CreateCustomer />} />
-          <Route path="/sales/customers/:id/edit" element={<EditCustomer />} />
-          <Route path="/sales/orders" element={<SalesOrders />} />
-          <Route path="/sales/orders/new" element={<CreateSalesOrder />} />
-          <Route path="/sales/orders/:id" element={<ViewSalesOrder />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/categories/new" element={<CreateCategory />} />
-          <Route path="/categories/:id" element={<ViewCategory />} />
-          <Route path="/categories/:id/edit" element={<EditCategory />} />
-          <Route path="/vendors" element={<Vendors />} />
-          <Route path="/vendors/new" element={<CreateVendor />} />
-          <Route path="/vendors/:id" element={<ViewVendor />} />
-          <Route path="/vendors/:id/edit" element={<EditVendor />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ViewProduct />} />
+            <Route path="/products/new" element={<CreateProduct />} />
+            <Route path="/sales/customers" element={<Customers />} />
+            <Route path="/sales/customers/:id" element={<ViewCustomer />} />
+            <Route path="/sales/customers/new" element={<CreateCustomer />} />
+            <Route
+              path="/sales/customers/:id/edit"
+              element={<EditCustomer />}
+            />
+            <Route path="/sales/orders" element={<SalesOrders />} />
+            <Route path="/sales/orders/new" element={<CreateSalesOrder />} />
+            <Route path="/sales/orders/:id" element={<ViewSalesOrder />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/categories/new" element={<CreateCategory />} />
+            <Route path="/categories/:id" element={<ViewCategory />} />
+            <Route path="/categories/:id/edit" element={<EditCategory />} />
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendors/new" element={<CreateVendor />} />
+            <Route path="/vendors/:id" element={<ViewVendor />} />
+            <Route path="/vendors/:id/edit" element={<EditVendor />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

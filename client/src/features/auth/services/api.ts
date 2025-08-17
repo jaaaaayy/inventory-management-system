@@ -57,3 +57,21 @@ export const logout = async () => {
   const data = await response.json();
   return data;
 };
+
+export const authStatus = async () => {
+  const response = await fetch(`${API_URL}api/auth/status`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
+  return data;
+};

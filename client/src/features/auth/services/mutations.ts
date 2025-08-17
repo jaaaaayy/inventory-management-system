@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { login, logout, register } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
@@ -80,11 +80,13 @@ export const useRegister = (
 export const useLogout = () => {
   const { setUser } = useUser();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: logout,
     onSuccess: (data) => {
       setUser(null);
+      queryClient.clear();
       toast.success(data.message, {
         style: {
           backgroundColor: "green",

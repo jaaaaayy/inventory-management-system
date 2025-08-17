@@ -2,6 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { TProduct } from "./types";
 import { ActionsCell } from "./components/action-cell";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const columns: ColumnDef<TProduct>[] = [
   {
     header: "Image",
@@ -11,9 +13,9 @@ export const columns: ColumnDef<TProduct>[] = [
 
       return (
         <img
-          src={`http://localhost:3000/${image}`}
+          src={`${API_URL}${image}`}
           alt={name}
-          className="h-12 object-contain rounded-md"
+          className="h-12 object-contain rounded"
         />
       );
     },
