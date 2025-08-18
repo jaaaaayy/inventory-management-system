@@ -116,7 +116,7 @@ const AppSidebar = () => {
                         <DropdownMenuContent
                           side="right"
                           align="start"
-                          className="w-48"
+                          className="w-48 space-y-1"
                         >
                           {item.items.map((subItem) => (
                             <DropdownMenuItem key={subItem.title} asChild>
