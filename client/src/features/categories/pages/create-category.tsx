@@ -11,7 +11,6 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import CreateCategoryForm from "../components/form/create-category-form";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const CreateCategory = () => {
   const navigate = useNavigate();
@@ -34,19 +33,15 @@ const CreateCategory = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow space-y-4">
+      <div className="p-4 lg:p-6 grow space-y-6">
         <Button variant="ghost" onClick={() => navigate("/categories")}>
           <ArrowLeft />
           Back to Categories
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">New Category</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CreateCategoryForm />
-          </CardContent>
-        </Card>
+        <h1 className="text-2xl font-semibold">New Category</h1>
+        <div>
+          <CreateCategoryForm />
+        </div>
       </div>
     </>
   );

@@ -1,17 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TProduct } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ProductDetails = ({ product }: { product: TProduct }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Product</CardTitle>
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-6 text-sm">
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Product</h1>
+      <div className="grid grid-cols-2 gap-6 text-sm">
         <div className="flex gap-6">
-          <div className="space-y-4">
+          <div className="space-y-6">
             <p className="font-medium">Name</p>
             <p className="font-medium">Stock Keeping Unit</p>
             <p className="font-medium">Cost Price</p>
@@ -24,7 +21,7 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
             <p className="font-medium">Created</p>
             <p className="font-medium">Updated</p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <p>{product.name}</p>
             <p>{product.stockKeepingUnit}</p>
             <p>{product.costPrice}</p>
@@ -43,8 +40,8 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
           alt={product.name}
           className="size-60 object-cover rounded-md"
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -285,7 +285,7 @@ const CreateSalesOrderForm = () => {
             )}
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="font-medium">Line Items</h1>
             <Button

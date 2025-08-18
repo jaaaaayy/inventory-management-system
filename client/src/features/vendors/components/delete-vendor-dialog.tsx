@@ -46,7 +46,7 @@ const DeleteVendorDialog = ({
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
+            This action cannot be undone. This will permanently delete this
             vendor and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>

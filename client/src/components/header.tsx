@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return (
-    <header className="min-h-14 lg:min-h-16 border-b flex items-center justify-between p-2 lg:px-4">
+    <header className="min-h-14 lg:min-h-16 border-b flex items-center justify-between p-4 lg:px-6">
       <div className="flex items-center">
         <SidebarTrigger />
         <Separator

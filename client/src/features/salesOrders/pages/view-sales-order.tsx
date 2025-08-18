@@ -41,7 +41,7 @@ const ViewSalesOrder = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+      <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
         <Button variant="ghost" onClick={() => navigate("/sales/orders")}>
           <ArrowLeft />
           Back to Sales Orders

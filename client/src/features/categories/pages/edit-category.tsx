@@ -14,7 +14,6 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import EditCategoryForm from "../components/form/edit-category-form";
 import { useFetchCategory } from "../services/queries";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const EditCategory = () => {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ const EditCategory = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+      <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
         <Button variant="ghost" onClick={() => navigate("/categories")}>
           <ArrowLeft />
           Back to Categories
@@ -52,14 +51,12 @@ const EditCategory = () => {
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Edit Category</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-6">
+            <h1 className="text-2xl font-semibold">Edit Category</h1>
+            <div>
               <EditCategoryForm category={data.category} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </>

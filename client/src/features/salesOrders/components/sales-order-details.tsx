@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TSalesOrder } from "../types";
 import {
   Table,
@@ -13,23 +12,21 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Sales Order Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6 text-sm">
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Sales Order</h1>
+      <div className="space-y-6 text-sm">
         <div className="grid grid-cols-2 gap-6">
           <div className="flex gap-6">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="font-medium">Order Date</p>
               <p className="font-medium">Delivery Date</p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p>{new Date(salesOrder.orderDate).toLocaleDateString()}</p>
               <p>{new Date(salesOrder.deliveryDate).toLocaleDateString()}</p>
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <p className="font-medium">Address</p>
             <p>
               {salesOrder.customer.firstName} {salesOrder.customer.lastName}
@@ -84,8 +81,8 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
             }).format(Number(salesOrder.totalAmount))}
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

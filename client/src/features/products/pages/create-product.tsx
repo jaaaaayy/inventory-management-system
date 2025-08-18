@@ -10,7 +10,6 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CreateProductForm from "../components/form/create-product-form";
 
 const CreateProduct = () => {
@@ -34,19 +33,15 @@ const CreateProduct = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow space-y-4">
+      <div className="p-4 lg:p-6 grow space-y-6">
         <Button variant="ghost" onClick={() => navigate("/products")}>
           <ArrowLeft />
           Back to products
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">New product</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CreateProductForm />
-          </CardContent>
-        </Card>
+        <h1 className="text-2xl font-semibold">New product</h1>
+        <div>
+          <CreateProductForm />
+        </div>
       </div>
     </>
   );

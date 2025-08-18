@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { useFetchVendor } from "../services/queries";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditVendorForm from "../components/form/edit-vendor-form";
 
 const EditVendor = () => {
@@ -42,7 +41,7 @@ const EditVendor = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+      <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
         <Button variant="ghost" onClick={() => navigate("/vendors")}>
           <ArrowLeft />
           Back to Vendors
@@ -52,14 +51,12 @@ const EditVendor = () => {
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Edit Vendor</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-6">
+            <h1 className="text-2xl font-semibold">Edit Vendor</h1>
+            <div>
               <EditVendorForm vendor={data.vendor} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </>

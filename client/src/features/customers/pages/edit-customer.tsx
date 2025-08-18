@@ -14,7 +14,6 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import EditCustomerForm from "../components/form/edit-customer-form";
 import { useFetchCustomer } from "../services/queries";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const EditCustomer = () => {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ const EditCustomer = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
-      <div className="p-2 lg:p-4 grow min-h-0 space-y-4">
+      <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
         <Button variant="ghost" onClick={() => navigate("/sales/customers")}>
           <ArrowLeft />
           Back to Customers
@@ -52,14 +51,12 @@ const EditCustomer = () => {
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Edit Customer</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-6">
+            <h1 className="text-2xl font-semibold">Edit Customer</h1>
+            <div>
               <EditCustomerForm customer={data.customer} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </>

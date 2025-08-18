@@ -1,23 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TVendor } from "../types";
 
 const VendorDetails = ({ vendor }: { vendor: TVendor }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Vendor</CardTitle>
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-6 text-sm">
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Vendor</h1>
+      <div className="grid grid-cols-2 gap-6 text-sm">
         <div className="space-y-6">
           <div className="flex gap-6">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="font-medium">Name</p>
               <p className="font-medium">Email</p>
               <p className="font-medium">Mobile Number</p>
               <p>Created</p>
               <p>Updated</p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p>{vendor.name}</p>
               <p>{vendor.email}</p>
               <p>{vendor.mobileNumber}</p>
@@ -26,16 +23,20 @@ const VendorDetails = ({ vendor }: { vendor: TVendor }) => {
             </div>
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <p className="font-medium">Address</p>
-          <p>{vendor.address.addressLine1}</p>
-          {vendor.address.addressLine2 && <p>{vendor.address.addressLine2}</p>}
-          <p>{vendor.address.city}</p>
-          <p>{vendor.address.postalCode}</p>
-          <p>{vendor.address.province}</p>
+          <div>
+            <p>{vendor.address.addressLine1}</p>
+            {vendor.address.addressLine2 && (
+              <p>{vendor.address.addressLine2}</p>
+            )}
+            <p>{vendor.address.city}</p>
+            <p>{vendor.address.postalCode}</p>
+            <p>{vendor.address.province}</p>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
