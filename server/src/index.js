@@ -5,6 +5,9 @@ import "./config/database.js";
 import cors from "cors";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -17,12 +20,12 @@ app.use(
 );
 app.use(
   session({
-    secret: "software engineer",
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       maxAge: 60000 * 60 * 8,
     },
     store: MongoStore.create({
@@ -35,6 +38,6 @@ app.use(
 app.use(routes);
 app.use(express.static("src/uploads"));
 
-const port = 3000;
+const port = process.env.PORT;
 
 app.listen(port, () => console.log(`Listening on port ${port}.`));

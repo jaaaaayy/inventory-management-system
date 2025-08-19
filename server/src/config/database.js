@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 mongoose
-  .connect("mongodb://localhost:27017/inventory_management_system")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to Mongodb."))
   .catch((err) => console.log(`Error connecting to Mongodb: ${err}`));
