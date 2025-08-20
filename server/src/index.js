@@ -14,13 +14,13 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://inventory-management-system-tscc.vercel.app",
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "full-stack developer",
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -38,6 +38,6 @@ app.use(
 app.use(routes);
 app.use(express.static("src/uploads"));
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Listening on port ${port}.`));
