@@ -8,6 +8,21 @@ import mongoose from "mongoose";
 export const createSalesOrder = async (request, response) => {
   try {
     const { customer, orderDate, deliveryDate, items } = request.body;
+    const errors = {};
+
+    if (orderDate < new Date().toISOString().split("T")[0]) {
+      errors.orderDate = "Order date cannot be in the past.";
+    }
+
+    if (deliveryDate < orderDate) {
+      errors.deliveryDate = "Delivery date cannot be before the order date.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return response
+        .status(400)
+        .json({ message: "Validation failed.", errors });
+    }
 
     const findCustomer = await Customer.findById(customer);
 

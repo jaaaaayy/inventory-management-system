@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const salesOrderFormSchema = z.object({
-  customer: z.string().trim(),
+  customer: z.string().trim().min(1, "Customer is required."),
   orderDate: z.date(),
   deliveryDate: z.date(),
   items: z
     .array(
       z.object({
-        product: z.string().trim(),
+        product: z.string().trim().min(1, "Product is required."),
         quantity: z.coerce
           .number()
           .int({ message: "Quantity must be an integer." })

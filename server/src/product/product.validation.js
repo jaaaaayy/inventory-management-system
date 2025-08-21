@@ -70,6 +70,20 @@ const productValidationSchema = {
       errorMessage: "Vendor must be a valid MongoDB ObjectId.",
     },
   },
+  image: {
+    custom: {
+      options: (_value, { req }) => {
+        if (req.fileValidationError) {
+          throw new Error(req.fileValidationError);
+        }
+        
+        if (!req.file) {
+          throw new Error("Image is required.");
+        }
+        return true;
+      },
+    },
+  },
 };
 
 export default productValidationSchema;
