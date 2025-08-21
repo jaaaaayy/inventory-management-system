@@ -62,14 +62,17 @@ const CreateProductForm = () => {
       category: "",
       quantity: 0,
       vendor: "",
-      image: null,
     },
   });
 
   const handleImageChange = (file: File | null) => {
     if (file) {
-      // Update form field
-      form.setValue("image", file);
+      form.setValue("image", file, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      void form.trigger("image");
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -77,7 +80,12 @@ const CreateProductForm = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      form.setValue("image", null);
+      form.setValue("image", undefined as unknown as File, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      void form.trigger("image");
       setImagePreview(null);
     }
   };
@@ -101,12 +109,10 @@ const CreateProductForm = () => {
       const file = files[0];
       handleImageChange(file);
 
-      // Update the file input
       const fileInput = document.getElementById(
         "file-upload"
       ) as HTMLInputElement;
       if (fileInput) {
-        // Create a new FileList-like object
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         fileInput.files = dataTransfer.files;
@@ -158,6 +164,7 @@ const CreateProductForm = () => {
                       placeholder="Enter the name"
                       {...field}
                       autoComplete="off"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -175,6 +182,7 @@ const CreateProductForm = () => {
                       placeholder="Enter the stock keeping unit"
                       {...field}
                       autoComplete="off"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -194,6 +202,7 @@ const CreateProductForm = () => {
                       placeholder="Enter the cost price"
                       {...field}
                       autoComplete="off"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -212,6 +221,7 @@ const CreateProductForm = () => {
                       placeholder="Enter the selling price"
                       {...field}
                       autoComplete="off"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -281,14 +291,14 @@ const CreateProductForm = () => {
                           or click to select files
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
-                          Supports: JPG, PNG, GIF, WebP (max 5MB)
+                          Supports: JPG, PNG (max 5MB)
                         </p>
                       </div>
                     )}
                     <input
                       id="file-upload"
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/jpg,image/png"
                       className="sr-only"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
@@ -314,6 +324,7 @@ const CreateProductForm = () => {
                     placeholder="Enter the unit"
                     {...field}
                     autoComplete="off"
+                    required
                   />
                 </FormControl>
                 <FormMessage />
@@ -332,6 +343,7 @@ const CreateProductForm = () => {
                     placeholder="Enter the quantity"
                     {...field}
                     autoComplete="off"
+                    required
                   />
                 </FormControl>
                 <FormMessage />
@@ -385,6 +397,7 @@ const CreateProductForm = () => {
                                     );
                                     setOpenCategoryDropdown(false);
                                     field.onChange(currentValue);
+                                    void form.trigger("category");
                                   }}
                                 >
                                   <CheckIcon
@@ -455,6 +468,7 @@ const CreateProductForm = () => {
                                   );
                                   setOpenVendorDropdown(false);
                                   field.onChange(currentValue);
+                                  void form.trigger("vendor");
                                 }}
                               >
                                 <CheckIcon

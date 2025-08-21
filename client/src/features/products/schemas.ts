@@ -1,23 +1,12 @@
 import { z } from "zod";
 
-// Custom file validation function
-const validateImageFile = (file: File | null) => {
-  if (!file) return true; // Optional field
-
-  // Check file type
-  const allowedTypes = [
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-  ];
+const validateImageFile = (file: File) => {
+  const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
   if (!allowedTypes.includes(file.type)) {
     return false;
   }
 
-  // Check file size (5MB limit)
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 5 * 1024 * 1024;
   if (file.size > maxSize) {
     return false;
   }
@@ -48,9 +37,13 @@ export const productFormSchema = z.object({
     .number()
     .int({ message: "Quantity must be an integer." })
     .positive({ message: "Quantity must be greater than 0." }),
-  category: z.string().trim(),
-  vendor: z.string().trim(),
-  image: z.any().refine(validateImageFile, {
-    message: "Please upload a valid image file (JPG, PNG, GIF, WebP) under 5MB",
-  }),
+  category: z.string().trim().min(1, "Category is required."),
+  vendor: z.string().trim().min(1, "Vendor is required."),
+  image: z
+    .instanceof(File, {
+      message: "Image is required.",
+    })
+    .refine((file) => validateImageFile(file), {
+      message: "Please upload a valid image file (JPG, PNG) under 5MB.",
+    }),
 });
