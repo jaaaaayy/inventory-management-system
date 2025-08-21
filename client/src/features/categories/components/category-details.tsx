@@ -16,7 +16,7 @@ const CategoryDetails = ({ category }: { category: TCategory }) => {
           </div>
         </div>
         <div className="flex gap-6">
-          <div className="space-y-6">
+          <div className="space-y-6 w-[75.93px]">
             <p className="font-medium">Created</p>
             <p className="font-medium">Updated</p>
           </div>
