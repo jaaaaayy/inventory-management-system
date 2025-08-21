@@ -73,8 +73,6 @@ const CreateSalesOrderForm = () => {
     resolver: zodResolver(salesOrderFormSchema),
     defaultValues: {
       customer: "",
-      orderDate: new Date(),
-      deliveryDate: new Date(),
       items: [
         {
           product: "",

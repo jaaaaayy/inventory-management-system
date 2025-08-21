@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const salesOrderFormSchema = z.object({
   customer: z.string().trim().min(1, "Customer is required."),
-  orderDate: z.date(),
-  deliveryDate: z.date(),
+  orderDate: z.date({ required_error: "Order date is required." }),
+  deliveryDate: z.date({ required_error: "Delivery date is required." }),
   items: z
     .array(
       z.object({
