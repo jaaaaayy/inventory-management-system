@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
@@ -28,6 +29,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 60000 * 60 * 8,
     },
     store: MongoStore.create({

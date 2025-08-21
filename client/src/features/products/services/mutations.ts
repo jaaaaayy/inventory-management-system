@@ -1,6 +1,6 @@
 import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TProductFormSchema } from "../types";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct } from "./api";
 import { toast } from "sonner";

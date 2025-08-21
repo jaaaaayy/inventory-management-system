@@ -1,7 +1,7 @@
 import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { useAuthStatus } from "@/features/auth/services/queries";
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PublicRoute = () => {
   const { data, isLoading, isError, error, isSuccess } = useAuthStatus();

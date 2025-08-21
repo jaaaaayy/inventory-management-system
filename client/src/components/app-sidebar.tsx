@@ -8,7 +8,7 @@ import {
   ShoppingCart,
   Store,
 } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { NavUser } from "./nav-user";
 import {
   Collapsible,

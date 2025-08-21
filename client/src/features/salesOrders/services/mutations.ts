@@ -3,7 +3,7 @@ import { TSalesOrderFormSchema } from "../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSalesOrder } from "./api";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const useCreateSalesOrder = (
   reset: UseFormReset<TSalesOrderFormSchema>

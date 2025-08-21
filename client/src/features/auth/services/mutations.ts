@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { login, logout, register } from "./api";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TLoginFormSchema, TRegisterFormSchema } from "../types";
 import { Dispatch, SetStateAction } from "react";

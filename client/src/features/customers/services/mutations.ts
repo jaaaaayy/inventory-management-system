@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCustomer, deleteCustomer, updateCustomer } from "./api";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { TFormError } from "@/types";
 
 export const useCreateCustomer = (

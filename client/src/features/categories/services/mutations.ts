@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCategory, deleteCategory, updateCategory } from "./api";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const useCreateCategory = (reset: UseFormReset<TCategoryFormSchema>) => {
   const navigate = useNavigate();
