@@ -4,7 +4,7 @@ const Loading = ({ feature }: { feature?: string }) => {
   return (
     <div className="grow flex flex-col gap-2 items-center justify-center">
       <LoaderCircle className="animate-spin" />
-      <p>Loading {feature}...</p>
+      <p>Loading{feature && " " + feature}...</p>
     </div>
   );
 };
