@@ -3,7 +3,6 @@ import session from "express-session";
 import routes from "./routes.js";
 import "./config/database.js";
 import cors from "cors";
-import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import dotenv from "dotenv";
 
@@ -29,8 +28,9 @@ app.use(
       maxAge: 60000 * 60 * 8,
     },
     store: MongoStore.create({
-      client: mongoose.connection.getClient(),
-      ttl: 60000 * 60 * 8,
+      mongoUrl:
+        process.env.MONGODB_URI || "mongodb://localhost:27017/mydatabase",
+      ttl: 60 * 60 * 8,
       autoRemove: "native",
     }),
   })
