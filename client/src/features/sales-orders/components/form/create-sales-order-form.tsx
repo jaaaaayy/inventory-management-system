@@ -50,10 +50,13 @@ import {
 import { TProduct } from "@/features/products/types";
 import { useFetchProductList } from "@/features/products/services/queries";
 import { Input } from "@/components/ui/input";
+import { TFormError } from "@/types";
+import InputError from "@/components/input-error";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CreateSalesOrderForm = () => {
+  const [formError, setFormError] = useState<TFormError | null>(null);
   const [openDeliveryDatePicker, setOpenDeliveryDatePicker] = useState(false);
   const [openOrderDatePicker, setOpenOrderDatePicker] = useState(false);
   const [openProductDropdownIndex, setOpenProductDropdownIndex] = useState<
@@ -88,7 +91,7 @@ const CreateSalesOrderForm = () => {
   });
 
   const { mutateAsync: createSalesOrderMutation, isPending } =
-    useCreateSalesOrder(form.reset);
+    useCreateSalesOrder(form.reset, setFormError, form.setFocus);
 
   const onSubmit = async (values: TSalesOrderFormSchema) => {
     await createSalesOrderMutation(values);
@@ -234,6 +237,7 @@ const CreateSalesOrderForm = () => {
                   </Popover>
                 </FormControl>
                 <FormMessage />
+                <InputError message={formError?.errors?.orderDate} />
               </FormItem>
             )}
           />
@@ -279,6 +283,7 @@ const CreateSalesOrderForm = () => {
                   </Popover>
                 </FormControl>
                 <FormMessage />
+                <InputError message={formError?.errors?.deliveryDate} />
               </FormItem>
             )}
           />

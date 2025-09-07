@@ -10,11 +10,17 @@ export const createSalesOrder = async (request, response) => {
     const { customer, orderDate, deliveryDate, items } = request.body;
     const errors = {};
 
-    if (orderDate < new Date().toISOString().split("T")[0]) {
+    const startOfDay = (d) => {
+      const x = new Date(d);
+      x.setHours(0, 0, 0, 0);
+      return x.getTime();
+    };
+
+    if (startOfDay(orderDate) < startOfDay(new Date())) {
       errors.orderDate = "Order date cannot be in the past.";
     }
 
-    if (deliveryDate < orderDate) {
+    if (startOfDay(deliveryDate) < startOfDay(orderDate)) {
       errors.deliveryDate = "Delivery date cannot be before the order date.";
     }
 

@@ -17,10 +17,10 @@ import CreateCustomer from "./features/customers/pages/create-customer";
 import ViewCustomer from "./features/customers/pages/view-customer";
 import EditCustomer from "./features/customers/pages/edit-customer";
 import CreateProduct from "./features/products/pages/create-product";
-import SalesOrders from "./features/salesOrders/pages/sales-orders";
+import SalesOrders from "./features/sales-orders/pages/sales-orders";
 import ViewProduct from "./features/products/pages/view-product";
-import CreateSalesOrder from "./features/salesOrders/pages/create-sales-order";
-import ViewSalesOrder from "./features/salesOrders/pages/view-sales-order";
+import CreateSalesOrder from "./features/sales-orders/pages/create-sales-order";
+import ViewSalesOrder from "./features/sales-orders/pages/view-sales-order";
 import ProtectedRoute from "./routes/protected-route";
 import PublicRoute from "./routes/public-route";
 

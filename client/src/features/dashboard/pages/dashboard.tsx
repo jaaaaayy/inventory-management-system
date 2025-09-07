@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import TotalCardList from "../components/total-card-list";
 import Loading from "@/components/loading";
-import { useFetchSalesOrderList } from "@/features/salesOrders/services/queries";
+import { useFetchSalesOrderList } from "@/features/sales-orders/services/queries";
 import Error from "@/components/error";
 import { useFetchProductList } from "@/features/products/services/queries";
 import { useFetchCustomerList } from "@/features/customers/services/queries";
