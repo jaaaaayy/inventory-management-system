@@ -3,9 +3,7 @@ import mongoose from "mongoose";
 
 export const getCategories = async (request, response) => {
   try {
-    const categories = await Category.find({
-      user: request.session.user.id,
-    }).sort({
+    const categories = await Category.find().sort({
       createdAt: -1,
     });
 
@@ -52,7 +50,6 @@ export const createCategory = async (request, response) => {
     const newCategory = new Category({
       name,
       description,
-      user: request.session.user.id,
     });
     await newCategory.save();
 

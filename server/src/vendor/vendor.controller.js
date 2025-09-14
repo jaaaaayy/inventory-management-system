@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export const getVendors = async (request, response) => {
   try {
-    const vendors = await Vendor.find({ user: request.session.user.id }).sort({
+    const vendors = await Vendor.find().sort({
       createdAt: -1,
     });
 
@@ -69,7 +69,6 @@ export const createVendor = async (request, response) => {
       email,
       mobileNumber,
       address,
-      user: request.session.user.id,
     });
     await newVendor.save();
 

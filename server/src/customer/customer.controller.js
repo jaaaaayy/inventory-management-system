@@ -3,9 +3,7 @@ import mongoose from "mongoose";
 
 export const getCustomers = async (request, response) => {
   try {
-    const customers = await Customer.find({
-      user: request.session.user.id,
-    }).sort({ createdAt: -1 });
+    const customers = await Customer.find().sort({ createdAt: -1 });
 
     response.send({ customers });
   } catch (error) {
@@ -49,7 +47,6 @@ export const createCustomer = async (request, response) => {
       },
       mobileNumber,
       email,
-      user: request.session.user.id,
     });
     await newCustomer.save();
 
