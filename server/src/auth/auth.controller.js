@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../user/user.model.js";
+import { withTransaction } from "../config/database.js";
 
 export const register = async (request, response) => {
   try {
@@ -29,23 +30,28 @@ export const register = async (request, response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      mobileNumber,
-      username,
-      password: hashedPassword,
+
+    const result = await withTransaction(async (session) => {
+      const newUser = new User({
+        firstName,
+        lastName,
+        email,
+        mobileNumber,
+        username,
+        password: hashedPassword,
+      });
+      await newUser.save({ session });
+
+      await User.findByIdAndUpdate(
+        newUser._id,
+        { lastLogin: new Date() },
+        { session, new: true }
+      );
+
+      return newUser;
     });
-    await newUser.save();
 
-    request.session.user = { id: newUser._id, role: newUser.role };
-
-    await User.findByIdAndUpdate(
-      newUser._id,
-      { lastLogin: new Date() },
-      { new: true }
-    );
+    request.session.user = { id: result._id, role: result.role };
 
     response.status(201).json({ message: "Registered successfully." });
   } catch (error) {
@@ -74,13 +80,9 @@ export const login = async (request, response) => {
       });
     }
 
-    request.session.user = { id: findUser._id, role: findUser.role };
+    await User.findByIdAndUpdate(findUser._id, { lastLogin: new Date() });
 
-    await User.findByIdAndUpdate(
-      findUser._id,
-      { lastLogin: new Date() },
-      { new: true }
-    );
+    request.session.user = { id: findUser._id, role: findUser.role };
 
     response.json({
       message: "Logged in successfully.",

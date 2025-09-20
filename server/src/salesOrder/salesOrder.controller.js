@@ -4,6 +4,7 @@ import Product from "../product/product.model.js";
 import SalesItem from "../salesItem/salesItem.model.js";
 import SalesOrder from "./salesOrder.model.js";
 import mongoose from "mongoose";
+import { withTransaction } from "../config/database.js";
 
 export const createSalesOrder = async (request, response) => {
   try {
@@ -31,56 +32,79 @@ export const createSalesOrder = async (request, response) => {
     }
 
     const findCustomer = await Customer.findById(customer);
-
     if (!findCustomer) {
       return response.status(400).send({ message: "Customer not found." });
     }
 
-    const newSalesItems = [];
-    let totalAmount = 0;
-
     for (const item of items) {
       const findInventory = await Inventory.findOne({ product: item.product });
-
       if (!findInventory || findInventory.quantity < item.quantity) {
         return response.status(400).send({
-          message: `Insufficient stock for product ${item.product}. Available quantity: ${findInventory.quantity}.`,
+          message: `Insufficient stock for product ${
+            item.product
+          }. Available quantity: ${findInventory?.quantity || 0}.`,
         });
       }
+    }
 
-      const findProduct = await Product.findById(item.product);
-      const totalPrice = findProduct.sellingPrice * item.quantity;
-      totalAmount += totalPrice;
+    const result = await withTransaction(async (session) => {
+      const newSalesItems = [];
+      let totalAmount = 0;
 
-      newSalesItems.push({
-        salesOrder: null,
-        product: item.product,
-        quantity: item.quantity,
-        totalPrice,
+      for (const item of items) {
+        const findInventory = await Inventory.findOne({
+          product: item.product,
+        }).session(session);
+        const findProduct = await Product.findById(item.product).session(
+          session
+        );
+
+        const totalPrice = findProduct.sellingPrice * item.quantity;
+        totalAmount += totalPrice;
+
+        newSalesItems.push({
+          salesOrder: null,
+          product: item.product,
+          quantity: item.quantity,
+          totalPrice,
+        });
+
+        await Inventory.findByIdAndUpdate(
+          findInventory._id,
+          {
+            $inc: { quantity: -item.quantity },
+            lastStockUpdate: new Date(),
+          },
+          { session, new: true }
+        );
+      }
+
+      const newSalesOrder = new SalesOrder({
+        customer,
+        orderDate,
+        deliveryDate,
+        totalAmount,
+      });
+      await newSalesOrder.save({ session });
+
+      for (const item of newSalesItems) {
+        item.salesOrder = newSalesOrder._id;
+      }
+
+      const savedSalesItems = await SalesItem.insertMany(newSalesItems, {
+        session,
       });
 
-      findInventory.quantity -= item.quantity;
-      await findInventory.save();
-    }
-
-    const newSalesOrder = new SalesOrder({
-      customer,
-      orderDate,
-      deliveryDate,
-      totalAmount,
+      return {
+        salesOrder: newSalesOrder,
+        salesItems: savedSalesItems,
+      };
     });
-    await newSalesOrder.save();
-
-    for (const item of newSalesItems) {
-      item.salesOrder = newSalesOrder._id;
-    }
-
-    await SalesItem.insertMany(newSalesItems);
 
     response.status(201).send({
       message: "Sales order created successfully.",
-      salesOrder: newSalesOrder,
-      salesItems: newSalesItems,
+      salesOrder: result.salesOrder,
+      salesItems: result.salesItems,
     });
   } catch (error) {
     console.log(error.message);

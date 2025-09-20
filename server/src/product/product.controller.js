@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import Inventory from "../inventory/inventory.model.js";
 import Product from "./product.model.js";
+import { withTransaction } from "../config/database.js";
 import mongoose from "mongoose";
 
 export const createProduct = async (request, response) => {
@@ -66,29 +67,36 @@ export const createProduct = async (request, response) => {
       savedImagePath = filename;
     }
 
-    const newProduct = new Product({
-      name,
-      stockKeepingUnit,
-      costPrice,
-      sellingPrice,
-      unit,
-      imageUrl: savedImagePath,
-      category,
-      vendor,
-    });
-    await newProduct.save();
+    const result = await withTransaction(async (session) => {
+      const newProduct = new Product({
+        name,
+        stockKeepingUnit,
+        costPrice,
+        sellingPrice,
+        unit,
+        imageUrl: savedImagePath,
+        category,
+        vendor,
+      });
+      await newProduct.save({ session });
 
-    const newInventory = new Inventory({
-      product: newProduct._id,
-      quantity,
-      lastStockUpdate: new Date(),
+      const newInventory = new Inventory({
+        product: newProduct._id,
+        quantity,
+        lastStockUpdate: new Date(),
+      });
+      await newInventory.save({ session });
+
+      return {
+        product: newProduct,
+        inventory: newInventory,
+      };
     });
-    await newInventory.save();
 
     return response.status(201).send({
       message: "Product created successfully.",
-      product: newProduct,
-      inventory: newInventory,
+      product: result.product,
+      inventory: result.inventory,
     });
   } catch (error) {
     console.log(error.message);
