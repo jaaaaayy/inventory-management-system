@@ -28,9 +28,11 @@ app.use(helmet());
 app.use(express.json({ limit: "10mb" }));
 
 // CORS
+const clientUrl = process.env.CLIENT_URL.replace(/\/$/, "");
+
 app.use(
   cors({
-    origin: "https://inventory-management-system-fronten-xi.vercel.app",
+    origin: clientUrl,
     credentials: true,
   })
 );
