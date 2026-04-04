@@ -14,7 +14,7 @@ const Searchbar = ({
   setGlobalFilter,
 }: SearchBarProps) => {
   return (
-    <div className="relative w-xs">
+    <div className="relative flex-1">
       <SearchIcon className="size-4 absolute left-2.5 top-1/2 -translate-y-1/2" />
       <Input
         className="pl-8"
