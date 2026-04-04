@@ -12,6 +12,13 @@ import Error from "@/components/error";
 import { useFetchProductList } from "@/features/products/services/queries";
 import { useFetchCustomerList } from "@/features/customers/services/queries";
 import { useFetchVendorList } from "@/features/vendors/services/queries";
+import { formatCurrency } from "@/lib/utils";
+import { RevenueChart } from "../components/revenue-chart";
+import { StatusChart } from "../components/status-chart";
+import { RecentSalesOrders } from "../components/recent-sales";
+import { LowStockAlerts } from "../components/low-stock-alerts";
+
+import { Banknote, Boxes, Package, Users } from "lucide-react";
 
 const Dashboard = () => {
   const {
@@ -52,16 +59,35 @@ const Dashboard = () => {
     salesOrderIsLoading ||
     productIsLoading ||
     customerIsLoading ||
-    vendorIsLoading
+    vendorIsLoading ||
+    !salesOrderData || !productData || !customerData || !vendorData
   ) {
     return <Loading feature="dashboard" />;
   }
 
+  // Calculate Metrics
+  const totalRevenue = salesOrderData.salesOrders.reduce(
+    (acc: number, order: any) => acc + parseFloat(order.totalAmount || "0"),
+    0
+  );
+
+  const inventoryValue = productData.products.reduce(
+    (acc: number, product: any) => acc + (parseFloat(product.costPrice || "0") * (product.quantity || 0)),
+    0
+  );
+
+  const itemsInStock = productData.products.reduce(
+    (acc: number, product: any) => acc + (product.quantity || 0),
+    0
+  );
+
+  const activeNetwork = customerData.customers.length + vendorData.vendors.length;
+
   const totals = [
-    { title: "Products", amount: productData.products.length },
-    { title: "Sales Orders", amount: salesOrderData.salesOrders.length },
-    { title: "Customers", amount: customerData.customers.length },
-    { title: "Vendors", amount: vendorData.vendors.length },
+    { title: "Total Revenue", amount: formatCurrency(totalRevenue), icon: Banknote },
+    { title: "Inventory Value", amount: formatCurrency(inventoryValue), icon: Package },
+    { title: "Items in Stock", amount: itemsInStock.toLocaleString(), icon: Boxes },
+    { title: "Active Contacts", amount: activeNetwork.toLocaleString(), icon: Users },
   ];
 
   return (
@@ -77,6 +103,16 @@ const Dashboard = () => {
       </Header>
       <div className="p-4 lg:p-6 flex flex-col grow space-y-6">
         <TotalCardList totals={totals} />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <RevenueChart salesOrders={salesOrderData.salesOrders} />
+          <StatusChart salesOrders={salesOrderData.salesOrders} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <RecentSalesOrders salesOrders={salesOrderData.salesOrders} />
+          <LowStockAlerts products={productData.products} />
+        </div>
       </div>
     </>
   );

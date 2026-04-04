@@ -40,7 +40,7 @@ const ViewProduct = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{data?.product._id}</BreadcrumbPage>
+              <BreadcrumbPage>{data?.product?.name}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

@@ -40,7 +40,7 @@ const ViewCustomer = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{data?.customer._id}</BreadcrumbPage>
+              <BreadcrumbPage>{data?.customer?.firstName} {data?.customer?.lastName}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

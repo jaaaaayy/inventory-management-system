@@ -40,7 +40,17 @@ const ViewSalesOrder = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>View Sales Order</BreadcrumbPage>
+              <BreadcrumbPage>
+                {isLoading || isPending
+                  ? "Loading..."
+                  : data?.salesOrder?.customer
+                  ? `Order for ${
+                      typeof data.salesOrder.customer === "string"
+                        ? data.salesOrder.customer
+                        : `${data.salesOrder.customer.firstName} ${data.salesOrder.customer.lastName}`
+                    }`
+                  : "View Sales Order"}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

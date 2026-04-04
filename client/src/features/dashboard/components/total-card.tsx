@@ -1,13 +1,25 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LucideIcon } from "lucide-react";
 
-const TotalCard = ({ total }: { total: { title: string; amount: number } }) => {
+interface TotalCardProps {
+  total: {
+    title: string;
+    amount: string | number;
+    icon?: LucideIcon;
+  };
+}
+
+const TotalCard = ({ total }: TotalCardProps) => {
+  const Icon = total.icon;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>{total.title}</CardTitle>
+        <CardAction>{Icon && <Icon />}</CardAction>
       </CardHeader>
-      <CardContent className="text-2xl font-semibold">
-        {total.amount}
+      <CardContent>
+        <div className="text-2xl font-bold">{total.amount}</div>
       </CardContent>
     </Card>
   );

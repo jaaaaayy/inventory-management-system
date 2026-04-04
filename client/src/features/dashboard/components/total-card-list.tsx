@@ -1,12 +1,13 @@
+import { LucideIcon } from "lucide-react";
 import TotalCard from "./total-card";
 
 const TotalCardList = ({
   totals,
 }: {
-  totals: { title: string; amount: number }[];
+  totals: { title: string; amount: string | number; icon?: LucideIcon }[];
 }) => {
   return (
-    <div className="grid grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {totals.map((total) => (
         <TotalCard key={total.title} total={total} />
       ))}
