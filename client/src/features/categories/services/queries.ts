@@ -5,7 +5,6 @@ export const useFetchCategoryList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategoryList,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
@@ -22,7 +21,6 @@ export const useFetchCategory = (id?: string) => {
       return fetchCategory(id);
     },
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };

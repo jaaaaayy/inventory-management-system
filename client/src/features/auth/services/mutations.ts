@@ -42,11 +42,14 @@ export const useRegister = (
   setFocus: UseFormSetFocus<TRegisterFormSchema>
 ) => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   return useMutation({
     mutationFn: register,
     onSuccess: (data) => {
       reset();
+      setUser(data.user);
+
       navigate("/dashboard", { replace: true });
       toast.success(data.message, {
         style: {
@@ -85,6 +88,7 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: (data) => {
+      localStorage.clear();
       setUser(null);
       queryClient.clear();
       toast.success(data.message, {

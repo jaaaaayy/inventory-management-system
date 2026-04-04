@@ -5,7 +5,6 @@ export const useFetchVendorList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["vendors"],
     queryFn: fetchVendorList,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
@@ -22,7 +21,6 @@ export const useFetchVendor = (id?: string) => {
       return fetchVendor(id);
     },
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };

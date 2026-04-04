@@ -53,7 +53,13 @@ export const register = async (request, response) => {
 
     request.session.user = { id: result._id, role: result.role };
 
-    response.status(201).json({ message: "Registered successfully." });
+    response.status(201).json({
+      message: "Registered successfully.",
+      user: {
+        name: result.firstName + " " + result.lastName,
+        email: result.email,
+      },
+    });
   } catch (error) {
     console.log(error);
     response.status(500).json({

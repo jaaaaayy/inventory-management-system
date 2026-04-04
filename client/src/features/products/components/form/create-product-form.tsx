@@ -388,15 +388,15 @@ const CreateProductForm = () => {
                               (category: TCategory) => (
                                 <CommandItem
                                   key={category._id}
-                                  value={category._id}
+                                  value={category.name}
                                   onSelect={(currentValue) => {
                                     setSelectedCategory(
                                       currentValue === selectedCategory?._id
                                         ? null
                                         : category
                                     );
+                                    field.onChange(category._id);
                                     setOpenCategoryDropdown(false);
-                                    field.onChange(currentValue);
                                     void form.trigger("category");
                                   }}
                                 >
@@ -459,15 +459,15 @@ const CreateProductForm = () => {
                             {vendorData?.vendors?.map((vendor: TVendor) => (
                               <CommandItem
                                 key={vendor._id}
-                                value={vendor._id}
+                                value={vendor.name}
                                 onSelect={(currentValue) => {
                                   setSelectedVendor(
                                     currentValue === selectedVendor?._id
                                       ? null
                                       : vendor
                                   );
+                                  field.onChange(vendor._id);
                                   setOpenVendorDropdown(false);
-                                  field.onChange(currentValue);
                                   void form.trigger("vendor");
                                 }}
                               >

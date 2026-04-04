@@ -159,7 +159,9 @@ const CreateSalesOrderForm = () => {
                               (customer: TCustomer) => (
                                 <CommandItem
                                   key={customer._id}
-                                  value={customer._id}
+                                  value={
+                                    customer.firstName + " " + customer.lastName
+                                  }
                                   onSelect={(currentValue) => {
                                     setSelectedCustomer(
                                       currentValue === selectedCustomer?._id
@@ -167,7 +169,7 @@ const CreateSalesOrderForm = () => {
                                         : customer
                                     );
                                     setOpenCustomerDropdown(false);
-                                    field.onChange(currentValue);
+                                    field.onChange(customer._id);
                                   }}
                                 >
                                   <CheckIcon
@@ -377,9 +379,9 @@ const CreateSalesOrderForm = () => {
                                           (product: TProduct) => (
                                             <CommandItem
                                               key={product._id}
-                                              value={product._id}
-                                              onSelect={(currentValue) => {
-                                                field.onChange(currentValue);
+                                              value={product.name}
+                                              onSelect={() => {
+                                                field.onChange(product._id);
                                                 setOpenProductDropdownIndex(
                                                   null
                                                 );

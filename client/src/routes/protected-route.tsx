@@ -4,7 +4,8 @@ import { useAuthStatus } from "@/features/auth/services/queries";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const { data, isLoading, isError, error, isSuccess } = useAuthStatus();
+  const { data, isLoading, isError, error, isSuccess, isFetching } =
+    useAuthStatus();
 
   if (isLoading) {
     return (
@@ -22,7 +23,7 @@ const ProtectedRoute = () => {
     );
   }
 
-  if (isSuccess && data && !data.loggedIn) {
+  if (!isFetching && isSuccess && data && !data.loggedIn) {
     return <Navigate to="/" replace />;
   }
 

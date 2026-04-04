@@ -5,7 +5,6 @@ export const useFetchCustomerList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["customers"],
     queryFn: fetchCustomerList,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
@@ -22,7 +21,6 @@ export const useFetchCustomer = (id?: string) => {
       return fetchCustomer(id);
     },
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };

@@ -5,7 +5,6 @@ export const useFetchSalesOrderList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["salesOrders"],
     queryFn: fetchSalesOrderList,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
@@ -22,7 +21,6 @@ export const useFetchSalesOrder = (id?: string) => {
       return fetchSalesOrder(id);
     },
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };

@@ -9,7 +9,6 @@ export const useFetchProductList = () => {
   const { isLoading, isPending, isError, error, data } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProductList,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
@@ -26,7 +25,6 @@ export const useFetchProduct = (id?: string) => {
       return fetchProduct(id);
     },
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   return { isLoading, isPending, isError, error, data };
