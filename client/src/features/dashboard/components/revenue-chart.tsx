@@ -12,7 +12,7 @@ const chartConfig = {
 
 export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
   // Aggregate sales orders by date loosely
-  const chartData = salesOrders.reduce((acc: any[], order) => {
+  const chartData = salesOrders.reduce((acc: { date: string; revenue: number }[], order) => {
     const date = new Date(order.orderDate).toLocaleDateString();
     const existing = acc.find((d) => d.date === date);
     const amount = parseFloat(order.totalAmount || "0");

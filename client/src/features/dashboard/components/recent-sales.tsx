@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TSalesOrder } from "@/features/sales-orders/types";
 import { formatCurrency } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 export function RecentSalesOrders({ salesOrders }: { salesOrders: TSalesOrder[] }) {
   // Sort by date descending and grab top 5
@@ -35,8 +34,8 @@ export function RecentSalesOrders({ salesOrders }: { salesOrders: TSalesOrder[] 
                     : `${order.customer?.firstName || ""} ${order.customer?.lastName || ""}`}
                 </TableCell>
                 <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{order.status || "Pending"}</Badge>
+                <TableCell className="capitalize">
+                  {order.status}
                 </TableCell>
                 <TableCell className="text-right">{formatCurrency(parseFloat(order.totalAmount))}</TableCell>
               </TableRow>

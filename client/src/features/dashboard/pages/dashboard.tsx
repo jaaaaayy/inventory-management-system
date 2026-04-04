@@ -17,6 +17,8 @@ import { RevenueChart } from "../components/revenue-chart";
 import { StatusChart } from "../components/status-chart";
 import { RecentSalesOrders } from "../components/recent-sales";
 import { LowStockAlerts } from "../components/low-stock-alerts";
+import { TSalesOrder } from "@/features/sales-orders/types";
+import { TProduct } from "@/features/products/types";
 
 import { Banknote, Boxes, Package, Users } from "lucide-react";
 
@@ -67,17 +69,17 @@ const Dashboard = () => {
 
   // Calculate Metrics
   const totalRevenue = salesOrderData.salesOrders.reduce(
-    (acc: number, order: any) => acc + parseFloat(order.totalAmount || "0"),
+    (acc: number, order: TSalesOrder) => acc + parseFloat(order.totalAmount || "0"),
     0
   );
 
   const inventoryValue = productData.products.reduce(
-    (acc: number, product: any) => acc + (parseFloat(product.costPrice || "0") * (product.quantity || 0)),
+    (acc: number, product: TProduct) => acc + (parseFloat(product.costPrice?.toString() || "0") * (product.quantity || 0)),
     0
   );
 
   const itemsInStock = productData.products.reduce(
-    (acc: number, product: any) => acc + (product.quantity || 0),
+    (acc: number, product: TProduct) => acc + (product.quantity || 0),
     0
   );
 
