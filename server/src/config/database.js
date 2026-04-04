@@ -1,9 +1,18 @@
 import mongoose from "mongoose";
 
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error("MONGODB_URI environment variable is not defined.");
+}
+
 mongoose
-  .connect("mongodb://localhost:27017/inventory_management_system")
-  .then(() => console.log("Connected to Mongodb."))
-  .catch((err) => console.log(`Error connecting to Mongodb: ${err}`));
+  .connect(MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB."))
+  .catch((err) => {
+    console.error(`Error connecting to MongoDB: ${err}`);
+    process.exit(1);
+  });
 
 export const withTransaction = async (operations) => {
   const session = await mongoose.startSession();
