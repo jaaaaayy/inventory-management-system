@@ -5,7 +5,7 @@ const vendorsSchema = new mongoose.Schema(
     name: {
       required: true,
       type: String,
-      trime: true,
+      trim: true,
       maxlength: 50,
     },
     email: {

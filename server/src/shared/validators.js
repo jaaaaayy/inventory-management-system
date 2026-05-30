@@ -32,6 +32,9 @@ export const commonUserInfoValidationSchema = {
     isString: {
       errorMessage: "Email must be a string.",
     },
+    isEmail: {
+      errorMessage: "Invalid email address.",
+    },
     trim: true,
   },
   mobileNumber: {

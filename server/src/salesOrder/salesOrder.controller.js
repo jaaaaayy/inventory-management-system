@@ -36,47 +36,73 @@ export const createSalesOrder = async (request, response) => {
       return response.status(400).send({ message: "Customer not found." });
     }
 
-    for (const item of items) {
-      const findInventory = await Inventory.findOne({ product: item.product });
-      if (!findInventory || findInventory.quantity < item.quantity) {
-        return response.status(400).send({
-          message: `Insufficient stock for product ${
-            item.product
-          }. Available quantity: ${findInventory?.quantity || 0}.`,
-        });
-      }
-    }
-
     const result = await withTransaction(async (session) => {
       const newSalesItems = [];
       let totalAmount = 0;
+      const productQuantityMap = new Map();
+      const productIds = [...new Set(items.map((item) => item.product))];
+      const products = await Product.find({ _id: { $in: productIds } }).session(
+        session
+      );
+      const productMap = new Map(
+        products.map((product) => [product._id.toString(), product])
+      );
+
+      for (const productId of productIds) {
+        if (!productMap.has(productId)) {
+          const error = new Error(`Product ${productId} not found.`);
+          error.statusCode = 400;
+          throw error;
+        }
+      }
 
       for (const item of items) {
-        const findInventory = await Inventory.findOne({
-          product: item.product,
-        }).session(session);
-        const findProduct = await Product.findById(item.product).session(
-          session
+        const quantity = Number(item.quantity);
+
+        productQuantityMap.set(
+          item.product,
+          (productQuantityMap.get(item.product) || 0) + quantity
         );
 
-        const totalPrice = findProduct.sellingPrice * item.quantity;
+        const findProduct = productMap.get(item.product);
+        const sellingPrice = Number(findProduct.sellingPrice.toString());
+
+        const totalPrice = sellingPrice * quantity;
         totalAmount += totalPrice;
 
         newSalesItems.push({
           salesOrder: null,
           product: item.product,
-          quantity: item.quantity,
+          quantity,
           totalPrice,
         });
+      }
 
-        await Inventory.findByIdAndUpdate(
-          findInventory._id,
+      for (const [productId, totalQuantity] of productQuantityMap) {
+        const updatedInventory = await Inventory.findOneAndUpdate(
           {
-            $inc: { quantity: -item.quantity },
-            lastStockUpdate: new Date(),
+            product: productId,
+            quantity: { $gte: totalQuantity },
+          },
+          {
+            $inc: { quantity: -totalQuantity },
+            $set: { lastStockUpdate: new Date() },
           },
           { session, new: true }
         );
+
+        if (!updatedInventory) {
+          const findInventory = await Inventory.findOne({
+            product: productId,
+          }).session(session);
+          const error = new Error(
+            `Insufficient stock for product ${productId}. Available quantity: ${
+              findInventory?.quantity || 0
+            }.`
+          );
+          error.statusCode = 400;
+          throw error;
+        }
       }
 
       const newSalesOrder = new SalesOrder({
@@ -108,6 +134,12 @@ export const createSalesOrder = async (request, response) => {
     });
   } catch (error) {
     console.log(error.message);
+    if (error.statusCode) {
+      return response.status(error.statusCode).json({
+        message: error.message,
+      });
+    }
+
     response.status(500).json({
       message: "Failed to create sales order. Please try again.",
     });
@@ -163,7 +195,7 @@ export const getAllSalesOrders = async (request, response) => {
                 },
                 image: {
                   $arrayElemAt: [
-                    "$productDetails.image",
+                    "$productDetails.imageUrl",
                     {
                       $indexOfArray: ["$productDetails._id", "$$item.product"],
                     },
