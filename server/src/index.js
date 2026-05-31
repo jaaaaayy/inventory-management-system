@@ -51,9 +51,15 @@ if (isProduction) {
   app.set("trust proxy", 1);
 }
 
+app.use("/api", (request, response, next) => {
+  response.set("Cache-Control", "no-store");
+  next();
+});
+
 const createSessionMiddleware = () =>
   session({
     secret: process.env.SESSION_SECRET,
+    proxy: isProduction,
     saveUninitialized: false,
     resave: false,
     cookie: {
