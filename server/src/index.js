@@ -64,8 +64,8 @@ const createSessionMiddleware = () =>
     resave: false,
     cookie: {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: false,
+      sameSite: "lax",
       maxAge: SESSION_TTL_MS,
     },
     store: MongoStore.create({
