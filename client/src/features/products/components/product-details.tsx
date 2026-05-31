@@ -1,6 +1,5 @@
 import { TProduct } from "../types";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getImageUrl } from "@/lib/images";
 
 const ProductDetails = ({ product }: { product: TProduct }) => {
   return (
@@ -36,7 +35,7 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
           </div>
         </div>
         <img
-          src={`${API_URL}${product.imageUrl}`}
+          src={getImageUrl(product.imageUrl)}
           alt={product.name}
           className="size-60 object-cover rounded-md"
         />

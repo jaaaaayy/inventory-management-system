@@ -9,7 +9,7 @@ export const vendorFormSchema = z.object({
     .trim()
     .min(10, "Mobile number must be at least 10 characters long.")
     .max(15, "Mobile number must be at most 15 characters long.")
-    .regex(/^(?:\+63|0)9\d{9}$/, "Invalid mobile number.")
+    .regex(/^(?:\+63|63|0)9\d{9}$/, "Invalid mobile number.")
     .transform((value) => {
       if (value.startsWith("+63")) return value;
       if (value.startsWith("63")) return `+${value}`;

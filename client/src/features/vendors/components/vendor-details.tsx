@@ -11,8 +11,8 @@ const VendorDetails = ({ vendor }: { vendor: TVendor }) => {
               <p className="font-medium">Name</p>
               <p className="font-medium">Email</p>
               <p className="font-medium">Mobile Number</p>
-              <p>Created</p>
-              <p>Updated</p>
+              <p className="font-medium">Created</p>
+              <p className="font-medium">Updated</p>
             </div>
             <div className="space-y-6">
               <p>{vendor.name}</p>

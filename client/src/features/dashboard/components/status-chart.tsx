@@ -1,50 +1,131 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { Pie, PieChart, LabelList } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { Label, Pie, PieChart } from "recharts";
 import { TSalesOrder } from "@/features/sales-orders/types";
 
+const chartConfig = {
+  orders: {
+    label: "Orders",
+  },
+  pending: {
+    label: "Pending",
+    color: "var(--chart-2)",
+  },
+  shipped: {
+    label: "Shipped",
+    color: "var(--chart-1)",
+  },
+  delivered: {
+    label: "Delivered",
+    color: "var(--chart-3)",
+  },
+  cancelled: {
+    label: "Cancelled",
+    color: "var(--chart-5)",
+  },
+} satisfies ChartConfig;
+
+const statusKeys = ["Pending", "Shipped", "Delivered", "Cancelled"] as const;
+
 export function StatusChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
-  const statusCounts = salesOrders.reduce((acc: Record<string, number>, order) => {
+  const statusCounts = salesOrders.reduce<Record<string, number>>((acc, order) => {
     const status = order.status || "Pending";
     acc[status] = (acc[status] || 0) + 1;
     return acc;
   }, {});
 
-  const chartData = Object.keys(statusCounts).map((key) => {
-    return {
-      status: key,
-      orders: statusCounts[key],
-      fill: `var(--color-${key.toLowerCase().replace(/\s/g, "")})`,
-    };
-  });
+  const chartData = statusKeys
+    .map((status) => ({
+      status,
+      statusKey: status.toLowerCase(),
+      orders: statusCounts[status] || 0,
+      fill: `var(--color-${status.toLowerCase()})`,
+    }))
+    .filter((item) => item.orders > 0);
 
-  const chartConfig = {
-    orders: { label: "Orders" },
-  } satisfies ChartConfig as ChartConfig;
-
-  // Dynamically assign Shadcn chart native variables in config
-  chartData.forEach((item, index) => {
-    chartConfig[item.status.toLowerCase().replace(/\s/g, "")] = {
-      label: item.status,
-      color: `var(--chart-${(index % 5) + 1})`,
-    };
-  });
+  const totalOrders = chartData.reduce((total, item) => total + item.orders, 0);
 
   return (
     <Card className="flex flex-col col-span-1">
       <CardHeader className="items-center pb-0">
         <CardTitle>Order Statuses</CardTitle>
-        <CardDescription>Breakdown of all active orders</CardDescription>
+        <CardDescription>Breakdown of orders by fulfillment status</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
-          <PieChart>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Pie data={chartData} dataKey="orders" nameKey="status" innerRadius={60} strokeWidth={5}>
-              <LabelList dataKey="status" position="inside" fill="white" fontSize={12} className="opacity-0 lg:opacity-100" />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+        {totalOrders > 0 ? (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto h-[300px] w-full"
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel nameKey="statusKey" />}
+              />
+              <Pie
+                data={chartData}
+                dataKey="orders"
+                nameKey="statusKey"
+                innerRadius={68}
+                outerRadius={96}
+                strokeWidth={5}
+              >
+                <Label
+                  content={({ viewBox }) => {
+                    if (!viewBox || !("cx" in viewBox) || !("cy" in viewBox)) {
+                      return null;
+                    }
+
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          {totalOrders.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground text-xs"
+                        >
+                          Orders
+                        </tspan>
+                      </text>
+                    );
+                  }}
+                />
+              </Pie>
+              <ChartLegend
+                content={<ChartLegendContent nameKey="statusKey" />}
+                className="-translate-y-2 flex-wrap gap-2"
+              />
+            </PieChart>
+          </ChartContainer>
+        ) : (
+          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+            No orders yet.
+          </div>
+        )}
       </CardContent>
     </Card>
   );

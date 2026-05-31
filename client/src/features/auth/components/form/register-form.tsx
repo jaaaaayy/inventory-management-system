@@ -24,6 +24,7 @@ const RegisterForm = () => {
   const form = useForm<TRegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
+      organizationName: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -52,6 +53,24 @@ const RegisterForm = () => {
         <Form {...form}>
           <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid md:grid-cols-2 items-start gap-6">
+              <FormField
+                control={form.control}
+                name="organizationName"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Organization name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your organization name"
+                        {...field}
+                        autoComplete="organization"
+                        required
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="firstName"

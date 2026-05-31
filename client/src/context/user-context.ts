@@ -8,6 +8,10 @@ interface IUserContextProps {
 export type TUser = {
   name: string;
   email: string;
+  organization?: {
+    id: string;
+    name: string;
+  };
 };
 
 export const UserContext = createContext<IUserContextProps | undefined>(

@@ -1,11 +1,65 @@
 import bcrypt from "bcrypt";
 import User from "../user/user.model.js";
 import { withTransaction } from "../config/database.js";
+import Organization from "../organization/organization.model.js";
+
+const buildAuthUser = ({ user, organization }) => ({
+  name: user.firstName + " " + user.lastName,
+  email: user.email,
+  organization: {
+    id: organization._id,
+    name: organization.name,
+  },
+});
+
+const storeSessionUser = (request, { user, organization }) => {
+  request.session.user = {
+    id: user._id,
+    organizationId: organization._id,
+  };
+};
+
+const regenerateSession = (request) =>
+  new Promise((resolve, reject) => {
+    request.session.regenerate((error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve();
+    });
+  });
+
+const saveSession = (request) =>
+  new Promise((resolve, reject) => {
+    request.session.save((error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve();
+    });
+  });
+
+const establishSession = async (request, result) => {
+  await regenerateSession(request);
+  storeSessionUser(request, result);
+  await saveSession(request);
+};
 
 export const register = async (request, response) => {
   try {
-    const { firstName, lastName, email, mobileNumber, username, password } =
-      request.body;
+    const {
+      organizationName,
+      firstName,
+      lastName,
+      email,
+      mobileNumber,
+      username,
+      password,
+    } = request.body;
     const errors = {};
 
     const existingEmail = await User.findOne({ email });
@@ -32,33 +86,34 @@ export const register = async (request, response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await withTransaction(async (session) => {
+      const organization = new Organization({
+        name: organizationName,
+      });
+      await organization.save({ session });
+
       const newUser = new User({
+        organization: organization._id,
         firstName,
         lastName,
         email,
         mobileNumber,
         username,
         password: hashedPassword,
+        lastLogin: new Date(),
       });
       await newUser.save({ session });
 
-      await User.findByIdAndUpdate(
-        newUser._id,
-        { lastLogin: new Date() },
-        { session, new: true }
-      );
-
-      return newUser;
+      return {
+        user: newUser,
+        organization,
+      };
     });
 
-    request.session.user = { id: result._id, role: result.role };
+    await establishSession(request, result);
 
     response.status(201).json({
       message: "Registered successfully.",
-      user: {
-        name: result.firstName + " " + result.lastName,
-        email: result.email,
-      },
+      user: buildAuthUser(result),
     });
   } catch (error) {
     console.log(error);
@@ -86,17 +141,28 @@ export const login = async (request, response) => {
       });
     }
 
-    await User.findByIdAndUpdate(findUser._id, { lastLogin: new Date() });
+    const user = await User.findByIdAndUpdate(
+      findUser._id,
+      { lastLogin: new Date() },
+      { new: true }
+    ).populate("organization");
 
-    request.session.user = { id: findUser._id, role: findUser.role };
+    if (!user.organization || user.organization.status !== "Active") {
+      return response.status(403).json({
+        message: "No active organization found.",
+      });
+    }
+
+    const result = {
+      user,
+      organization: user.organization,
+    };
+
+    await establishSession(request, result);
 
     response.json({
       message: "Logged in successfully.",
-      user: {
-        name: findUser.firstName + " " + findUser.lastName,
-        email: findUser.email,
-      },
-      session: request.session,
+      user: buildAuthUser(result),
     });
   } catch (error) {
     console.log(error);
@@ -106,12 +172,29 @@ export const login = async (request, response) => {
   }
 };
 
-export const authStatus = (request, response) => {
-  if (request.session && request.session.user) {
-    return response.json({ loggedIn: true });
-  }
+export const authStatus = async (request, response) => {
+  try {
+    if (!request.session?.user?.id || !request.session?.user?.organizationId) {
+      return response.json({ loggedIn: false });
+    }
 
-  response.json({ loggedIn: false });
+    const user = await User.findOne({
+      _id: request.session.user.id,
+      organization: request.session.user.organizationId,
+      status: "Active",
+    }).populate("organization");
+
+    if (!user || !user.organization || user.organization.status !== "Active") {
+      return response.json({ loggedIn: false });
+    }
+
+    response.json({ loggedIn: true });
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({
+      message: "Failed to check authentication status. Please try again.",
+    });
+  }
 };
 
 export const logout = (request, response) => {

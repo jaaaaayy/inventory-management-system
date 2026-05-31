@@ -1,6 +1,18 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { Bar, BarChart, XAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { formatCurrency } from "@/lib/utils";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { TSalesOrder } from "@/features/sales-orders/types";
 
 const chartConfig = {
@@ -11,36 +23,72 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
-  // Aggregate sales orders by date loosely
-  const chartData = salesOrders.reduce((acc: { date: string; revenue: number }[], order) => {
-    const date = new Date(order.orderDate).toLocaleDateString();
-    const existing = acc.find((d) => d.date === date);
-    const amount = parseFloat(order.totalAmount || "0");
-    if (existing) {
-      existing.revenue += amount;
-    } else {
-      acc.push({ date, revenue: amount });
-    }
-    return acc;
-  }, []);
+  const chartData = salesOrders.reduce(
+    (acc: { date: string; label: string; revenue: number }[], order) => {
+      const orderDate = new Date(order.orderDate);
+      const date = orderDate.toISOString().slice(0, 10);
+      const existing = acc.find((item) => item.date === date);
+      const amount = parseFloat(order.totalAmount || "0");
 
-  chartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      if (existing) {
+        existing.revenue += amount;
+      } else {
+        acc.push({
+          date,
+          label: orderDate.toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          }),
+          revenue: amount,
+        });
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  chartData.sort((a, b) => a.date.localeCompare(b.date));
   const displayData = chartData.slice(-7);
 
   return (
     <Card className="col-span-1 lg:col-span-2">
       <CardHeader>
         <CardTitle>Sales Revenue Over Time</CardTitle>
-        <CardDescription>Daily revenue from completed orders</CardDescription>
+        <CardDescription>Daily revenue for the latest 7 sales days</CardDescription>
       </CardHeader>
-      <CardContent className="h-[300px]">
-        <ChartContainer config={chartConfig} className="h-full w-full">
-          <BarChart accessibilityLayer data={displayData}>
-            <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-            <ChartTooltip content={<ChartTooltipContent indicator="dashed" />} />
-            <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-          </BarChart>
-        </ChartContainer>
+      <CardContent>
+        {displayData.length > 0 ? (
+          <ChartContainer config={chartConfig} className="h-[300px] w-full">
+            <BarChart accessibilityLayer data={displayData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    indicator="dot"
+                    formatter={(value) => (
+                      <span className="font-mono font-medium tabular-nums">
+                        {formatCurrency(Number(value))}
+                      </span>
+                    )}
+                  />
+                }
+              />
+              <Bar dataKey="revenue" fill="var(--color-revenue)" radius={6} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+            No sales revenue yet.
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 export const getCategories = async (request, response) => {
   try {
-    const categories = await Category.find().sort({
+    const categories = await Category.find({
+      organization: request.organizationId,
+    }).sort({
       createdAt: -1,
     });
 
@@ -28,7 +30,10 @@ export const getCategoryById = async (request, response) => {
       });
     }
 
-    const findCategory = await Category.findById(id);
+    const findCategory = await Category.findOne({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!findCategory) {
       return response.status(404).json({ message: "Category not found." });
@@ -48,6 +53,7 @@ export const createCategory = async (request, response) => {
 
   try {
     const newCategory = new Category({
+      organization: request.organizationId,
       name,
       description,
     });
@@ -78,10 +84,14 @@ export const updateCategory = async (request, response) => {
       });
     }
 
-    const updatedCategory = await Category.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedCategory = await Category.findOneAndUpdate(
+      { _id: id, organization: request.organizationId },
+      body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!updatedCategory) {
       return response.status(404).json({ message: "Category not found." });
@@ -111,7 +121,10 @@ export const deleteCategory = async (request, response) => {
       });
     }
 
-    const deletedCategory = await Category.findByIdAndDelete(id);
+    const deletedCategory = await Category.findOneAndDelete({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!deletedCategory) {
       return response.status(404).json({ message: "Category not found." });

@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const vendorsSchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     name: {
       required: true,
       type: String,
@@ -12,14 +17,12 @@ const vendorsSchema = new mongoose.Schema(
       required: true,
       type: String,
       trim: true,
-      unique: true,
     },
     mobileNumber: {
       required: true,
       type: String,
       minlength: 10,
       maxlength: 15,
-      unique: true,
     },
     address: {
       addressLine1: {
@@ -57,5 +60,8 @@ const vendorsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Vendors = mongoose.model("vendors", vendorsSchema);
+vendorsSchema.index({ organization: 1, email: 1 }, { unique: true });
+vendorsSchema.index({ organization: 1, mobileNumber: 1 }, { unique: true });
+
+const Vendors = mongoose.model("Vendor", vendorsSchema, "vendors");
 export default Vendors;

@@ -1,9 +1,10 @@
-import fs from "fs";
-import path from "path";
 import Inventory from "../inventory/inventory.model.js";
+import Category from "../category/category.model.js";
 import Product from "./product.model.js";
+import Vendor from "../vendor/vendor.model.js";
 import { withTransaction } from "../config/database.js";
 import mongoose from "mongoose";
+import { uploadProductImage } from "../services/storage.service.js";
 
 export const createProduct = async (request, response) => {
   try {
@@ -27,10 +28,29 @@ export const createProduct = async (request, response) => {
       errors.sellingPrice = "Selling price must be a positive number.";
     }
 
-    const findStockKeepingUnit = await Product.findOne({ stockKeepingUnit });
+    const findStockKeepingUnit = await Product.findOne({
+      organization: request.organizationId,
+      stockKeepingUnit,
+    });
 
     if (findStockKeepingUnit) {
       errors.stockKeepingUnit = "SKU is already in use.";
+    }
+
+    const findCategory = await Category.findOne({
+      _id: category,
+      organization: request.organizationId,
+    });
+    if (!findCategory) {
+      errors.category = "Category not found.";
+    }
+
+    const findVendor = await Vendor.findOne({
+      _id: vendor,
+      organization: request.organizationId,
+    });
+    if (!findVendor) {
+      errors.vendor = "Vendor not found.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -39,48 +59,28 @@ export const createProduct = async (request, response) => {
         .json({ message: "Validation failed.", errors });
     }
 
-    let savedImagePath;
+    let savedImageUrl;
 
     if (request.file) {
-      // Define the destination directory
-      const uploadDir = "src/uploads";
-
-      // Ensure the directory exists (optional, but good practice)
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
-      // Generate the filename based on fieldname and current timestamp, with original file extension
-      const filename =
-        request.file.fieldname +
-        "-" +
-        Date.now() +
-        path.extname(request.file.originalname);
-
-      // Create the full path for the file
-      const filePath = path.join(uploadDir, filename);
-
-      // Save the file from memory to the disk
-      fs.writeFileSync(filePath, request.file.buffer);
-
-      // Store the file path (this can be saved to the database as the product's image path)
-      savedImagePath = filename;
+      savedImageUrl = await uploadProductImage(request.file);
     }
 
     const result = await withTransaction(async (session) => {
       const newProduct = new Product({
+        organization: request.organizationId,
         name,
         stockKeepingUnit,
         costPrice,
         sellingPrice,
         unit,
-        imageUrl: savedImagePath,
+        imageUrl: savedImageUrl,
         category,
         vendor,
       });
       await newProduct.save({ session });
 
       const newInventory = new Inventory({
+        organization: request.organizationId,
         product: newProduct._id,
         quantity,
         lastStockUpdate: new Date(),
@@ -109,6 +109,11 @@ export const createProduct = async (request, response) => {
 export const getProducts = async (request, response) => {
   try {
     const products = await Product.aggregate([
+      {
+        $match: {
+          organization: request.organizationId,
+        },
+      },
       {
         $lookup: {
           from: "inventories",
@@ -151,6 +156,7 @@ export const getProducts = async (request, response) => {
       {
         $project: {
           _id: 1,
+          organization: 1,
           name: 1,
           description: 1,
           stockKeepingUnit: 1,
@@ -193,6 +199,7 @@ export const getProductById = async (request, response) => {
       {
         $match: {
           _id: mongoose.Types.ObjectId.createFromHexString(id),
+          organization: request.organizationId,
         },
       },
       {
@@ -237,6 +244,7 @@ export const getProductById = async (request, response) => {
       {
         $project: {
           _id: 1,
+          organization: 1,
           name: 1,
           description: 1,
           stockKeepingUnit: 1,

@@ -32,9 +32,7 @@ export const ActionsCell = ({ id }: { id: string }) => {
         <DropdownMenuItem onClick={() => navigate(`/sales/customers/${id}`)}>
           View customer
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => navigate(`/sales/customers/${id}/edit`)}
-        >
+        <DropdownMenuItem onClick={() => navigate(`/sales/customers/${id}/edit`)}>
           Edit customer
         </DropdownMenuItem>
         <DeleteCustomerDialog

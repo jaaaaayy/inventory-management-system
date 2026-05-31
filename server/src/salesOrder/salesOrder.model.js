@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const SalesOrderSchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
@@ -28,5 +33,5 @@ const SalesOrderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const SalesOrder = mongoose.model("salesorder", SalesOrderSchema);
+const SalesOrder = mongoose.model("SalesOrder", SalesOrderSchema, "salesorders");
 export default SalesOrder;

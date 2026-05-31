@@ -31,7 +31,10 @@ export const createSalesOrder = async (request, response) => {
         .json({ message: "Validation failed.", errors });
     }
 
-    const findCustomer = await Customer.findById(customer);
+    const findCustomer = await Customer.findOne({
+      _id: customer,
+      organization: request.organizationId,
+    });
     if (!findCustomer) {
       return response.status(400).send({ message: "Customer not found." });
     }
@@ -41,9 +44,10 @@ export const createSalesOrder = async (request, response) => {
       let totalAmount = 0;
       const productQuantityMap = new Map();
       const productIds = [...new Set(items.map((item) => item.product))];
-      const products = await Product.find({ _id: { $in: productIds } }).session(
-        session
-      );
+      const products = await Product.find({
+        _id: { $in: productIds },
+        organization: request.organizationId,
+      }).session(session);
       const productMap = new Map(
         products.map((product) => [product._id.toString(), product])
       );
@@ -72,6 +76,7 @@ export const createSalesOrder = async (request, response) => {
 
         newSalesItems.push({
           salesOrder: null,
+          organization: request.organizationId,
           product: item.product,
           quantity,
           totalPrice,
@@ -81,6 +86,7 @@ export const createSalesOrder = async (request, response) => {
       for (const [productId, totalQuantity] of productQuantityMap) {
         const updatedInventory = await Inventory.findOneAndUpdate(
           {
+            organization: request.organizationId,
             product: productId,
             quantity: { $gte: totalQuantity },
           },
@@ -93,6 +99,7 @@ export const createSalesOrder = async (request, response) => {
 
         if (!updatedInventory) {
           const findInventory = await Inventory.findOne({
+            organization: request.organizationId,
             product: productId,
           }).session(session);
           const error = new Error(
@@ -106,6 +113,7 @@ export const createSalesOrder = async (request, response) => {
       }
 
       const newSalesOrder = new SalesOrder({
+        organization: request.organizationId,
         customer,
         orderDate,
         deliveryDate,
@@ -149,6 +157,11 @@ export const createSalesOrder = async (request, response) => {
 export const getAllSalesOrders = async (request, response) => {
   try {
     const salesOrders = await SalesOrder.aggregate([
+      {
+        $match: {
+          organization: request.organizationId,
+        },
+      },
       {
         $lookup: {
           from: "customers",
@@ -211,6 +224,7 @@ export const getAllSalesOrders = async (request, response) => {
       {
         $project: {
           _id: 1,
+          organization: 1,
           customer: {
             $concat: ["$customer.firstName", " ", "$customer.lastName"],
           },
@@ -253,6 +267,7 @@ export const getSalesOrder = async (request, response) => {
       {
         $match: {
           _id: mongoose.Types.ObjectId.createFromHexString(id),
+          organization: request.organizationId,
         },
       },
       {
@@ -310,6 +325,7 @@ export const getSalesOrder = async (request, response) => {
       {
         $project: {
           _id: 1,
+          organization: 1,
           customer: 1,
           orderDate: 1,
           deliveryDate: 1,

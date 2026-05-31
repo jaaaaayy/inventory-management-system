@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const inventorySchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     product: {
       required: true,
       type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +23,8 @@ const inventorySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+inventorySchema.index({ organization: 1, product: 1 }, { unique: true });
 
 const Inventory = mongoose.model("inventory", inventorySchema);
 

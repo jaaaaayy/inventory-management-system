@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const customerSchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     firstName: {
       required: true,
       type: String,
@@ -52,17 +57,18 @@ const customerSchema = new mongoose.Schema(
       minlength: 10,
       maxlength: 15,
       trim: true,
-      unique: true,
     },
     email: {
       required: true,
       type: String,
       trim: true,
-      unique: true,
     },
   },
   { timestamps: true }
 );
+
+customerSchema.index({ organization: 1, email: 1 }, { unique: true });
+customerSchema.index({ organization: 1, mobileNumber: 1 }, { unique: true });
 
 const Customer = mongoose.model("Customer", customerSchema);
 export default Customer;

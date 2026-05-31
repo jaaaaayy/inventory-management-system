@@ -1,6 +1,6 @@
 import { TCustomerFormSchema } from "../types";
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from "@/config/env";
 
 export const fetchCustomerList = async () => {
   const response = await fetch(`${API_URL}api/customers`, {

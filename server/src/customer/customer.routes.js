@@ -1,50 +1,25 @@
 import { Router } from "express";
-import {
-  checkPermissions,
-  isAuthenticated,
-  validate,
-} from "../utils/middlewares.js";
+import { isAuthenticated, validate } from "../utils/middlewares.js";
 import customerValidationSchema from "./customer.validation.js";
 import { checkSchema } from "express-validator";
 import * as customerController from "./customer.controller.js";
 
 const router = Router();
 
-router.get(
-  "/",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  customerController.getCustomers
-);
+router.get("/", isAuthenticated, customerController.getCustomers);
 
 router.post(
   "/",
   isAuthenticated,
-  checkPermissions(["User"]),
   checkSchema(customerValidationSchema),
   validate(),
   customerController.createCustomer
 );
 
-router.get(
-  "/:id",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  customerController.getCustomerById
-);
+router.get("/:id", isAuthenticated, customerController.getCustomerById);
 
-router.patch(
-  "/:id",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  customerController.updateCustomer
-);
+router.patch("/:id", isAuthenticated, customerController.updateCustomer);
 
-router.delete(
-  "/:id",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  customerController.deleteCustomer
-);
+router.delete("/:id", isAuthenticated, customerController.deleteCustomer);
 
 export default router;

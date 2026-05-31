@@ -52,8 +52,7 @@ import { useFetchProductList } from "@/features/products/services/queries";
 import { Input } from "@/components/ui/input";
 import { TFormError } from "@/types";
 import InputError from "@/components/input-error";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getImageUrl } from "@/lib/images";
 
 const CreateSalesOrderForm = () => {
   const [formError, setFormError] = useState<TFormError | null>(null);
@@ -354,7 +353,9 @@ const CreateSalesOrderForm = () => {
                                       <div className="flex items-center gap-2">
                                         <img
                                           className="size-8 rounded object-cover"
-                                          src={`${API_URL}${selectedProduct.imageUrl}`}
+                                          src={getImageUrl(
+                                            selectedProduct.imageUrl
+                                          )}
                                           alt={selectedProduct.name}
                                         />
                                         <span>{selectedProduct.name}</span>

@@ -13,13 +13,15 @@ const TotalCard = ({ total }: TotalCardProps) => {
   const Icon = total.icon;
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
-        <CardTitle>{total.title}</CardTitle>
-        <CardAction>{Icon && <Icon />}</CardAction>
+        <CardTitle className="min-w-0 truncate">{total.title}</CardTitle>
+        <CardAction className="shrink-0">{Icon && <Icon />}</CardAction>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{total.amount}</div>
+        <div className="min-w-0 truncate text-xl font-bold tabular-nums sm:text-2xl">
+          {total.amount}
+        </div>
       </CardContent>
     </Card>
   );

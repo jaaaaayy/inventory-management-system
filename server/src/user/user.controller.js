@@ -3,7 +3,11 @@ import User from "./user.model.js";
 
 export const getAllUsers = async (request, response) => {
   try {
-    const users = await User.find().sort({ createdAt: -1 });
+    const users = await User.find({
+      organization: request.organizationId,
+    })
+      .select("-password")
+      .sort({ createdAt: -1 });
 
     response.json({ users });
   } catch (error) {
@@ -16,12 +20,16 @@ export const getAllUsers = async (request, response) => {
 
 export const getUserById = async (request, response) => {
   try {
-    const findUser = await User.findById(request.params.id);
+    const user = await User.findOne({
+      _id: request.params.id,
+      organization: request.organizationId,
+    }).select("-password");
 
-    if (!findUser) {
+    if (!user) {
       return response.status(404).json({ message: "User not found." });
     }
-    response.json({ user: findUser });
+
+    response.json({ user });
   } catch (error) {
     console.log(error);
     response.status(500).json({
@@ -36,15 +44,36 @@ export const updateUserById = async (request, response) => {
       params: { id },
       body,
     } = request;
+    const allowedUserFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "mobileNumber",
+      "username",
+      "password",
+      "status",
+    ];
+    const userUpdate = {};
 
-    if (body.password) {
-      body.password = await bcrypt.hash(body.password, 10);
+    for (const field of allowedUserFields) {
+      if (body[field] !== undefined) {
+        userUpdate[field] = body[field];
+      }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    if (userUpdate.password) {
+      userUpdate.password = await bcrypt.hash(userUpdate.password, 10);
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id, organization: request.organizationId },
+      userUpdate,
+      {
+        new: true,
+        runValidators: true,
+        select: "-password",
+      }
+    );
 
     if (!updatedUser) {
       return response.status(404).json({ message: "User not found." });
@@ -61,7 +90,16 @@ export const updateUserById = async (request, response) => {
 
 export const deleteUserById = async (request, response) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(request.params.id);
+    if (request.params.id === request.userId.toString()) {
+      return response.status(400).json({
+        message: "You cannot delete your own user account.",
+      });
+    }
+
+    const deletedUser = await User.findOneAndDelete({
+      _id: request.params.id,
+      organization: request.organizationId,
+    });
 
     if (!deletedUser) {
       return response.status(404).json({ message: "User not found." });

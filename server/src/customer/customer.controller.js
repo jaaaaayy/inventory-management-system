@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 export const getCustomers = async (request, response) => {
   try {
-    const customers = await Customer.find().sort({ createdAt: -1 });
+    const customers = await Customer.find({
+      organization: request.organizationId,
+    }).sort({ createdAt: -1 });
 
     response.send({ customers });
   } catch (error) {
@@ -19,12 +21,18 @@ export const createCustomer = async (request, response) => {
     const { firstName, lastName, mobileNumber, email, address } = request.body;
     const errors = {};
 
-    const existingEmail = await Customer.findOne({ email });
+    const existingEmail = await Customer.findOne({
+      organization: request.organizationId,
+      email,
+    });
     if (existingEmail) {
       errors.email = "Email is already in use.";
     }
 
-    const existingMobileNumber = await Customer.findOne({ mobileNumber });
+    const existingMobileNumber = await Customer.findOne({
+      organization: request.organizationId,
+      mobileNumber,
+    });
     if (existingMobileNumber) {
       errors.mobileNumber = "Mobile number is already in use.";
     }
@@ -36,6 +44,7 @@ export const createCustomer = async (request, response) => {
     }
 
     const newCustomer = new Customer({
+      organization: request.organizationId,
       firstName,
       lastName,
       address: {
@@ -74,7 +83,10 @@ export const getCustomerById = async (request, response) => {
       });
     }
 
-    const findCustomer = await Customer.findById(id);
+    const findCustomer = await Customer.findOne({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!findCustomer) {
       return response.status(404).send({ message: "Customer not found." });
@@ -102,8 +114,8 @@ export const updateCustomer = async (request, response) => {
       });
     }
 
-    const updatedCustomer = await Customer.findByIdAndUpdate(
-      id,
+    const updatedCustomer = await Customer.findOneAndUpdate(
+      { _id: id, organization: request.organizationId },
       { $set: body },
       { new: true, runValidators: true }
     );
@@ -136,7 +148,10 @@ export const deleteCustomer = async (request, response) => {
       });
     }
 
-    const deletedCustomer = await Customer.findByIdAndDelete(id);
+    const deletedCustomer = await Customer.findOneAndDelete({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!deletedCustomer) {
       return response.status(404).send({ message: "Customer not found." });

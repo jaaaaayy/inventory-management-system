@@ -7,8 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getImageUrl } from "@/lib/images";
 
 const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
   return (
@@ -55,7 +54,7 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
                   <div className="flex items-center gap-2">
                     <img
                       className="size-8 rounded object-cover"
-                      src={`${API_URL}${item.product.imageUrl}`}
+                      src={getImageUrl(item.product.imageUrl)}
                       alt={item.product.name}
                     />
                     <span>{item.product.name}</span>

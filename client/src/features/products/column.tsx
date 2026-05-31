@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TProduct } from "./types";
 import { ActionsCell } from "./components/action-cell";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getImageUrl } from "@/lib/images";
 
 export const columns: ColumnDef<TProduct>[] = [
   {
@@ -13,7 +12,7 @@ export const columns: ColumnDef<TProduct>[] = [
 
       return (
         <img
-          src={`${API_URL}${image}`}
+          src={getImageUrl(image)}
           alt={name}
           className="size-12 object-cover rounded"
         />

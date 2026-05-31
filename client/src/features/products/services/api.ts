@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from "@/config/env";
 
 export const fetchProductList = async () => {
   const response = await fetch(`${API_URL}api/products`, {

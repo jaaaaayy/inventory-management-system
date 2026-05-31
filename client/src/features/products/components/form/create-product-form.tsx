@@ -195,7 +195,9 @@ const CreateProductForm = () => {
               name="costPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cost Price</FormLabel>
+                  <FormLabel data-error={!!formError?.errors?.costPrice}>
+                    Cost Price
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -203,9 +205,11 @@ const CreateProductForm = () => {
                       {...field}
                       autoComplete="off"
                       required
+                      aria-invalid={!!formError?.errors?.costPrice}
                     />
                   </FormControl>
                   <FormMessage />
+                  <InputError message={formError?.errors?.costPrice} />
                 </FormItem>
               )}
             />
@@ -214,7 +218,9 @@ const CreateProductForm = () => {
               name="sellingPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Selling Price</FormLabel>
+                  <FormLabel data-error={!!formError?.errors?.sellingPrice}>
+                    Selling Price
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -222,9 +228,11 @@ const CreateProductForm = () => {
                       {...field}
                       autoComplete="off"
                       required
+                      aria-invalid={!!formError?.errors?.sellingPrice}
                     />
                   </FormControl>
                   <FormMessage />
+                  <InputError message={formError?.errors?.sellingPrice} />
                 </FormItem>
               )}
             />
@@ -355,7 +363,9 @@ const CreateProductForm = () => {
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel data-error={!!formError?.errors?.category}>
+                  Category
+                </FormLabel>
                 <FormControl>
                   <Popover
                     open={openCategoryDropdown}
@@ -419,6 +429,7 @@ const CreateProductForm = () => {
                   </Popover>
                 </FormControl>
                 <FormMessage />
+                <InputError message={formError?.errors?.category} />
               </FormItem>
             )}
           />
@@ -427,7 +438,9 @@ const CreateProductForm = () => {
             name="vendor"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Vendor</FormLabel>
+                <FormLabel data-error={!!formError?.errors?.vendor}>
+                  Vendor
+                </FormLabel>
                 <FormControl>
                   <Popover
                     open={openVendorDropdown}
@@ -489,6 +502,7 @@ const CreateProductForm = () => {
                   </Popover>
                 </FormControl>
                 <FormMessage />
+                <InputError message={formError?.errors?.vendor} />
               </FormItem>
             )}
           />

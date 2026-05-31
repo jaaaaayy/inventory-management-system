@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     name: {
       required: true,
       type: String,
@@ -13,7 +18,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       maxlength: 50,
       trim: true,
-      unique: true,
     },
     costPrice: {
       type: mongoose.Schema.Types.Decimal128,
@@ -45,6 +49,11 @@ const productSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+);
+
+productSchema.index(
+  { organization: 1, stockKeepingUnit: 1 },
+  { unique: true }
 );
 
 const Product = mongoose.model("Product", productSchema);

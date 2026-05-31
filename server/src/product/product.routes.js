@@ -2,11 +2,7 @@ import { Router } from "express";
 import { checkSchema } from "express-validator";
 import upload from "../config/upload.js";
 import inventoryValidationSchema from "../inventory/inventory.validation.js";
-import {
-  checkPermissions,
-  isAuthenticated,
-  validate,
-} from "../utils/middlewares.js";
+import { isAuthenticated, validate } from "../utils/middlewares.js";
 import * as productController from "./product.controller.js";
 import productValidationSchema from "./product.validation.js";
 
@@ -29,7 +25,6 @@ const uploadImage = (req, res, next) => {
 router.post(
   "/",
   isAuthenticated,
-  checkPermissions(["User"]),
   uploadImage,
   checkSchema(productValidationSchema),
   checkSchema(inventoryValidationSchema),
@@ -37,18 +32,8 @@ router.post(
   productController.createProduct
 );
 
-router.get(
-  "/",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  productController.getProducts
-);
+router.get("/", isAuthenticated, productController.getProducts);
 
-router.get(
-  "/:id",
-  isAuthenticated,
-  checkPermissions(["User"]),
-  productController.getProductById
-);
+router.get("/:id", isAuthenticated, productController.getProductById);
 
 export default router;

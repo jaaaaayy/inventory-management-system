@@ -30,32 +30,23 @@ export const loginValidationSchema = {
 };
 
 export const registerValidationSchema = {
-  ...{
-    firstName: commonUserInfoValidationSchema.firstName,
-    lastName: commonUserInfoValidationSchema.lastName,
-    email: commonUserInfoValidationSchema.email,
-    mobileNumber: commonUserInfoValidationSchema.mobileNumber,
-    username: loginValidationSchema.username,
-    password: loginValidationSchema.password,
-  },
-  role: {
-    optional: true,
+  organizationName: {
+    notEmpty: {
+      errorMessage: "Organization name is required.",
+    },
     isString: {
-      errorMessage: "Role must be a string.",
+      errorMessage: "Organization name must be a string.",
     },
-    isIn: {
-      options: [["Admin", "User"]],
-      errorMessage: "Role must be either 'Admin' or 'User'.",
+    isLength: {
+      options: { max: 100 },
+      errorMessage: "Organization name must be at most 100 characters long.",
     },
+    trim: true,
   },
-  status: {
-    optional: true,
-    isString: {
-      errorMessage: "Status must be a string.",
-    },
-    isIn: {
-      options: [["Active", "Inactive"]],
-      errorMessage: "Status must be either 'Active' or 'Inactive'.",
-    },
-  },
+  firstName: commonUserInfoValidationSchema.firstName,
+  lastName: commonUserInfoValidationSchema.lastName,
+  email: commonUserInfoValidationSchema.email,
+  mobileNumber: commonUserInfoValidationSchema.mobileNumber,
+  username: loginValidationSchema.username,
+  password: loginValidationSchema.password,
 };

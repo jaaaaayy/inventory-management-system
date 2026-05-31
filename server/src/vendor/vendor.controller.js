@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 export const getVendors = async (request, response) => {
   try {
-    const vendors = await Vendor.find().sort({
+    const vendors = await Vendor.find({
+      organization: request.organizationId,
+    }).sort({
       createdAt: -1,
     });
 
@@ -28,7 +30,10 @@ export const getVendorById = async (request, response) => {
       });
     }
 
-    const findVendor = await Vendor.findById(id);
+    const findVendor = await Vendor.findOne({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!findVendor) {
       return response.status(404).json({ message: "Vendor not found." });
@@ -48,12 +53,18 @@ export const createVendor = async (request, response) => {
     const { name, email, mobileNumber, address } = request.body;
     const errors = {};
 
-    const existingEmail = await Vendor.findOne({ email });
+    const existingEmail = await Vendor.findOne({
+      organization: request.organizationId,
+      email,
+    });
     if (existingEmail) {
       errors.email = "Email is already in use.";
     }
 
-    const existingMobileNumber = await Vendor.findOne({ mobileNumber });
+    const existingMobileNumber = await Vendor.findOne({
+      organization: request.organizationId,
+      mobileNumber,
+    });
     if (existingMobileNumber) {
       errors.mobileNumber = "Mobile number is already in use.";
     }
@@ -65,6 +76,7 @@ export const createVendor = async (request, response) => {
     }
 
     const newVendor = new Vendor({
+      organization: request.organizationId,
       name,
       email,
       mobileNumber,
@@ -96,10 +108,14 @@ export const updateVendor = async (request, response) => {
       });
     }
 
-    const updatedVendor = await Vendor.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedVendor = await Vendor.findOneAndUpdate(
+      { _id: id, organization: request.organizationId },
+      body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!updatedVendor) {
       return response.status(404).json({ message: "Vendor not found." });
@@ -129,7 +145,10 @@ export const deleteVendor = async (request, response) => {
       });
     }
 
-    const deletedVendor = await Vendor.findByIdAndDelete(id);
+    const deletedVendor = await Vendor.findOneAndDelete({
+      _id: id,
+      organization: request.organizationId,
+    });
 
     if (!deletedVendor) {
       return response.status(404).json({ message: "Vendor not found." });

@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
     firstName: {
       required: true,
       type: String,
@@ -41,11 +46,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: 8,
       trim: true,
-    },
-    role: {
-      type: String,
-      enum: ["Admin", "User"],
-      default: "User",
     },
     status: {
       type: String,
