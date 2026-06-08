@@ -17,6 +17,7 @@ import CreateCustomer from "./features/customers/pages/create-customer";
 import ViewCustomer from "./features/customers/pages/view-customer";
 import EditCustomer from "./features/customers/pages/edit-customer";
 import CreateProduct from "./features/products/pages/create-product";
+import EditProduct from "./features/products/pages/edit-product";
 import SalesOrders from "./features/sales-orders/pages/sales-orders";
 import ViewProduct from "./features/products/pages/view-product";
 import CreateSalesOrder from "./features/sales-orders/pages/create-sales-order";
@@ -39,6 +40,7 @@ const App = () => {
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ViewProduct />} />
             <Route path="/products/new" element={<CreateProduct />} />
+            <Route path="/products/:id/edit" element={<EditProduct />} />
             <Route path="/sales/customers" element={<Customers />} />
             <Route path="/sales/customers/:id" element={<ViewCustomer />} />
             <Route path="/sales/customers/new" element={<CreateCustomer />} />

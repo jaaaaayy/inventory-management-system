@@ -86,4 +86,24 @@ const productValidationSchema = {
   },
 };
 
+export const productUpdateValidationSchema = {
+  name: productValidationSchema.name,
+  stockKeepingUnit: productValidationSchema.stockKeepingUnit,
+  costPrice: productValidationSchema.costPrice,
+  sellingPrice: productValidationSchema.sellingPrice,
+  unit: productValidationSchema.unit,
+  category: productValidationSchema.category,
+  vendor: productValidationSchema.vendor,
+  image: {
+    custom: {
+      options: (_value, { req }) => {
+        if (req.fileValidationError) {
+          throw new Error(req.fileValidationError);
+        }
+        return true;
+      },
+    },
+  },
+};
+
 export default productValidationSchema;

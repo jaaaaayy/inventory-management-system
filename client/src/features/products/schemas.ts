@@ -47,3 +47,12 @@ export const productFormSchema = z.object({
       message: "Please upload a valid image file (JPG, PNG) under 5MB.",
     }),
 });
+
+export const productUpdateFormSchema = productFormSchema.extend({
+  image: z
+    .instanceof(File)
+    .refine((file) => validateImageFile(file), {
+      message: "Please upload a valid image file (JPG, PNG) under 5MB.",
+    })
+    .optional(),
+});
