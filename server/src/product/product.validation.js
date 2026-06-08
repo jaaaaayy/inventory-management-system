@@ -23,6 +23,16 @@ const productValidationSchema = {
       errorMessage: "Stock keeping unit must be at most 50 characters long.",
     },
   },
+  description: {
+    optional: true,
+    isString: {
+      errorMessage: "Description must be a string.",
+    },
+    isLength: {
+      options: { max: 500 },
+      errorMessage: "Description must be at most 500 characters long.",
+    },
+  },
   costPrice: {
     notEmpty: {
       errorMessage: "Cost price is required.",
@@ -89,6 +99,7 @@ const productValidationSchema = {
 export const productUpdateValidationSchema = {
   name: productValidationSchema.name,
   stockKeepingUnit: productValidationSchema.stockKeepingUnit,
+  description: productValidationSchema.description,
   costPrice: productValidationSchema.costPrice,
   sellingPrice: productValidationSchema.sellingPrice,
   unit: productValidationSchema.unit,

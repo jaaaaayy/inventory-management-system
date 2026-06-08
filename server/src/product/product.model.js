@@ -19,6 +19,12 @@ const productSchema = new mongoose.Schema(
       maxlength: 50,
       trim: true,
     },
+    description: {
+      type: String,
+      maxlength: 500,
+      trim: true,
+      default: "",
+    },
     costPrice: {
       type: mongoose.Schema.Types.Decimal128,
       required: true,

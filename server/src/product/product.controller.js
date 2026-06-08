@@ -15,6 +15,7 @@ export const createProduct = async (request, response) => {
     const {
       name,
       stockKeepingUnit,
+      description,
       costPrice,
       sellingPrice,
       unit,
@@ -74,6 +75,7 @@ export const createProduct = async (request, response) => {
         organization: request.organizationId,
         name,
         stockKeepingUnit,
+        description,
         costPrice,
         sellingPrice,
         unit,
@@ -202,6 +204,7 @@ export const updateProduct = async (request, response) => {
     const {
       name,
       stockKeepingUnit,
+      description,
       costPrice,
       sellingPrice,
       unit,
@@ -271,6 +274,7 @@ export const updateProduct = async (request, response) => {
         {
           name,
           stockKeepingUnit,
+          description,
           costPrice,
           sellingPrice,
           unit,

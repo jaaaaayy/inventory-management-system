@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { productFormSchema } from "../../schemas";
@@ -56,6 +57,7 @@ const CreateProductForm = () => {
     defaultValues: {
       name: "",
       stockKeepingUnit: "",
+      description: "",
       costPrice: 0,
       sellingPrice: 0,
       unit: "",
@@ -131,6 +133,7 @@ const CreateProductForm = () => {
 
     formData.append("name", values.name);
     formData.append("stockKeepingUnit", values.stockKeepingUnit);
+    formData.append("description", values.description ?? "");
     formData.append("costPrice", values.costPrice.toString());
     formData.append("sellingPrice", values.sellingPrice.toString());
     formData.append("unit", values.unit);
@@ -320,6 +323,23 @@ const CreateProductForm = () => {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (Optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Enter the description"
+                  autoComplete="off"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="grid grid-cols-2 gap-6">
           <FormField
             control={form.control}

@@ -34,11 +34,17 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
             <p>{new Date(product.updatedAt).toLocaleString()}</p>
           </div>
         </div>
-        <img
-          src={getImageUrl(product.imageUrl)}
-          alt={product.name}
-          className="size-60 object-cover rounded-md"
-        />
+        <div className="space-y-4">
+          <img
+            src={getImageUrl(product.imageUrl)}
+            alt={product.name}
+            className="size-60 object-cover rounded-md"
+          />
+          <div className="space-y-1">
+            <p className="font-medium">Description</p>
+            <p>{product.description || "—"}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
