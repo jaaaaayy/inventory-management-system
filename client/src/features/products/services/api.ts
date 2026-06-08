@@ -41,42 +41,35 @@ export const createProduct = async (formData: FormData) => {
   return data;
 };
 
-// export const updateProduct = async (
-//   product: TProductFormSchema,
-//   id: string
-// ) => {
-//   const response = await fetch(`${API_URL}api/products/${id}`, {
-//     method: "PATCH",
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//     credentials: "include",
-//     body: JSON.stringify(product),
-//   });
+export const updateProduct = async (formData: FormData, id: string) => {
+  const response = await fetch(`${API_URL}api/products/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    body: formData,
+  });
 
-//   if (!response.ok) {
-//     throw await response.json();
-//   }
+  if (!response.ok) {
+    throw await response.json();
+  }
 
-//   const data = await response.json();
-//   return data;
-// };
+  const data = await response.json();
+  return data;
+};
 
-// export const deleteProduct = async (id: string) => {
-//   const response = await fetch(`${API_URL}api/products/${id}`, {
-//     method: "DELETE",
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//     credentials: "include",
-//   });
+export const deleteProduct = async (id: string) => {
+  const response = await fetch(`${API_URL}api/products/${id}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
 
-//   if (!response.ok) {
-//     throw await response.json();
-//   }
+  if (!response.ok) {
+    throw await response.json();
+  }
 
-//   const data = await response.json();
-//   return data;
-// };
+  const data = await response.json();
+  return data;
+};

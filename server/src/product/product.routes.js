@@ -4,7 +4,9 @@ import upload from "../config/upload.js";
 import inventoryValidationSchema from "../inventory/inventory.validation.js";
 import { isAuthenticated, validate } from "../utils/middlewares.js";
 import * as productController from "./product.controller.js";
-import productValidationSchema from "./product.validation.js";
+import productValidationSchema, {
+  productUpdateValidationSchema,
+} from "./product.validation.js";
 
 const router = Router();
 
@@ -35,5 +37,17 @@ router.post(
 router.get("/", isAuthenticated, productController.getProducts);
 
 router.get("/:id", isAuthenticated, productController.getProductById);
+
+router.patch(
+  "/:id",
+  isAuthenticated,
+  uploadImage,
+  checkSchema(productUpdateValidationSchema),
+  checkSchema(inventoryValidationSchema),
+  validate(),
+  productController.updateProduct
+);
+
+router.delete("/:id", isAuthenticated, productController.deleteProduct);
 
 export default router;
