@@ -2,11 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TProduct } from "@/features/products/types";
 
-const LOW_STOCK_THRESHOLD = 10;
-
 export function LowStockAlerts({ products }: { products: TProduct[] }) {
   const lowStock = [...products]
-    .filter((product) => Number(product.quantity) <= LOW_STOCK_THRESHOLD)
+    .filter((product) => Number(product.quantity) <= Number(product.reorderPoint))
     .sort((a, b) => a.quantity - b.quantity)
     .slice(0, 5);
 
@@ -15,7 +13,7 @@ export function LowStockAlerts({ products }: { products: TProduct[] }) {
       <CardHeader>
         <CardTitle>Low Stock Alerts</CardTitle>
         <CardDescription>
-          Products with {LOW_STOCK_THRESHOLD} or fewer items in stock.
+          Products at or below their reorder point.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -26,6 +24,7 @@ export function LowStockAlerts({ products }: { products: TProduct[] }) {
                 <TableHead>Product</TableHead>
                 <TableHead>SKU</TableHead>
                 <TableHead className="text-right">Qty</TableHead>
+                <TableHead className="text-right">Reorder Point</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -34,13 +33,14 @@ export function LowStockAlerts({ products }: { products: TProduct[] }) {
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.stockKeepingUnit}</TableCell>
                   <TableCell className="text-right">{product.quantity}</TableCell>
+                  <TableCell className="text-right">{product.reorderPoint}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         ) : (
           <p className="text-sm text-muted-foreground">
-            No products are below the low-stock threshold.
+            No products are at or below their reorder point.
           </p>
         )}
       </CardContent>

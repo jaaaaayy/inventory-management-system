@@ -14,6 +14,7 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
             <p className="font-medium">Selling Price</p>
             <p className="font-medium">Unit</p>
             <p className="font-medium">Quantity</p>
+            <p className="font-medium">Reorder Point</p>
             <p className="font-medium">Category</p>
             <p className="font-medium">Vendor</p>
             <p className="font-medium">LastStockUpdate</p>
@@ -27,6 +28,7 @@ const ProductDetails = ({ product }: { product: TProduct }) => {
             <p>{product.sellingPrice}</p>
             <p>{product.unit}</p>
             <p>{product.quantity}</p>
+            <p>{product.reorderPoint}</p>
             <p>{product.category}</p>
             <p>{product.vendor}</p>
             <p>{new Date(product.lastStockUpdate).toLocaleString()}</p>

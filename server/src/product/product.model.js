@@ -39,6 +39,11 @@ const productSchema = new mongoose.Schema(
       trim: true,
       maxlength: 10,
     },
+    reorderPoint: {
+      type: Number,
+      min: 0,
+      default: 10,
+    },
     imageUrl: {
       required: true,
       type: String,

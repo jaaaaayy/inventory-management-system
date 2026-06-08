@@ -64,6 +64,13 @@ const productValidationSchema = {
       errorMessage: "Unit must be at most 10 characters long.",
     },
   },
+  reorderPoint: {
+    optional: true,
+    isInt: {
+      options: { min: 0 },
+      errorMessage: "Reorder point must be a non-negative integer.",
+    },
+  },
   category: {
     notEmpty: {
       errorMessage: "Category id is required.",
@@ -103,6 +110,7 @@ export const productUpdateValidationSchema = {
   costPrice: productValidationSchema.costPrice,
   sellingPrice: productValidationSchema.sellingPrice,
   unit: productValidationSchema.unit,
+  reorderPoint: productValidationSchema.reorderPoint,
   category: productValidationSchema.category,
   vendor: productValidationSchema.vendor,
   image: {

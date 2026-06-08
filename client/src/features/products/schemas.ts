@@ -38,6 +38,10 @@ export const productFormSchema = z.object({
       message: "Selling price must have up to 2 decimal places",
     }),
   unit: z.string().trim().max(10, "Unit must be at most 10 characters long."),
+  reorderPoint: z.coerce
+    .number()
+    .int({ message: "Reorder point must be an integer." })
+    .min(0, { message: "Reorder point must be 0 or greater." }),
   quantity: z.coerce
     .number()
     .int({ message: "Quantity must be an integer." })

@@ -70,6 +70,7 @@ const EditProductForm = ({ product }: { product: TProduct }) => {
       costPrice: product.costPrice,
       sellingPrice: product.sellingPrice,
       unit: product.unit,
+      reorderPoint: product.reorderPoint,
       category: product.categoryId,
       quantity: product.quantity,
       vendor: product.vendorId,
@@ -147,6 +148,7 @@ const EditProductForm = ({ product }: { product: TProduct }) => {
     formData.append("costPrice", values.costPrice.toString());
     formData.append("sellingPrice", values.sellingPrice.toString());
     formData.append("unit", values.unit);
+    formData.append("reorderPoint", values.reorderPoint.toString());
     formData.append("quantity", values.quantity.toString());
     formData.append("category", values.category);
     formData.append("vendor", values.vendor);
@@ -382,6 +384,26 @@ const EditProductForm = ({ product }: { product: TProduct }) => {
                     {...field}
                     autoComplete="off"
                     required
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="reorderPoint"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reorder Point</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter the reorder point"
+                    {...field}
+                    autoComplete="off"
+                    required
+                    min={0}
                   />
                 </FormControl>
                 <FormMessage />

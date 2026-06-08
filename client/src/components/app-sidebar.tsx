@@ -6,7 +6,7 @@ import {
   Package,
   Package2,
   ShoppingCart,
-  Truck,
+  ShoppingBag,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { NavUser } from "./nav-user";
@@ -68,7 +68,7 @@ const data = {
     {
       title: "Purchases",
       url: "/purchase",
-      icon: Truck,
+      icon: ShoppingBag,
       items: [
         {
           title: "Vendors",
