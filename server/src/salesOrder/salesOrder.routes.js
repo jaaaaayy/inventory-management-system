@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { validate, isAuthenticated } from "../utils/middlewares.js";
 import { checkSchema } from "express-validator";
-import { salesOrderValidationSchema } from "./salesOrder.validation.js";
+import {
+  salesOrderStatusValidationSchema,
+  salesOrderValidationSchema,
+} from "./salesOrder.validation.js";
 import * as SalesOrderController from "./salesOrder.controller.js";
 import { salesItemValidationSchema } from "../salesItem/salesItem.validation.js";
 
@@ -19,5 +22,13 @@ router.post(
 );
 
 router.get("/:id", isAuthenticated, SalesOrderController.getSalesOrder);
+
+router.patch(
+  "/:id/status",
+  isAuthenticated,
+  checkSchema(salesOrderStatusValidationSchema),
+  validate(),
+  SalesOrderController.updateSalesOrderStatus
+);
 
 export default router;

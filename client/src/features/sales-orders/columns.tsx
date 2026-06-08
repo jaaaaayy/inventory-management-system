@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TSalesItem, TSalesOrder } from "./types";
 import { ActionsCell } from "./components/action-cell";
+import SalesOrderStatusBadge from "./components/status-badge";
 
 export const columns: ColumnDef<TSalesOrder>[] = [
   {
@@ -24,6 +25,9 @@ export const columns: ColumnDef<TSalesOrder>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => (
+      <SalesOrderStatusBadge status={row.getValue<string>("status")} />
+    ),
   },
   {
     accessorKey: "items",
@@ -48,6 +52,8 @@ export const columns: ColumnDef<TSalesOrder>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ActionsCell id={row.original._id} />,
+    cell: ({ row }) => (
+      <ActionsCell id={row.original._id} status={row.original.status} />
+    ),
   },
 ];

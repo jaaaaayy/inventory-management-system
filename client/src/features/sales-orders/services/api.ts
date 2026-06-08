@@ -45,3 +45,21 @@ export const fetchSalesOrder = async (id: string) => {
   const data = await response.json();
   return data;
 };
+
+export const updateSalesOrderStatus = async (id: string, status: string) => {
+  const response = await fetch(`${API_URL}api/sales/orders/${id}/status`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
+  return data;
+};

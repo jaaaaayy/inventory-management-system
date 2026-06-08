@@ -6,6 +6,13 @@ import SalesOrder from "./salesOrder.model.js";
 import mongoose from "mongoose";
 import { withTransaction } from "../config/database.js";
 
+const STATUS_TRANSITIONS = {
+  Pending: ["Shipped", "Cancelled"],
+  Shipped: ["Delivered", "Cancelled"],
+  Delivered: [],
+  Cancelled: [],
+};
+
 export const createSalesOrder = async (request, response) => {
   try {
     const { customer, orderDate, deliveryDate, items } = request.body;
@@ -247,6 +254,86 @@ export const getAllSalesOrders = async (request, response) => {
     console.log(error.message);
     response.status(500).json({
       message: "Failed to get all sales orders. Please try again.",
+    });
+  }
+};
+
+export const updateSalesOrderStatus = async (request, response) => {
+  const {
+    params: { id },
+    body: { status },
+  } = request;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({
+        message: "Invalid sales order id.",
+      });
+    }
+
+    const salesOrder = await SalesOrder.findOne({
+      _id: id,
+      organization: request.organizationId,
+    });
+    if (!salesOrder) {
+      return response.status(404).json({ message: "Sales order not found." });
+    }
+
+    if (status === salesOrder.status) {
+      return response.status(400).json({
+        message: `Sales order is already ${status}.`,
+      });
+    }
+
+    const allowedTransitions = STATUS_TRANSITIONS[salesOrder.status] || [];
+    if (!allowedTransitions.includes(status)) {
+      return response.status(400).json({
+        message: `Cannot change status from ${salesOrder.status} to ${status}.`,
+      });
+    }
+
+    const updatedSalesOrder = await withTransaction(async (session) => {
+      if (status === "Cancelled") {
+        const salesItems = await SalesItem.find({
+          salesOrder: id,
+          organization: request.organizationId,
+        }).session(session);
+
+        const productQuantityMap = new Map();
+        for (const item of salesItems) {
+          const productId = item.product.toString();
+          productQuantityMap.set(
+            productId,
+            (productQuantityMap.get(productId) || 0) + item.quantity
+          );
+        }
+
+        for (const [productId, totalQuantity] of productQuantityMap) {
+          await Inventory.findOneAndUpdate(
+            { organization: request.organizationId, product: productId },
+            {
+              $inc: { quantity: totalQuantity },
+              $set: { lastStockUpdate: new Date() },
+            },
+            { session }
+          );
+        }
+      }
+
+      salesOrder.status = status;
+      await salesOrder.save({ session });
+
+      return salesOrder;
+    });
+
+    response.json({
+      message: "Sales order status updated successfully.",
+      salesOrder: updatedSalesOrder,
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).json({
+      message: "Failed to update sales order status. Please try again.",
     });
   }
 };

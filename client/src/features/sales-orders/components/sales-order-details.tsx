@@ -8,11 +8,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getImageUrl } from "@/lib/images";
+import SalesOrderStatusBadge from "./status-badge";
 
 const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Sales Order</h1>
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-semibold">Sales Order</h1>
+        <SalesOrderStatusBadge status={salesOrder.status} />
+      </div>
       <div className="space-y-6 text-sm">
         <div className="grid grid-cols-2 gap-6">
           <div className="flex gap-6">

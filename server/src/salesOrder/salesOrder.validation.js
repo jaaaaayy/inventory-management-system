@@ -32,3 +32,16 @@ export const salesOrderValidationSchema = {
     },
   },
 };
+
+export const salesOrderStatusValidationSchema = {
+  status: {
+    notEmpty: {
+      errorMessage: "Status is required.",
+    },
+    isIn: {
+      options: [["Pending", "Shipped", "Delivered", "Cancelled"]],
+      errorMessage:
+        "Status must be one of 'Pending', 'Shipped', 'Delivered', or 'Cancelled'.",
+    },
+  },
+};
