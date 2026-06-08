@@ -2,7 +2,7 @@ import { UseFormReset, UseFormSetFocus } from "react-hook-form";
 import { TProductFormSchema, TProductUpdateFormSchema } from "../types";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProduct, deleteProduct, updateProduct } from "./api";
+import { adjustStock, createProduct, deleteProduct, updateProduct } from "./api";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
 import { TFormError } from "@/types";
@@ -85,6 +85,41 @@ export const useUpdateProduct = (
         return;
       }
 
+      toast.error(error.message, {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+    },
+  });
+};
+
+export const useAdjustStock = (
+  id: string,
+  setOpenAdjustDialog: Dispatch<SetStateAction<boolean>>,
+  setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: {
+      type: "increase" | "decrease" | "set";
+      quantity: number;
+    }) => adjustStock(id, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", id] });
+      setOpenAdjustDialog(false);
+      setOpenActionsDropdown(false);
+      toast.success(data.message, {
+        style: {
+          backgroundColor: "green",
+          color: "white",
+        },
+      });
+    },
+    onError: (error: TFormError) => {
       toast.error(error.message, {
         style: {
           backgroundColor: "red",

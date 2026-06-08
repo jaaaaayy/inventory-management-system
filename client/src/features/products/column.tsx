@@ -63,6 +63,12 @@ export const columns: ColumnDef<TProduct>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ActionsCell id={row.original._id} />,
+    cell: ({ row }) => (
+      <ActionsCell
+        id={row.original._id}
+        name={row.original.name}
+        quantity={row.original.quantity}
+      />
+    ),
   },
 ];

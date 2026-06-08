@@ -10,9 +10,20 @@ import { MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import DeleteProductDialog from "./delete-product-dialog";
+import AdjustStockDialog from "./adjust-stock-dialog";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
-export const ActionsCell = ({ id }: { id: string }) => {
+export const ActionsCell = ({
+  id,
+  name,
+  quantity,
+}: {
+  id: string;
+  name: string;
+  quantity: number;
+}) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openAdjustDialog, setOpenAdjustDialog] = useState(false);
   const [openActionsDropdown, setOpenActionsDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -35,6 +46,15 @@ export const ActionsCell = ({ id }: { id: string }) => {
         <DropdownMenuItem onClick={() => navigate(`/products/${id}/edit`)}>
           Edit product
         </DropdownMenuItem>
+        <AdjustStockDialog
+          openAdjustDialog={openAdjustDialog}
+          setOpenAdjustDialog={setOpenAdjustDialog}
+          setOpenActionsDropdown={setOpenActionsDropdown}
+          id={id}
+          name={name}
+          currentQuantity={quantity}
+        />
+        <DropdownMenuSeparator />
         <DeleteProductDialog
           openDeleteDialog={openDeleteDialog}
           setOpenDeleteDialog={setOpenDeleteDialog}
