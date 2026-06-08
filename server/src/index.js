@@ -8,6 +8,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import { validateS3Config } from "./config/s3.js";
+import { apiLimiter } from "./utils/rateLimiters.js";
 
 // Validate required environment variables
 if (!process.env.SESSION_SECRET) {
@@ -55,6 +56,9 @@ app.use("/api", (request, response, next) => {
   response.set("Cache-Control", "no-store");
   next();
 });
+
+// Rate limit all API routes
+app.use("/api", apiLimiter);
 
 const createSessionMiddleware = () =>
   session({

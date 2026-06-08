@@ -6,11 +6,13 @@ import {
   loginValidationSchema,
   registerValidationSchema,
 } from "./auth.validation.js";
+import { authLimiter } from "../utils/rateLimiters.js";
 
 const router = Router();
 
 router.post(
   "/register",
+  authLimiter,
   checkSchema(registerValidationSchema),
   validate(),
   authController.register
@@ -18,6 +20,7 @@ router.post(
 
 router.post(
   "/login",
+  authLimiter,
   checkSchema(loginValidationSchema),
   validate(),
   authController.login

@@ -7,6 +7,7 @@ import {
   Package2,
   ShoppingCart,
   ShoppingBag,
+  FileText,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { NavUser } from "./nav-user";
@@ -84,6 +85,11 @@ const data = {
       title: "Categories",
       url: "/categories",
       icon: Folder,
+    },
+    {
+      title: "Reports",
+      url: "/reports",
+      icon: FileText,
     },
   ],
 };

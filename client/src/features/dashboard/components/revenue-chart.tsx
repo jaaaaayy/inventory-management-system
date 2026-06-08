@@ -25,6 +25,10 @@ const chartConfig = {
 export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
   const chartData = salesOrders.reduce(
     (acc: { date: string; label: string; revenue: number }[], order) => {
+      if (order.status === "Cancelled") {
+        return acc;
+      }
+
       const orderDate = new Date(order.orderDate);
       const date = orderDate.toISOString().slice(0, 10);
       const existing = acc.find((item) => item.date === date);

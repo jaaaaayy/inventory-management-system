@@ -1,0 +1,25 @@
+import { rateLimit } from "express-rate-limit";
+
+export const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 500,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (request, response) => {
+    response.status(429).json({
+      message: "Too many requests. Please try again later.",
+    });
+  },
+});
+
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (request, response) => {
+    response.status(429).json({
+      message: "Too many attempts. Please try again later.",
+    });
+  },
+});

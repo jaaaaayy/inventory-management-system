@@ -4,6 +4,8 @@ import * as stockMovementController from "./stockMovement.controller.js";
 
 const router = Router();
 
+router.get("/", isAuthenticated, stockMovementController.getStockMovements);
+
 router.get(
   "/:productId",
   isAuthenticated,
