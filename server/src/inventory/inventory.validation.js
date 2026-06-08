@@ -28,6 +28,16 @@ export const inventoryAdjustValidationSchema = {
       errorMessage: "Quantity must be a non-negative integer.",
     },
   },
+  reason: {
+    optional: true,
+    isString: {
+      errorMessage: "Reason must be a string.",
+    },
+    isLength: {
+      options: { max: 500 },
+      errorMessage: "Reason must be at most 500 characters long.",
+    },
+  },
 };
 
 export default inventoryValidationSchema;

@@ -8,6 +8,7 @@ import vendorRouter from "./vendor/vendor.routes.js";
 import salesOrderRouter from "./salesOrder/salesOrder.routes.js";
 import inventoryRouter from "./inventory/inventory.routes.js";
 import purchaseOrderRouter from "./purchaseOrder/purchaseOrder.routes.js";
+import stockMovementRouter from "./stockMovement/stockMovement.routes.js";
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use("/api/vendors", vendorRouter);
 router.use("/api/sales/orders", salesOrderRouter);
 router.use("/api/inventory", inventoryRouter);
 router.use("/api/purchase/orders", purchaseOrderRouter);
+router.use("/api/stock-movements", stockMovementRouter);
 
 export default router;

@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import Inventory from "./inventory.model.js";
 import Product from "../product/product.model.js";
+import { withTransaction } from "../config/database.js";
+import { recordStockMovement } from "../stockMovement/stockMovement.service.js";
 
 export const adjustStock = async (request, response) => {
   const {
     params: { productId },
-    body: { type, quantity },
+    body: { type, quantity, reason },
   } = request;
 
   try {
@@ -50,13 +52,30 @@ export const adjustStock = async (request, response) => {
       });
     }
 
-    inventory.quantity = newQuantity;
-    inventory.lastStockUpdate = new Date();
-    await inventory.save();
+    const delta = newQuantity - inventory.quantity;
+
+    const updatedInventory = await withTransaction(async (session) => {
+      inventory.quantity = newQuantity;
+      inventory.lastStockUpdate = new Date();
+      await inventory.save({ session });
+
+      await recordStockMovement(session, {
+        organization: request.organizationId,
+        product: productId,
+        type: "Adjustment",
+        delta,
+        quantityAfter: newQuantity,
+        reason: reason || "",
+        user: request.userId,
+        referenceType: "Manual",
+      });
+
+      return inventory;
+    });
 
     response.json({
       message: "Stock adjusted successfully.",
-      inventory,
+      inventory: updatedInventory,
     });
   } catch (error) {
     console.log(error.message);

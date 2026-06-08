@@ -14,6 +14,7 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFetchProduct } from "../services/queries";
 import ProductDetails from "../components/product-details";
+import StockMovements from "../components/stock-movements";
 
 const ViewProduct = () => {
   const navigate = useNavigate();
@@ -55,7 +56,10 @@ const ViewProduct = () => {
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <ProductDetails product={data.product} />
+          <div className="space-y-8">
+            <ProductDetails product={data.product} />
+            <StockMovements productId={data.product._id} />
+          </div>
         )}
       </div>
     </>

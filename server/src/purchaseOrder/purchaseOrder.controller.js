@@ -5,6 +5,7 @@ import PurchaseItem from "../purchaseItem/purchaseItem.model.js";
 import PurchaseOrder from "./purchaseOrder.model.js";
 import mongoose from "mongoose";
 import { withTransaction } from "../config/database.js";
+import { recordStockMovement } from "../stockMovement/stockMovement.service.js";
 
 const STATUS_TRANSITIONS = {
   Pending: ["Received", "Cancelled"],
@@ -272,14 +273,25 @@ export const updatePurchaseOrderStatus = async (request, response) => {
         }
 
         for (const [productId, totalQuantity] of productQuantityMap) {
-          await Inventory.findOneAndUpdate(
+          const updatedInventory = await Inventory.findOneAndUpdate(
             { organization: request.organizationId, product: productId },
             {
               $inc: { quantity: totalQuantity },
               $set: { lastStockUpdate: new Date() },
             },
-            { session }
+            { session, new: true }
           );
+
+          await recordStockMovement(session, {
+            organization: request.organizationId,
+            product: productId,
+            type: "Purchase",
+            delta: totalQuantity,
+            quantityAfter: updatedInventory.quantity,
+            user: request.userId,
+            reference: id,
+            referenceType: "PurchaseOrder",
+          });
         }
       }
 

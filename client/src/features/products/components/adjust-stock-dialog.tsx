@@ -11,6 +11,7 @@ import {
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useAdjustStock } from "../services/mutations";
@@ -42,6 +43,7 @@ const AdjustStockDialog = ({
 }: AdjustStockDialogProps) => {
   const [type, setType] = useState<AdjustmentType>("increase");
   const [quantity, setQuantity] = useState("");
+  const [reason, setReason] = useState("");
 
   const { mutateAsync: adjustStockMutation, isPending } = useAdjustStock(
     id,
@@ -63,9 +65,10 @@ const AdjustStockDialog = ({
   const isInvalidResult = resultingQuantity < 0;
 
   const handleAdjustStock = async () => {
-    await adjustStockMutation({ type, quantity: amount });
+    await adjustStockMutation({ type, quantity: amount, reason });
     setQuantity("");
     setType("increase");
+    setReason("");
   };
 
   return (
@@ -109,6 +112,16 @@ const AdjustStockDialog = ({
               placeholder="Enter the quantity"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
+              autoComplete="off"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="adjust-reason">Reason (Optional)</Label>
+            <Textarea
+              id="adjust-reason"
+              placeholder="e.g. Damaged stock, recount, etc."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
               autoComplete="off"
             />
           </div>

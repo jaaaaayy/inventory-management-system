@@ -106,10 +106,12 @@ export const useAdjustStock = (
     mutationFn: (payload: {
       type: "increase" | "decrease" | "set";
       quantity: number;
+      reason?: string;
     }) => adjustStock(id, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", id] });
+      queryClient.invalidateQueries({ queryKey: ["stockMovements", id] });
       setOpenAdjustDialog(false);
       setOpenActionsDropdown(false);
       toast.success(data.message, {

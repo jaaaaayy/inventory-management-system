@@ -56,9 +56,29 @@ export const updateProduct = async (formData: FormData, id: string) => {
   return data;
 };
 
+export const fetchStockMovements = async (productId: string) => {
+  const response = await fetch(
+    `${API_URL}api/stock-movements/${productId}`,
+    {
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw await response.json();
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 export const adjustStock = async (
   productId: string,
-  payload: { type: "increase" | "decrease" | "set"; quantity: number }
+  payload: {
+    type: "increase" | "decrease" | "set";
+    quantity: number;
+    reason?: string;
+  }
 ) => {
   const response = await fetch(
     `${API_URL}api/inventory/${productId}/adjust`,

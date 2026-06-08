@@ -5,6 +5,7 @@ import SalesItem from "../salesItem/salesItem.model.js";
 import SalesOrder from "./salesOrder.model.js";
 import mongoose from "mongoose";
 import { withTransaction } from "../config/database.js";
+import { recordStockMovement } from "../stockMovement/stockMovement.service.js";
 
 const STATUS_TRANSITIONS = {
   Pending: ["Shipped", "Cancelled"],
@@ -50,6 +51,7 @@ export const createSalesOrder = async (request, response) => {
       const newSalesItems = [];
       let totalAmount = 0;
       const productQuantityMap = new Map();
+      const quantityAfterMap = new Map();
       const productIds = [...new Set(items.map((item) => item.product))];
       const products = await Product.find({
         _id: { $in: productIds },
@@ -117,6 +119,8 @@ export const createSalesOrder = async (request, response) => {
           error.statusCode = 400;
           throw error;
         }
+
+        quantityAfterMap.set(productId, updatedInventory.quantity);
       }
 
       const newSalesOrder = new SalesOrder({
@@ -135,6 +139,19 @@ export const createSalesOrder = async (request, response) => {
       const savedSalesItems = await SalesItem.insertMany(newSalesItems, {
         session,
       });
+
+      for (const [productId, totalQuantity] of productQuantityMap) {
+        await recordStockMovement(session, {
+          organization: request.organizationId,
+          product: productId,
+          type: "Sale",
+          delta: -totalQuantity,
+          quantityAfter: quantityAfterMap.get(productId),
+          user: request.userId,
+          reference: newSalesOrder._id,
+          referenceType: "SalesOrder",
+        });
+      }
 
       return {
         salesOrder: newSalesOrder,
@@ -309,14 +326,25 @@ export const updateSalesOrderStatus = async (request, response) => {
         }
 
         for (const [productId, totalQuantity] of productQuantityMap) {
-          await Inventory.findOneAndUpdate(
+          const updatedInventory = await Inventory.findOneAndUpdate(
             { organization: request.organizationId, product: productId },
             {
               $inc: { quantity: totalQuantity },
               $set: { lastStockUpdate: new Date() },
             },
-            { session }
+            { session, new: true }
           );
+
+          await recordStockMovement(session, {
+            organization: request.organizationId,
+            product: productId,
+            type: "Sale Cancelled",
+            delta: totalQuantity,
+            quantityAfter: updatedInventory.quantity,
+            user: request.userId,
+            reference: id,
+            referenceType: "SalesOrder",
+          });
         }
       }
 
