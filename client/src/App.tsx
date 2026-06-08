@@ -22,6 +22,9 @@ import SalesOrders from "./features/sales-orders/pages/sales-orders";
 import ViewProduct from "./features/products/pages/view-product";
 import CreateSalesOrder from "./features/sales-orders/pages/create-sales-order";
 import ViewSalesOrder from "./features/sales-orders/pages/view-sales-order";
+import PurchaseOrders from "./features/purchase-orders/pages/purchase-orders";
+import CreatePurchaseOrder from "./features/purchase-orders/pages/create-purchase-order";
+import ViewPurchaseOrder from "./features/purchase-orders/pages/view-purchase-order";
 import ProtectedRoute from "./routes/protected-route";
 import PublicRoute from "./routes/public-route";
 
@@ -51,6 +54,15 @@ const App = () => {
             <Route path="/sales/orders" element={<SalesOrders />} />
             <Route path="/sales/orders/new" element={<CreateSalesOrder />} />
             <Route path="/sales/orders/:id" element={<ViewSalesOrder />} />
+            <Route path="/purchase/orders" element={<PurchaseOrders />} />
+            <Route
+              path="/purchase/orders/new"
+              element={<CreatePurchaseOrder />}
+            />
+            <Route
+              path="/purchase/orders/:id"
+              element={<ViewPurchaseOrder />}
+            />
             <Route path="/categories" element={<Categories />} />
             <Route path="/categories/new" element={<CreateCategory />} />
             <Route path="/categories/:id" element={<ViewCategory />} />
