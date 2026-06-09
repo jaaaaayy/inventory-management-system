@@ -16,7 +16,7 @@ const STATUS_TRANSITIONS = {
 
 export const createSalesOrder = async (request, response) => {
   try {
-    const { customer, orderDate, deliveryDate, items } = request.body;
+    const { customer, orderDate, deliveryDate, items, notes } = request.body;
     const errors = {};
 
     const startOfDay = (d) => {
@@ -88,6 +88,7 @@ export const createSalesOrder = async (request, response) => {
           organization: request.organizationId,
           product: item.product,
           quantity,
+          unitPrice: sellingPrice,
           totalPrice,
         });
       }
@@ -123,11 +124,19 @@ export const createSalesOrder = async (request, response) => {
         quantityAfterMap.set(productId, updatedInventory.quantity);
       }
 
+      const orderCount = await SalesOrder.countDocuments({
+        organization: request.organizationId,
+      }).session(session);
+      const orderNumber = `SO-${String(orderCount + 1).padStart(6, "0")}`;
+
       const newSalesOrder = new SalesOrder({
         organization: request.organizationId,
+        orderNumber,
         customer,
+        createdBy: request.userId,
         orderDate,
         deliveryDate,
+        notes,
         totalAmount,
       });
       await newSalesOrder.save({ session });
@@ -239,6 +248,7 @@ export const getAllSalesOrders = async (request, response) => {
                   ],
                 },
                 quantity: "$$item.quantity",
+                unitPrice: { $toDouble: "$$item.unitPrice" },
                 totalPrice: "$$item.totalPrice",
               },
             },
@@ -249,6 +259,7 @@ export const getAllSalesOrders = async (request, response) => {
         $project: {
           _id: 1,
           organization: 1,
+          orderNumber: 1,
           customer: {
             $concat: ["$customer.firstName", " ", "$customer.lastName"],
           },
@@ -256,6 +267,7 @@ export const getAllSalesOrders = async (request, response) => {
           deliveryDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
+          notes: 1,
           items: 1,
           createdAt: 1,
           updatedAt: 1,
@@ -431,6 +443,7 @@ export const getSalesOrder = async (request, response) => {
                   ],
                 },
                 quantity: "$$item.quantity",
+                unitPrice: { $toDouble: "$$item.unitPrice" },
                 totalPrice: { $toDouble: "$$item.totalPrice" },
               },
             },
@@ -438,14 +451,43 @@ export const getSalesOrder = async (request, response) => {
         },
       },
       {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+      {
+        $unwind: {
+          path: "$createdBy",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           _id: 1,
           organization: 1,
+          orderNumber: 1,
           customer: 1,
+          createdBy: {
+            $cond: [
+              "$createdBy",
+              {
+                $concat: [
+                  "$createdBy.firstName",
+                  " ",
+                  "$createdBy.lastName",
+                ],
+              },
+              null,
+            ],
+          },
           orderDate: 1,
           deliveryDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
+          notes: 1,
           items: 1,
           createdAt: 1,
           updatedAt: 1,

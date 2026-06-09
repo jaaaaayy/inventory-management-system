@@ -50,6 +50,7 @@ import {
 import { TProduct } from "@/features/products/types";
 import { useFetchProductList } from "@/features/products/services/queries";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { TFormError } from "@/types";
 import InputError from "@/components/input-error";
 import { getImageUrl } from "@/lib/images";
@@ -273,6 +274,25 @@ const CreatePurchaseOrderForm = () => {
                 </FormControl>
                 <FormMessage />
                 <InputError message={formError?.errors?.expectedDate} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Optional notes for this purchase order..."
+                    className="resize-none"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+                <InputError message={formError?.errors?.notes} />
               </FormItem>
             )}
           />

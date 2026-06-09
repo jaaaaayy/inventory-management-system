@@ -10,6 +10,8 @@ export type TProduct = {
   imageUrl: string;
   categoryId: string;
   vendorId: string;
+  reservedQuantity: number;
+  availableQuantity: number;
   lastStockUpdate: string;
   createdAt: string;
   updatedAt: string;

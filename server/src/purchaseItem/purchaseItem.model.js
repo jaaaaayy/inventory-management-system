@@ -21,6 +21,15 @@ const PurchaseItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    receivedQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    unitPrice: {
+      type: mongoose.Schema.Types.Decimal128,
+      required: true,
+    },
     totalPrice: {
       type: mongoose.Schema.Types.Decimal128,
       default: null,

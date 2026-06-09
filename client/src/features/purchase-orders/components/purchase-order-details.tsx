@@ -18,7 +18,12 @@ const PurchaseOrderDetails = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold">Purchase Order</h1>
+        <h1 className="text-2xl font-semibold">
+          Purchase Order{" "}
+          <span className="text-muted-foreground">
+            {purchaseOrder.orderNumber}
+          </span>
+        </h1>
         <PurchaseOrderStatusBadge status={purchaseOrder.status} />
       </div>
       <div className="space-y-6 text-sm">
@@ -27,10 +32,18 @@ const PurchaseOrderDetails = ({
             <div className="space-y-6">
               <p className="font-medium">Order Date</p>
               <p className="font-medium">Expected Date</p>
+              <p className="font-medium">Received Date</p>
+              <p className="font-medium">Created By</p>
             </div>
             <div className="space-y-6">
               <p>{new Date(purchaseOrder.orderDate).toLocaleDateString()}</p>
               <p>{new Date(purchaseOrder.expectedDate).toLocaleDateString()}</p>
+              <p>
+                {purchaseOrder.receivedDate
+                  ? new Date(purchaseOrder.receivedDate).toLocaleDateString()
+                  : "—"}
+              </p>
+              <p>{purchaseOrder.createdBy ?? "—"}</p>
             </div>
           </div>
           <div className="space-y-6">
@@ -45,11 +58,19 @@ const PurchaseOrderDetails = ({
             </div>
           </div>
         </div>
+        {purchaseOrder.notes && (
+          <div className="space-y-1">
+            <p className="font-medium">Notes</p>
+            <p className="text-muted-foreground">{purchaseOrder.notes}</p>
+          </div>
+        )}
         <Table className="border">
           <TableHeader>
             <TableRow>
               <TableHead className="border">Item</TableHead>
               <TableHead className="border">Quantity</TableHead>
+              <TableHead className="border">Received</TableHead>
+              <TableHead className="border">Unit Price</TableHead>
               <TableHead className="border">Amount</TableHead>
             </TableRow>
           </TableHeader>
@@ -67,6 +88,15 @@ const PurchaseOrderDetails = ({
                   </div>
                 </TableCell>
                 <TableCell className="border">{item.quantity}</TableCell>
+                <TableCell className="border">
+                  {item.receivedQuantity} / {item.quantity}
+                </TableCell>
+                <TableCell className="border">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "PHP",
+                  }).format(item.unitPrice)}
+                </TableCell>
                 <TableCell className="border">
                   {new Intl.NumberFormat("en-US", {
                     style: "currency",

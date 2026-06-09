@@ -26,10 +26,21 @@ export const purchaseOrderValidationSchema = {
   status: {
     optional: true,
     isIn: {
-      options: [["Pending", "Received", "Cancelled"]],
+      options: [["Pending", "Partially Received", "Received", "Cancelled"]],
       errorMessage:
-        "Status must be one of 'Pending', 'Received', or 'Cancelled'.",
+        "Status must be one of 'Pending', 'Partially Received', 'Received', or 'Cancelled'.",
     },
+  },
+  notes: {
+    optional: true,
+    isString: {
+      errorMessage: "Notes must be a string.",
+    },
+    isLength: {
+      options: { max: 500 },
+      errorMessage: "Notes cannot exceed 500 characters.",
+    },
+    trim: true,
   },
 };
 
@@ -39,9 +50,28 @@ export const purchaseOrderStatusValidationSchema = {
       errorMessage: "Status is required.",
     },
     isIn: {
-      options: [["Pending", "Received", "Cancelled"]],
+      options: [["Pending", "Partially Received", "Received", "Cancelled"]],
       errorMessage:
-        "Status must be one of 'Pending', 'Received', or 'Cancelled'.",
+        "Status must be one of 'Pending', 'Partially Received', 'Received', or 'Cancelled'.",
+    },
+  },
+  items: {
+    optional: true,
+    isArray: {
+      errorMessage: "Items must be an array of received items.",
+    },
+  },
+  "items.*.purchaseItemId": {
+    optional: true,
+    isMongoId: {
+      errorMessage: "Purchase item id must be a valid MongoDB ObjectId.",
+    },
+  },
+  "items.*.quantity": {
+    optional: true,
+    isInt: {
+      options: { min: 1 },
+      errorMessage: "Received quantity must be a positive integer.",
     },
   },
 };

@@ -8,14 +8,15 @@ import { withTransaction } from "../config/database.js";
 import { recordStockMovement } from "../stockMovement/stockMovement.service.js";
 
 const STATUS_TRANSITIONS = {
-  Pending: ["Received", "Cancelled"],
+  Pending: ["Partially Received", "Received", "Cancelled"],
+  "Partially Received": ["Received", "Cancelled"],
   Received: [],
   Cancelled: [],
 };
 
 export const createPurchaseOrder = async (request, response) => {
   try {
-    const { vendor, orderDate, expectedDate, items } = request.body;
+    const { vendor, orderDate, expectedDate, items, notes } = request.body;
     const errors = {};
 
     const startOfDay = (d) => {
@@ -80,15 +81,24 @@ export const createPurchaseOrder = async (request, response) => {
           organization: request.organizationId,
           product: item.product,
           quantity,
+          unitPrice: costPrice,
           totalPrice,
         });
       }
 
+      const orderCount = await PurchaseOrder.countDocuments({
+        organization: request.organizationId,
+      }).session(session);
+      const orderNumber = `PO-${String(orderCount + 1).padStart(6, "0")}`;
+
       const newPurchaseOrder = new PurchaseOrder({
         organization: request.organizationId,
+        orderNumber,
         vendor,
+        createdBy: request.userId,
         orderDate,
         expectedDate,
+        notes,
         totalAmount,
       });
       await newPurchaseOrder.save({ session });
@@ -188,6 +198,8 @@ export const getAllPurchaseOrders = async (request, response) => {
                   ],
                 },
                 quantity: "$$item.quantity",
+                receivedQuantity: "$$item.receivedQuantity",
+                unitPrice: { $toDouble: "$$item.unitPrice" },
                 totalPrice: "$$item.totalPrice",
               },
             },
@@ -198,11 +210,14 @@ export const getAllPurchaseOrders = async (request, response) => {
         $project: {
           _id: 1,
           organization: 1,
+          orderNumber: 1,
           vendor: "$vendor.name",
           orderDate: 1,
           expectedDate: 1,
+          receivedDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
+          notes: 1,
           items: 1,
           createdAt: 1,
           updatedAt: 1,
@@ -225,7 +240,7 @@ export const getAllPurchaseOrders = async (request, response) => {
 export const updatePurchaseOrderStatus = async (request, response) => {
   const {
     params: { id },
-    body: { status },
+    body: { status, items: receivedItems },
   } = request;
 
   try {
@@ -257,18 +272,70 @@ export const updatePurchaseOrderStatus = async (request, response) => {
     }
 
     const updatedPurchaseOrder = await withTransaction(async (session) => {
-      if (status === "Received") {
+      let effectiveStatus = status;
+
+      if (status === "Received" || status === "Partially Received") {
         const purchaseItems = await PurchaseItem.find({
           purchaseOrder: id,
           organization: request.organizationId,
         }).session(session);
 
+        // Map of purchaseItemId -> quantity to receive in this operation.
+        // When no explicit items are provided, receive everything outstanding.
+        const receiveMap = new Map();
+        if (Array.isArray(receivedItems) && receivedItems.length > 0) {
+          const itemById = new Map(
+            purchaseItems.map((item) => [item._id.toString(), item])
+          );
+          for (const received of receivedItems) {
+            const itemId = String(received.purchaseItemId);
+            const item = itemById.get(itemId);
+            if (!item) {
+              const error = new Error(
+                `Purchase item ${itemId} does not belong to this purchase order.`
+              );
+              error.statusCode = 400;
+              throw error;
+            }
+            const quantity = Number(received.quantity);
+            const outstanding = item.quantity - item.receivedQuantity;
+            if (quantity <= 0 || quantity > outstanding) {
+              const error = new Error(
+                `Invalid received quantity for item ${itemId}. Outstanding: ${outstanding}.`
+              );
+              error.statusCode = 400;
+              throw error;
+            }
+            receiveMap.set(itemId, quantity);
+          }
+        } else {
+          for (const item of purchaseItems) {
+            const outstanding = item.quantity - item.receivedQuantity;
+            if (outstanding > 0) {
+              receiveMap.set(item._id.toString(), outstanding);
+            }
+          }
+        }
+
+        if (receiveMap.size === 0) {
+          const error = new Error("No outstanding quantity to receive.");
+          error.statusCode = 400;
+          throw error;
+        }
+
+        // Apply per-item received quantities and aggregate inventory deltas by product.
         const productQuantityMap = new Map();
         for (const item of purchaseItems) {
+          const delta = receiveMap.get(item._id.toString()) || 0;
+          if (delta === 0) continue;
+
+          item.receivedQuantity += delta;
+          await item.save({ session });
+
           const productId = item.product.toString();
           productQuantityMap.set(
             productId,
-            (productQuantityMap.get(productId) || 0) + item.quantity
+            (productQuantityMap.get(productId) || 0) + delta
           );
         }
 
@@ -293,9 +360,18 @@ export const updatePurchaseOrderStatus = async (request, response) => {
             referenceType: "PurchaseOrder",
           });
         }
+
+        // Derive the real status from completeness rather than trusting the request.
+        const fullyReceived = purchaseItems.every(
+          (item) => item.receivedQuantity >= item.quantity
+        );
+        effectiveStatus = fullyReceived ? "Received" : "Partially Received";
+        if (fullyReceived) {
+          purchaseOrder.receivedDate = new Date();
+        }
       }
 
-      purchaseOrder.status = status;
+      purchaseOrder.status = effectiveStatus;
       await purchaseOrder.save({ session });
 
       return purchaseOrder;
@@ -378,6 +454,8 @@ export const getPurchaseOrder = async (request, response) => {
                   ],
                 },
                 quantity: "$$item.quantity",
+                receivedQuantity: "$$item.receivedQuantity",
+                unitPrice: { $toDouble: "$$item.unitPrice" },
                 totalPrice: { $toDouble: "$$item.totalPrice" },
               },
             },
@@ -385,14 +463,44 @@ export const getPurchaseOrder = async (request, response) => {
         },
       },
       {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+      {
+        $unwind: {
+          path: "$createdBy",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           _id: 1,
           organization: 1,
+          orderNumber: 1,
           vendor: 1,
+          createdBy: {
+            $cond: [
+              "$createdBy",
+              {
+                $concat: [
+                  "$createdBy.firstName",
+                  " ",
+                  "$createdBy.lastName",
+                ],
+              },
+              null,
+            ],
+          },
           orderDate: 1,
           expectedDate: 1,
+          receivedDate: 1,
           totalAmount: { $toDouble: "$totalAmount" },
           status: 1,
+          notes: 1,
           items: 1,
           createdAt: 1,
           updatedAt: 1,

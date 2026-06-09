@@ -15,4 +15,9 @@ export const salesOrderFormSchema = z.object({
       })
     )
     .min(1, { message: "At least one item is required." }),
+  notes: z
+    .string()
+    .trim()
+    .max(500, { message: "Notes cannot exceed 500 characters." })
+    .optional(),
 });

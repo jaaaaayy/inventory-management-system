@@ -12,7 +12,8 @@ export type TFormError = {
       | "vendor"
       | "orderDate"
       | "deliveryDate"
-      | "expectedDate",
+      | "expectedDate"
+      | "notes",
       string
     >
   >;

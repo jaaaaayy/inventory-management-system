@@ -25,7 +25,7 @@ export const ActionsCell = ({
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const navigate = useNavigate();
 
-  const isPending = status === "Pending";
+  const canModify = status === "Pending" || status === "Partially Received";
 
   return (
     <DropdownMenu
@@ -43,7 +43,7 @@ export const ActionsCell = ({
         <DropdownMenuItem onClick={() => navigate(`/purchase/orders/${id}`)}>
           View purchase order
         </DropdownMenuItem>
-        {isPending && (
+        {canModify && (
           <>
             <ReceivePurchaseOrderDialog
               openReceiveDialog={openReceiveDialog}

@@ -21,6 +21,10 @@ const SalesItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    unitPrice: {
+      type: mongoose.Schema.Types.Decimal128,
+      required: true,
+    },
     totalPrice: {
       type: mongoose.Schema.Types.Decimal128,
       default: null,

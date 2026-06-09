@@ -10,6 +10,7 @@ type TSalesOrderFormSchemaItem = TSalesOrderFormSchema["items"][number];
 export type TSalesItem = Omit<TSalesOrderFormSchemaItem, "product"> & {
   _id: string;
   product: TProduct;
+  unitPrice: number;
   totalPrice: number;
 };
 
@@ -17,8 +18,11 @@ export type TSalesOrder = Omit<TSalesOrderFormSchema, "items" | "customer"> & {
   items: TSalesItem[];
 } & {
   _id: string;
+  orderNumber: string;
   customer: TCustomer;
+  createdBy: string | null;
   status: string;
+  notes: string;
   totalAmount: string;
   createdAt: string;
   updatedAt: string;

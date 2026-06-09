@@ -7,10 +7,20 @@ const PurchaseOrderSchema = new mongoose.Schema(
       ref: "Organization",
       required: true,
     },
+    orderNumber: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vendor",
       required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
     },
     orderDate: {
       type: Date,
@@ -20,10 +30,20 @@ const PurchaseOrderSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    receivedDate: {
+      type: Date,
+      default: null,
+    },
     status: {
       type: String,
-      enum: ["Pending", "Received", "Cancelled"],
+      enum: ["Pending", "Partially Received", "Received", "Cancelled"],
       default: "Pending",
+    },
+    notes: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: "",
     },
     totalAmount: {
       type: mongoose.Schema.Types.Decimal128,
@@ -31,6 +51,11 @@ const PurchaseOrderSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+);
+
+PurchaseOrderSchema.index(
+  { organization: 1, orderNumber: 1 },
+  { unique: true }
 );
 
 const PurchaseOrder = mongoose.model(

@@ -176,6 +176,13 @@ export const getProducts = async (request, response) => {
           category: "$category.name",
           vendor: "$vendor.name",
           quantity: "$inventory.quantity",
+          reservedQuantity: { $ifNull: ["$inventory.reservedQuantity", 0] },
+          availableQuantity: {
+            $subtract: [
+              "$inventory.quantity",
+              { $ifNull: ["$inventory.reservedQuantity", 0] },
+            ],
+          },
           lastStockUpdate: "$inventory.lastStockUpdate",
           createdAt: 1,
           updatedAt: 1,
@@ -454,6 +461,13 @@ export const getProductById = async (request, response) => {
           vendor: "$vendor.name",
           vendorId: "$vendor._id",
           quantity: "$inventory.quantity",
+          reservedQuantity: { $ifNull: ["$inventory.reservedQuantity", 0] },
+          availableQuantity: {
+            $subtract: [
+              "$inventory.quantity",
+              { $ifNull: ["$inventory.reservedQuantity", 0] },
+            ],
+          },
           lastStockUpdate: "$inventory.lastStockUpdate",
           createdAt: 1,
           updatedAt: 1,

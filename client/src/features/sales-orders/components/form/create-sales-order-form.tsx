@@ -50,6 +50,7 @@ import {
 import { TProduct } from "@/features/products/types";
 import { useFetchProductList } from "@/features/products/services/queries";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { TFormError } from "@/types";
 import InputError from "@/components/input-error";
 import { getImageUrl } from "@/lib/images";
@@ -285,6 +286,25 @@ const CreateSalesOrderForm = () => {
                 </FormControl>
                 <FormMessage />
                 <InputError message={formError?.errors?.deliveryDate} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Optional notes for this sales order..."
+                    className="resize-none"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+                <InputError message={formError?.errors?.notes} />
               </FormItem>
             )}
           />

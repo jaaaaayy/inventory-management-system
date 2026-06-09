@@ -16,6 +16,11 @@ const inventorySchema = new mongoose.Schema(
       required: true,
       type: Number,
     },
+    reservedQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     lastStockUpdate: {
       type: Date,
       default: null,

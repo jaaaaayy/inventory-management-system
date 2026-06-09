@@ -14,7 +14,12 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold">Sales Order</h1>
+        <h1 className="text-2xl font-semibold">
+          Sales Order{" "}
+          <span className="text-muted-foreground">
+            {salesOrder.orderNumber}
+          </span>
+        </h1>
         <SalesOrderStatusBadge status={salesOrder.status} />
       </div>
       <div className="space-y-6 text-sm">
@@ -23,10 +28,12 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
             <div className="space-y-6">
               <p className="font-medium">Order Date</p>
               <p className="font-medium">Delivery Date</p>
+              <p className="font-medium">Created By</p>
             </div>
             <div className="space-y-6">
               <p>{new Date(salesOrder.orderDate).toLocaleDateString()}</p>
               <p>{new Date(salesOrder.deliveryDate).toLocaleDateString()}</p>
+              <p>{salesOrder.createdBy ?? "—"}</p>
             </div>
           </div>
           <div className="space-y-6">
@@ -43,11 +50,18 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
             </div>
           </div>
         </div>
+        {salesOrder.notes && (
+          <div className="space-y-1">
+            <p className="font-medium">Notes</p>
+            <p className="text-muted-foreground">{salesOrder.notes}</p>
+          </div>
+        )}
         <Table className="border">
           <TableHeader>
             <TableRow>
               <TableHead className="border">Item</TableHead>
               <TableHead className="border">Quantity</TableHead>
+              <TableHead className="border">Unit Price</TableHead>
               <TableHead className="border">Amount</TableHead>
             </TableRow>
           </TableHeader>
@@ -65,6 +79,12 @@ const SalesOrderDetails = ({ salesOrder }: { salesOrder: TSalesOrder }) => {
                   </div>
                 </TableCell>
                 <TableCell className="border">{item.quantity}</TableCell>
+                <TableCell className="border">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "PHP",
+                  }).format(item.unitPrice)}
+                </TableCell>
                 <TableCell className="border">
                   {new Intl.NumberFormat("en-US", {
                     style: "currency",

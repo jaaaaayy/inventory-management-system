@@ -5,6 +5,10 @@ import SalesOrderStatusBadge from "./components/status-badge";
 
 export const columns: ColumnDef<TSalesOrder>[] = [
   {
+    accessorKey: "orderNumber",
+    header: "Order #",
+  },
+  {
     accessorKey: "customer",
     header: "Customer",
   },

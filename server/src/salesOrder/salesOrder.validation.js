@@ -31,6 +31,17 @@ export const salesOrderValidationSchema = {
         "Status must be one of 'Pending', 'Shipped', 'Delivered', or 'Cancelled'.",
     },
   },
+  notes: {
+    optional: true,
+    isString: {
+      errorMessage: "Notes must be a string.",
+    },
+    isLength: {
+      options: { max: 500 },
+      errorMessage: "Notes cannot exceed 500 characters.",
+    },
+    trim: true,
+  },
 };
 
 export const salesOrderStatusValidationSchema = {

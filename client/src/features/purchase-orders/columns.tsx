@@ -5,6 +5,10 @@ import PurchaseOrderStatusBadge from "./components/status-badge";
 
 export const columns: ColumnDef<TPurchaseOrder>[] = [
   {
+    accessorKey: "orderNumber",
+    header: "Order #",
+  },
+  {
     accessorKey: "vendor",
     header: "Vendor",
   },
