@@ -4,6 +4,7 @@ import session from "express-session";
 import helmet from "helmet";
 import routes from "./routes.js";
 import { connectDatabase } from "./config/database.js";
+import { seedRbac } from "./config/seedRbac.js";
 import cors from "cors";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
@@ -117,6 +118,7 @@ const shutdown = (server, signal) => {
 
 const startServer = async () => {
   await connectDatabase();
+  await seedRbac();
 
   app.use(createSessionMiddleware());
   app.use(routes);

@@ -28,6 +28,8 @@ router.post(
 
 router.get("/status", authController.authStatus);
 
+router.get("/me", isAuthenticated, authController.me);
+
 router.post("/logout", isAuthenticated, authController.logout);
 
 export default router;

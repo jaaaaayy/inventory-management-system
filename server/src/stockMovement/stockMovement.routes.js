@@ -1,14 +1,20 @@
 import { Router } from "express";
-import { isAuthenticated } from "../utils/middlewares.js";
+import { isAuthenticated, requirePermission } from "../utils/middlewares.js";
 import * as stockMovementController from "./stockMovement.controller.js";
 
 const router = Router();
 
-router.get("/", isAuthenticated, stockMovementController.getStockMovements);
+router.get(
+  "/",
+  isAuthenticated,
+  requirePermission("stockMovement:read"),
+  stockMovementController.getStockMovements
+);
 
 router.get(
   "/:productId",
   isAuthenticated,
+  requirePermission("stockMovement:read"),
   stockMovementController.getProductStockMovements
 );
 

@@ -32,25 +32,37 @@ export function RecentStockMovements() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {isError && error ? (
-          <p className="text-sm text-muted-foreground">
-            Could not load stock movements.
-          </p>
-        ) : isLoading || isPending ? (
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        ) : movements.length > 0 ? (
-          <Table>
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Change</TableHead>
+              <TableHead className="text-right">Qty After</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isError && error ? (
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Product</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Change</TableHead>
-                <TableHead className="text-right">Qty After</TableHead>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  Could not load stock movements.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {movements.map((movement) => (
+            ) : isLoading || isPending ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : movements.length > 0 ? (
+              movements.map((movement) => (
                 <TableRow key={movement._id}>
                   <TableCell>
                     {new Date(movement.createdAt).toLocaleString()}
@@ -73,14 +85,19 @@ export function RecentStockMovements() {
                     {movement.quantityAfter}
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No stock movements yet.
-          </p>
-        )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No stock movements yet.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

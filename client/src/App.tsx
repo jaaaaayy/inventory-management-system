@@ -26,6 +26,9 @@ import PurchaseOrders from "./features/purchase-orders/pages/purchase-orders";
 import CreatePurchaseOrder from "./features/purchase-orders/pages/create-purchase-order";
 import ViewPurchaseOrder from "./features/purchase-orders/pages/view-purchase-order";
 import Reports from "./features/reports/pages/reports";
+import Team from "./features/team/pages/team";
+import OrganizationSettings from "./features/organization/pages/organization";
+import AcceptInvite from "./features/team/pages/accept-invite";
 import ProtectedRoute from "./routes/protected-route";
 import PublicRoute from "./routes/public-route";
 
@@ -33,6 +36,8 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/accept-invite/:token" element={<AcceptInvite />} />
+
         <Route element={<PublicRoute />}>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -65,6 +70,11 @@ const App = () => {
               element={<ViewPurchaseOrder />}
             />
             <Route path="/reports" element={<Reports />} />
+            <Route
+              path="/settings/organization"
+              element={<OrganizationSettings />}
+            />
+            <Route path="/settings/team" element={<Team />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/categories/new" element={<CreateCategory />} />
             <Route path="/categories/:id" element={<ViewCategory />} />

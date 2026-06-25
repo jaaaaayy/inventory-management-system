@@ -2,10 +2,16 @@ import bcrypt from "bcrypt";
 import User from "../user/user.model.js";
 import { withTransaction } from "../config/database.js";
 import Organization from "../organization/organization.model.js";
+import OrganizationMember from "../organizationMember/organizationMember.model.js";
+import Position from "../position/position.model.js";
+import { POSITION_NAMES } from "../config/seedRbac.js";
 
-const buildAuthUser = ({ user, organization }) => ({
+export const buildAuthUser = ({ user, organization, position }) => ({
   name: user.firstName + " " + user.lastName,
   email: user.email,
+  platformRole: user.platformRole,
+  position: position.name,
+  permissions: position.permissions,
   organization: {
     id: organization._id,
     name: organization.name,
@@ -43,7 +49,7 @@ const saveSession = (request) =>
     });
   });
 
-const establishSession = async (request, result) => {
+export const establishSession = async (request, result) => {
   await regenerateSession(request);
   storeSessionUser(request, result);
   await saveSession(request);
@@ -83,6 +89,13 @@ export const register = async (request, response) => {
         .json({ message: "Validation failed.", errors });
     }
 
+    const ownerPosition = await Position.findOne({ name: POSITION_NAMES.OWNER });
+    if (!ownerPosition) {
+      return response.status(500).json({
+        message: "Positions are not configured. Please try again later.",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await withTransaction(async (session) => {
@@ -92,20 +105,29 @@ export const register = async (request, response) => {
       await organization.save({ session });
 
       const newUser = new User({
-        organization: organization._id,
         firstName,
         lastName,
         email,
         mobileNumber,
         username,
         password: hashedPassword,
+        platformRole: "user",
         lastLogin: new Date(),
       });
       await newUser.save({ session });
 
+      const membership = new OrganizationMember({
+        organization: organization._id,
+        user: newUser._id,
+        position: ownerPosition._id,
+        status: "Active",
+      });
+      await membership.save({ session });
+
       return {
         user: newUser,
         organization,
+        position: ownerPosition,
       };
     });
 
@@ -127,35 +149,48 @@ export const login = async (request, response) => {
   try {
     const { username, password } = request.body;
 
-    const findUser = await User.findOne({ username });
+    const user = await User.findOne({ username });
 
-    if (!findUser || !(await bcrypt.compare(password, findUser.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return response
         .status(400)
         .json({ message: "Invalid username or password." });
     }
 
-    if (findUser.status === "Inactive") {
+    if (user.status === "Inactive") {
       return response.status(403).json({
         message: "Your account is inactive. Please contact an administrator.",
       });
     }
 
-    const user = await User.findByIdAndUpdate(
-      findUser._id,
-      { lastLogin: new Date() },
-      { new: true }
-    ).populate("organization");
+    const memberships = await OrganizationMember.find({
+      user: user._id,
+      status: "Active",
+    })
+      .sort({ updatedAt: -1 })
+      .populate("organization")
+      .populate("position");
 
-    if (!user.organization || user.organization.status !== "Active") {
+    const membership = memberships.find(
+      (item) =>
+        item.organization &&
+        item.organization.status === "Active" &&
+        item.position
+    );
+
+    if (!membership) {
       return response.status(403).json({
         message: "No active organization found.",
       });
     }
 
+    user.lastLogin = new Date();
+    await user.save();
+
     const result = {
       user,
-      organization: user.organization,
+      organization: membership.organization,
+      position: membership.position,
     };
 
     await establishSession(request, result);
@@ -180,11 +215,24 @@ export const authStatus = async (request, response) => {
 
     const user = await User.findOne({
       _id: request.session.user.id,
+      status: "Active",
+    });
+
+    if (!user) {
+      return response.json({ loggedIn: false });
+    }
+
+    const membership = await OrganizationMember.findOne({
+      user: user._id,
       organization: request.session.user.organizationId,
       status: "Active",
     }).populate("organization");
 
-    if (!user || !user.organization || user.organization.status !== "Active") {
+    if (
+      !membership ||
+      !membership.organization ||
+      membership.organization.status !== "Active"
+    ) {
       return response.json({ loggedIn: false });
     }
 
@@ -193,6 +241,23 @@ export const authStatus = async (request, response) => {
     console.log(error);
     response.status(500).json({
       message: "Failed to check authentication status. Please try again.",
+    });
+  }
+};
+
+export const me = async (request, response) => {
+  try {
+    response.json({
+      user: buildAuthUser({
+        user: request.user,
+        organization: request.member.organization,
+        position: request.member.position,
+      }),
+    });
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({
+      message: "Failed to load account. Please try again.",
     });
   }
 };

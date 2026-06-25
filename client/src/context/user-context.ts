@@ -8,6 +8,9 @@ interface IUserContextProps {
 export type TUser = {
   name: string;
   email: string;
+  platformRole?: string;
+  position?: string;
+  permissions?: string[];
   organization?: {
     id: string;
     name: string;

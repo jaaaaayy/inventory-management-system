@@ -8,6 +8,7 @@ import {
   ShoppingCart,
   ShoppingBag,
   FileText,
+  Settings,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { NavUser } from "./nav-user";
@@ -38,8 +39,19 @@ import {
   useSidebar,
 } from "./ui/sidebar";
 import { useUser } from "@/hooks/use-user";
+import { usePermissions } from "@/hooks/use-has-permission";
 
-const data = {
+type NavSubItem = { title: string; url: string; permission?: string };
+
+type NavItem = {
+  title: string;
+  url: string;
+  icon: typeof Home;
+  permission?: string;
+  items?: NavSubItem[];
+};
+
+const data: { navMain: NavItem[] } = {
   navMain: [
     {
       title: "Dashboard",
@@ -91,15 +103,50 @@ const data = {
       url: "/reports",
       icon: FileText,
     },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: Settings,
+      items: [
+        {
+          title: "Organization",
+          url: "/settings/organization",
+          permission: "organization:update",
+        },
+        {
+          title: "Team",
+          url: "/settings/team",
+          permission: "member:read",
+        },
+      ],
+    },
   ],
 };
 
 const AppSidebar = () => {
   const { user } = useUser();
+  const { can } = usePermissions();
   const location = useLocation();
   const { state } = useSidebar();
 
   const isActive = (url: string) => location.pathname.startsWith(url);
+
+  const navItems = data.navMain
+    .map((item) =>
+      item.items
+        ? {
+            ...item,
+            items: item.items.filter(
+              (subItem) => !subItem.permission || can(subItem.permission)
+            ),
+          }
+        : item
+    )
+    .filter((item) =>
+      item.items
+        ? item.items.length > 0
+        : !item.permission || can(item.permission)
+    );
 
   return (
     <Sidebar collapsible="icon">
@@ -115,7 +162,7 @@ const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.navMain.map((item) =>
+              {navItems.map((item) =>
                 item.items?.length ? (
                   state === "collapsed" ? (
                     <SidebarMenuItem key={item.title}>

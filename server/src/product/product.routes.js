@@ -2,7 +2,11 @@ import { Router } from "express";
 import { checkSchema } from "express-validator";
 import upload from "../config/upload.js";
 import inventoryValidationSchema from "../inventory/inventory.validation.js";
-import { isAuthenticated, validate } from "../utils/middlewares.js";
+import {
+  isAuthenticated,
+  requirePermission,
+  validate,
+} from "../utils/middlewares.js";
 import * as productController from "./product.controller.js";
 import productValidationSchema, {
   productUpdateValidationSchema,
@@ -27,6 +31,7 @@ const uploadImage = (req, res, next) => {
 router.post(
   "/",
   isAuthenticated,
+  requirePermission("product:create"),
   uploadImage,
   checkSchema(productValidationSchema),
   checkSchema(inventoryValidationSchema),
@@ -34,13 +39,24 @@ router.post(
   productController.createProduct
 );
 
-router.get("/", isAuthenticated, productController.getProducts);
+router.get(
+  "/",
+  isAuthenticated,
+  requirePermission("product:read"),
+  productController.getProducts
+);
 
-router.get("/:id", isAuthenticated, productController.getProductById);
+router.get(
+  "/:id",
+  isAuthenticated,
+  requirePermission("product:read"),
+  productController.getProductById
+);
 
 router.patch(
   "/:id",
   isAuthenticated,
+  requirePermission("product:update"),
   uploadImage,
   checkSchema(productUpdateValidationSchema),
   checkSchema(inventoryValidationSchema),
@@ -48,6 +64,11 @@ router.patch(
   productController.updateProduct
 );
 
-router.delete("/:id", isAuthenticated, productController.deleteProduct);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  requirePermission("product:delete"),
+  productController.deleteProduct
+);
 
 export default router;

@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import User from "../user/user.model.js";
+import OrganizationMember from "../organizationMember/organizationMember.model.js";
 
 export const validate = () => (request, response, next) => {
   const result = validationResult(request);
@@ -25,17 +26,35 @@ export const isAuthenticated = async (request, response, next) => {
 
     const user = await User.findOne({
       _id: request.session.user.id,
-      organization: request.session.user.organizationId,
       status: "Active",
-    }).populate("organization");
+    });
 
-    if (!user || !user.organization || user.organization.status !== "Active") {
+    if (!user) {
       return response.status(401).json({ message: "Unauthenticated." });
     }
 
-    request.userId = request.session.user.id;
-    request.organizationId = user.organization._id;
+    const membership = await OrganizationMember.findOne({
+      user: user._id,
+      organization: request.session.user.organizationId,
+      status: "Active",
+    })
+      .populate("organization")
+      .populate("position");
+
+    if (
+      !membership ||
+      !membership.organization ||
+      membership.organization.status !== "Active" ||
+      !membership.position
+    ) {
+      return response.status(401).json({ message: "Unauthenticated." });
+    }
+
+    request.userId = user._id;
     request.user = user;
+    request.organizationId = membership.organization._id;
+    request.member = membership;
+    request.permissions = new Set(membership.position.permissions);
 
     next();
   } catch (error) {
@@ -45,3 +64,17 @@ export const isAuthenticated = async (request, response, next) => {
     });
   }
 };
+
+export const requirePermission =
+  (...keys) =>
+  (request, response, next) => {
+    const permissions = request.permissions;
+
+    if (!permissions || !keys.every((key) => permissions.has(key))) {
+      return response.status(403).json({
+        message: "You do not have permission to perform this action.",
+      });
+    }
+
+    next();
+  };

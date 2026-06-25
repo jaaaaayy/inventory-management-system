@@ -17,32 +17,41 @@ export function LowStockAlerts({ products }: { products: TProduct[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {lowStock.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
-                <TableHead className="text-right">Reorder Point</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {lowStock.map((product) => (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Product</TableHead>
+              <TableHead>SKU</TableHead>
+              <TableHead className="text-right">Qty</TableHead>
+              <TableHead className="text-right">Reorder Point</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {lowStock.length > 0 ? (
+              lowStock.map((product) => (
                 <TableRow key={product._id}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.stockKeepingUnit}</TableCell>
-                  <TableCell className="text-right">{product.quantity}</TableCell>
-                  <TableCell className="text-right">{product.reorderPoint}</TableCell>
+                  <TableCell className="text-right">
+                    {product.quantity}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {product.reorderPoint}
+                  </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No products are at or below their reorder point.
-          </p>
-        )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No products are at or below their reorder point.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

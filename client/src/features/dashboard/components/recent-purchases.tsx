@@ -37,18 +37,18 @@ export function RecentPurchaseOrders({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {recent.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Expected</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recent.map((order) => (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Vendor</TableHead>
+              <TableHead>Expected</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recent.length > 0 ? (
+              recent.map((order) => (
                 <TableRow key={order._id}>
                   <TableCell>
                     {typeof order.vendor === "string"
@@ -58,19 +58,24 @@ export function RecentPurchaseOrders({
                   <TableCell>
                     {new Date(order.expectedDate).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>{order.status}</TableCell>
+                  <TableCell className="capitalize">{order.status}</TableCell>
                   <TableCell className="text-right">
                     {formatCurrency(Number(order.totalAmount))}
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No purchase orders yet.
-          </p>
-        )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No purchase orders yet.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
