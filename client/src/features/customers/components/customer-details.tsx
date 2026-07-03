@@ -1,40 +1,54 @@
 import { TCustomer } from "../types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const CustomerDetails = ({ customer }: { customer: TCustomer }) => {
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Customer</h1>
-      <div className="grid grid-cols-2 gap-6 text-sm">
-        <div className="flex gap-6">
-          <div className="space-y-6">
-            <p className="font-medium">First Name</p>
-            <p className="font-medium">Last Name</p>
-            <p className="font-medium">Email</p>
-            <p className="font-medium">Mobile Number</p>
-            <p className="font-medium">Created</p>
-            <p className="font-medium">Updated</p>
-          </div>
-          <div className="space-y-6">
-            <p>{customer.firstName}</p>
-            <p>{customer.lastName}</p>
-            <p>{customer.email}</p>
-            <p>{customer.mobileNumber}</p>
-            <p>{new Date(customer.createdAt).toLocaleString()}</p>
-            <p>{new Date(customer.updatedAt).toLocaleString()}</p>
-          </div>
-        </div>
-        <div className="space-y-6">
-          <p className="font-medium">Address</p>
-          <div>
-            <p>{customer.address.addressLine1}</p>
-            {customer.address.addressLine2 && (
-              <p>{customer.address.addressLine2}</p>
-            )}
-            <p>{customer.address.city}</p>
-            <p>{customer.address.postalCode}</p>
-            <p>{customer.address.province}</p>
-          </div>
-        </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Contact Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3">
+              <dt className="font-medium text-muted-foreground">First Name</dt>
+              <dd>{customer.firstName}</dd>
+              <dt className="font-medium text-muted-foreground">Last Name</dt>
+              <dd>{customer.lastName}</dd>
+              <dt className="font-medium text-muted-foreground">Email</dt>
+              <dd>{customer.email}</dd>
+              <dt className="font-medium text-muted-foreground">
+                Mobile Number
+              </dt>
+              <dd>{customer.mobileNumber}</dd>
+              <dt className="font-medium text-muted-foreground">Created</dt>
+              <dd>{new Date(customer.createdAt).toLocaleString()}</dd>
+              <dt className="font-medium text-muted-foreground">Updated</dt>
+              <dd>{new Date(customer.updatedAt).toLocaleString()}</dd>
+            </dl>
+          </CardContent>
+        </Card>
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Address</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-0.5">
+              <p>{customer.address.addressLine1}</p>
+              {customer.address.addressLine2 && (
+                <p>{customer.address.addressLine2}</p>
+              )}
+              <p>{customer.address.city}</p>
+              <p>{customer.address.postalCode}</p>
+              <p>{customer.address.province}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -1,22 +1,26 @@
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Ban } from "lucide-react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { useUpdatePurchaseOrderStatus } from "../services/mutations";
 
 interface CancelPurchaseOrderDialogProps {
   openCancelDialog: boolean;
   setOpenCancelDialog: Dispatch<SetStateAction<boolean>>;
-  setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>;
+  setOpenActionsDropdown?: Dispatch<SetStateAction<boolean>>;
   id: string;
+  trigger?: ReactNode;
 }
 
 const CancelPurchaseOrderDialog = ({
@@ -24,46 +28,57 @@ const CancelPurchaseOrderDialog = ({
   setOpenCancelDialog,
   setOpenActionsDropdown,
   id,
+  trigger,
 }: CancelPurchaseOrderDialogProps) => {
   const { mutateAsync: updateStatusMutation, isPending } =
-    useUpdatePurchaseOrderStatus(id, setOpenCancelDialog, setOpenActionsDropdown);
+    useUpdatePurchaseOrderStatus(
+      id,
+      setOpenCancelDialog,
+      setOpenActionsDropdown
+    );
 
   const handleCancelPurchaseOrder = async () => {
     await updateStatusMutation("Cancelled");
   };
 
   return (
-    <Dialog open={openCancelDialog} onOpenChange={setOpenCancelDialog}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Cancel order
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Cancel this purchase order?</DialogTitle>
-          <DialogDescription>
-            This will mark the order as cancelled. This action cannot be undone.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => setOpenCancelDialog(false)}
+    <AlertDialog open={openCancelDialog} onOpenChange={setOpenCancelDialog}>
+      <AlertDialogTrigger asChild>
+        {trigger ?? (
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={(e) => e.preventDefault()}
           >
-            Keep order
-          </Button>
-          <Button
-            type="submit"
+            Cancel order
+          </DropdownMenuItem>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogMedia className="bg-destructive/10 text-destructive">
+            <Ban />
+          </AlertDialogMedia>
+          <AlertDialogTitle>Cancel this purchase order?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will mark the order as cancelled. This action cannot be
+            undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Keep order</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
             disabled={isPending}
-            onClick={handleCancelPurchaseOrder}
+            onClick={(e) => {
+              e.preventDefault();
+              handleCancelPurchaseOrder();
+            }}
           >
             {isPending ? "Cancelling..." : "Cancel order"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

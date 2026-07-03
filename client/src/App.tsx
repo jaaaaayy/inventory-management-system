@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Login from "./features/auth/pages/login";
 import Register from "./features/auth/pages/register";
 import Categories from "./features/categories/pages/categories";
@@ -26,8 +26,7 @@ import PurchaseOrders from "./features/purchase-orders/pages/purchase-orders";
 import CreatePurchaseOrder from "./features/purchase-orders/pages/create-purchase-order";
 import ViewPurchaseOrder from "./features/purchase-orders/pages/view-purchase-order";
 import Reports from "./features/reports/pages/reports";
-import Team from "./features/team/pages/team";
-import OrganizationSettings from "./features/organization/pages/organization";
+import Settings from "./features/settings/pages/settings";
 import AcceptInvite from "./features/team/pages/accept-invite";
 import ProtectedRoute from "./routes/protected-route";
 import PublicRoute from "./routes/public-route";
@@ -70,11 +69,15 @@ const App = () => {
               element={<ViewPurchaseOrder />}
             />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
             <Route
               path="/settings/organization"
-              element={<OrganizationSettings />}
+              element={<Navigate to="/settings" replace />}
             />
-            <Route path="/settings/team" element={<Team />} />
+            <Route
+              path="/settings/team"
+              element={<Navigate to="/settings" replace />}
+            />
             <Route path="/categories" element={<Categories />} />
             <Route path="/categories/new" element={<CreateCategory />} />
             <Route path="/categories/:id" element={<ViewCategory />} />

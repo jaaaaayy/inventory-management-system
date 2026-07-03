@@ -21,12 +21,7 @@ export const useCreateSalesOrder = (
       reset();
       queryClient.invalidateQueries({ queryKey: ["salesOrders"] });
       navigate("/sales/orders");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -40,12 +35,7 @@ export const useCreateSalesOrder = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -65,20 +55,10 @@ export const useUpdateSalesOrderStatus = (
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpenCancelDialog?.(false);
       setOpenActionsDropdown?.(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

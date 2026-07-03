@@ -21,12 +21,7 @@ export const useCreatePurchaseOrder = (
       reset();
       queryClient.invalidateQueries({ queryKey: ["purchaseOrders"] });
       navigate("/purchase/orders");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -40,12 +35,7 @@ export const useCreatePurchaseOrder = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -65,20 +55,10 @@ export const useUpdatePurchaseOrderStatus = (
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpenDialog?.(false);
       setOpenActionsDropdown?.(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

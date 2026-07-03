@@ -1,3 +1,4 @@
+import TableContainer from "@/components/table-container";
 import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,14 @@ import { useFetchProductList } from "@/features/products/services/queries";
 import { TProduct } from "@/features/products/types";
 import { formatCurrency } from "@/lib/utils";
 import { exportToCsv } from "@/lib/csv";
-import { Download } from "lucide-react";
+import { Download, Package } from "lucide-react";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const InventoryValuationReport = () => {
   const { isLoading, isPending, isError, error, data } = useFetchProductList();
@@ -75,6 +83,7 @@ const InventoryValuationReport = () => {
         ) : isLoading || isPending ? (
           <Loading feature="inventory valuation" />
         ) : rows.length > 0 ? (
+          <TableContainer>
           <Table>
             <TableHeader>
               <TableRow>
@@ -103,8 +112,19 @@ const InventoryValuationReport = () => {
               ))}
             </TableBody>
           </Table>
+          </TableContainer>
         ) : (
-          <p className="text-sm text-muted-foreground">No products yet.</p>
+          <Empty className="rounded-md border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Package />
+              </EmptyMedia>
+              <EmptyTitle>No products yet</EmptyTitle>
+              <EmptyDescription>
+                Add products to see their inventory value here.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>

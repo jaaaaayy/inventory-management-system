@@ -13,8 +13,17 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { ChartPie } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 import { TPurchaseOrder } from "@/features/purchase-orders/types";
+import { cn } from "@/lib/utils";
 
 const chartConfig = {
   orders: {
@@ -38,8 +47,10 @@ const statusKeys = ["Pending", "Received", "Cancelled"] as const;
 
 export function PurchaseStatusChart({
   purchaseOrders,
+  className,
 }: {
   purchaseOrders: TPurchaseOrder[];
+  className?: string;
 }) {
   const statusCounts = purchaseOrders.reduce<Record<string, number>>(
     (acc, order) => {
@@ -62,7 +73,7 @@ export function PurchaseStatusChart({
   const totalOrders = chartData.reduce((total, item) => total + item.orders, 0);
 
   return (
-    <Card className="flex flex-col col-span-1">
+    <Card className={cn("flex flex-col", className)}>
       <CardHeader className="items-center pb-0">
         <CardTitle>Purchase Statuses</CardTitle>
         <CardDescription>Breakdown of purchase orders by status</CardDescription>
@@ -125,9 +136,17 @@ export function PurchaseStatusChart({
             </PieChart>
           </ChartContainer>
         ) : (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            No purchase orders yet.
-          </div>
+          <Empty className="h-[300px]">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ChartPie />
+              </EmptyMedia>
+              <EmptyTitle>No purchase orders yet</EmptyTitle>
+              <EmptyDescription>
+                Purchase statuses will appear here once orders are placed.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>

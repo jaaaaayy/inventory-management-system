@@ -1,4 +1,12 @@
 import { TPurchaseOrder } from "../types";
+import TableContainer from "@/components/table-container";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -8,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getImageUrl } from "@/lib/images";
-import PurchaseOrderStatusBadge from "./status-badge";
+import { formatCurrency } from "@/lib/utils";
 
 const PurchaseOrderDetails = ({
   purchaseOrder,
@@ -16,106 +24,119 @@ const PurchaseOrderDetails = ({
   purchaseOrder: TPurchaseOrder;
 }) => {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold">
-          Purchase Order{" "}
-          <span className="text-muted-foreground">
-            {purchaseOrder.orderNumber}
-          </span>
-        </h1>
-        <PurchaseOrderStatusBadge status={purchaseOrder.status} />
-      </div>
-      <div className="space-y-6 text-sm">
-        <div className="grid grid-cols-2 gap-6">
-          <div className="flex gap-6">
-            <div className="space-y-6">
-              <p className="font-medium">Order Date</p>
-              <p className="font-medium">Expected Date</p>
-              <p className="font-medium">Received Date</p>
-              <p className="font-medium">Created By</p>
+    <div className="grid gap-4 xl:grid-cols-3">
+      <div className="space-y-4 xl:col-span-2">
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Items</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TableContainer>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Received</TableHead>
+                    <TableHead className="text-right">Unit Price</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {purchaseOrder.items.map((item) => (
+                    <TableRow key={item._id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <img
+                            className="size-8 rounded object-cover"
+                            src={getImageUrl(item.product.imageUrl)}
+                            alt={item.product.name}
+                          />
+                          <span>{item.product.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {item.quantity}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {item.receivedQuantity} / {item.quantity}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatCurrency(item.unitPrice)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatCurrency(item.totalPrice)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <div className="ml-auto w-full max-w-xs space-y-2">
+              <Separator />
+              <div className="flex items-center justify-between font-medium">
+                <span>Total</span>
+                <span className="tabular-nums">
+                  {formatCurrency(Number(purchaseOrder.totalAmount))}
+                </span>
+              </div>
             </div>
-            <div className="space-y-6">
-              <p>{new Date(purchaseOrder.orderDate).toLocaleDateString()}</p>
-              <p>{new Date(purchaseOrder.expectedDate).toLocaleDateString()}</p>
-              <p>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="space-y-4">
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Vendor</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3">
+              <dt className="font-medium text-muted-foreground">Name</dt>
+              <dd>{purchaseOrder.vendor.name}</dd>
+              <dt className="font-medium text-muted-foreground">Address</dt>
+              <dd>
+                <p>{purchaseOrder.vendor.address.addressLine1}</p>
+                <p>{purchaseOrder.vendor.address?.addressLine2}</p>
+                <p>{purchaseOrder.vendor.address.city}</p>
+                <p>{purchaseOrder.vendor.address.postalCode}</p>
+                <p>{purchaseOrder.vendor.address.province}</p>
+              </dd>
+            </dl>
+          </CardContent>
+        </Card>
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Order Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3">
+              <dt className="font-medium text-muted-foreground">Order Date</dt>
+              <dd>{new Date(purchaseOrder.orderDate).toLocaleDateString()}</dd>
+              <dt className="font-medium text-muted-foreground">
+                Expected Date
+              </dt>
+              <dd>
+                {new Date(purchaseOrder.expectedDate).toLocaleDateString()}
+              </dd>
+              <dt className="font-medium text-muted-foreground">
+                Received Date
+              </dt>
+              <dd>
                 {purchaseOrder.receivedDate
                   ? new Date(purchaseOrder.receivedDate).toLocaleDateString()
                   : "—"}
-              </p>
-              <p>{purchaseOrder.createdBy ?? "—"}</p>
-            </div>
-          </div>
-          <div className="space-y-6">
-            <p className="font-medium">Vendor</p>
-            <p>{purchaseOrder.vendor.name}</p>
-            <div>
-              <p>{purchaseOrder.vendor.address.addressLine1}</p>
-              <p>{purchaseOrder.vendor.address?.addressLine2}</p>
-              <p>{purchaseOrder.vendor.address.city}</p>
-              <p>{purchaseOrder.vendor.address.postalCode}</p>
-              <p>{purchaseOrder.vendor.address.province}</p>
-            </div>
-          </div>
-        </div>
-        {purchaseOrder.notes && (
-          <div className="space-y-1">
-            <p className="font-medium">Notes</p>
-            <p className="text-muted-foreground">{purchaseOrder.notes}</p>
-          </div>
-        )}
-        <Table className="border">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="border">Item</TableHead>
-              <TableHead className="border">Quantity</TableHead>
-              <TableHead className="border">Received</TableHead>
-              <TableHead className="border">Unit Price</TableHead>
-              <TableHead className="border">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {purchaseOrder.items.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell className="border">
-                  <div className="flex items-center gap-2">
-                    <img
-                      className="size-8 rounded object-cover"
-                      src={getImageUrl(item.product.imageUrl)}
-                      alt={item.product.name}
-                    />
-                    <span>{item.product.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="border">{item.quantity}</TableCell>
-                <TableCell className="border">
-                  {item.receivedQuantity} / {item.quantity}
-                </TableCell>
-                <TableCell className="border">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "PHP",
-                  }).format(item.unitPrice)}
-                </TableCell>
-                <TableCell className="border">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "PHP",
-                  }).format(item.totalPrice)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <div className="font-medium flex justify-between w-1/3 float-end p-6 py-0">
-          <p>Total</p>
-          <p>
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "PHP",
-            }).format(Number(purchaseOrder.totalAmount))}
-          </p>
-        </div>
+              </dd>
+              <dt className="font-medium text-muted-foreground">Created By</dt>
+              <dd>{purchaseOrder.createdBy ?? "—"}</dd>
+              {purchaseOrder.notes && (
+                <>
+                  <dt className="font-medium text-muted-foreground">Notes</dt>
+                  <dd className="whitespace-normal">{purchaseOrder.notes}</dd>
+                </>
+              )}
+            </dl>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

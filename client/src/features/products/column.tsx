@@ -1,11 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TProduct } from "./types";
 import { ActionsCell } from "./components/action-cell";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { getImageUrl } from "@/lib/images";
+import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<TProduct>[] = [
   {
+    id: "image",
     header: "Image",
+    enableSorting: false,
+    enableHiding: false,
     cell: ({ row }) => {
       const image = row.original.imageUrl;
       const name = row.original.name;
@@ -21,48 +26,75 @@ export const columns: ColumnDef<TProduct>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    meta: { label: "Name" },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
   },
   {
     accessorKey: "stockKeepingUnit",
-    header: "Stock Keeping Unit",
+    meta: { label: "SKU" },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="SKU" />
+    ),
   },
   {
     accessorKey: "costPrice",
-    header: "Cost Price",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("costPrice"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "PHP",
-      }).format(amount);
-
-      return <p>{formatted}</p>;
-    },
+    meta: { label: "Cost Price" },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Cost Price"
+        className="justify-end"
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">
+        {formatCurrency(parseFloat(row.getValue("costPrice")))}
+      </div>
+    ),
   },
   {
     accessorKey: "sellingPrice",
-    header: "Selling Price",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("sellingPrice"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "PHP",
-      }).format(amount);
-
-      return <p>{formatted}</p>;
-    },
+    meta: { label: "Selling Price" },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Selling Price"
+        className="justify-end"
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">
+        {formatCurrency(parseFloat(row.getValue("sellingPrice")))}
+      </div>
+    ),
   },
   {
     accessorKey: "unit",
-    header: "Unit",
+    meta: { label: "Unit" },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Unit" />
+    ),
   },
   {
     accessorKey: "quantity",
-    header: "Quantity",
+    meta: { label: "Quantity" },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Quantity"
+        className="justify-end"
+      />
+    ),
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">{row.original.quantity}</div>
+    ),
   },
   {
     id: "actions",
+    enableSorting: false,
+    enableHiding: false,
     cell: ({ row }) => (
       <ActionsCell
         id={row.original._id}

@@ -21,12 +21,7 @@ export const useCreateProduct = (
       reset();
       queryClient.invalidateQueries({ queryKey: ["products"] });
       navigate("/products");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -40,12 +35,7 @@ export const useCreateProduct = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -66,12 +56,7 @@ export const useUpdateProduct = (
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", id] });
       navigate("/products");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -85,12 +70,7 @@ export const useUpdateProduct = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -114,20 +94,10 @@ export const useAdjustStock = (
       queryClient.invalidateQueries({ queryKey: ["stockMovements", id] });
       setOpenAdjustDialog(false);
       setOpenActionsDropdown(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -145,20 +115,10 @@ export const useDeleteProduct = (
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setOpenDeleteDialog(false);
       setOpenActionsDropdown(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

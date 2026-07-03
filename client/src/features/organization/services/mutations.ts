@@ -21,14 +21,10 @@ export const useUpdateOrganization = () => {
         });
       }
 
-      toast.success(data.message, {
-        style: { backgroundColor: "green", color: "white" },
-      });
+      toast.success(data.message);
     },
     onError: (error: { message: string }) => {
-      toast.error(error.message, {
-        style: { backgroundColor: "red", color: "white" },
-      });
+      toast.error(error.message);
     },
   });
 };

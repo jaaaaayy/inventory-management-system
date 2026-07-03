@@ -1,15 +1,16 @@
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { useDeleteCustomer } from "../services/mutations";
 
 interface DeleteCustomerDialogProps {
@@ -17,6 +18,8 @@ interface DeleteCustomerDialogProps {
   setOpenDeleteDialog: Dispatch<SetStateAction<boolean>>;
   setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>;
   id: string;
+  trigger?: ReactNode;
+  onDeleted?: () => void;
 }
 
 const DeleteCustomerDialog = ({
@@ -24,6 +27,8 @@ const DeleteCustomerDialog = ({
   setOpenDeleteDialog,
   setOpenActionsDropdown,
   id,
+  trigger,
+  onDeleted,
 }: DeleteCustomerDialogProps) => {
   const { mutateAsync: deleteCustomerMutation, isPending } = useDeleteCustomer(
     id,
@@ -33,41 +38,44 @@ const DeleteCustomerDialog = ({
 
   const handleDeleteCustomer = async () => {
     await deleteCustomerMutation();
+    onDeleted?.();
   };
 
   return (
-    <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Delete customer
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+      <AlertDialogTrigger asChild>
+        {trigger ?? (
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={(e) => e.preventDefault()}
+          >
+            Delete customer
+          </DropdownMenuItem>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete this customer?</AlertDialogTitle>
+          <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
             customer and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => setOpenDeleteDialog(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
             disabled={isPending}
-            onClick={handleDeleteCustomer}
+            onClick={(e) => {
+              e.preventDefault();
+              handleDeleteCustomer();
+            }}
           >
-            {isPending ? "Confirming..." : "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            {isPending ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

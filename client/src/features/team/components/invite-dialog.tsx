@@ -22,13 +22,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import InputError from "@/components/input-error";
 import { ASSIGNABLE_POSITIONS, inviteFormSchema } from "../schemas";
 import { TInviteFormSchema, TTeamFormError } from "../types";
 import { useCreateInvitation } from "../services/mutations";
-
-const selectClassName =
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring";
 
 const InviteDialog = () => {
   const [open, setOpen] = useState(false);
@@ -53,9 +57,7 @@ const InviteDialog = () => {
   const handleCopy = async () => {
     if (!acceptUrl) return;
     await navigator.clipboard.writeText(acceptUrl);
-    toast.success("Invite link copied.", {
-      style: { backgroundColor: "green", color: "white" },
-    });
+    toast.success("Invite link copied.");
   };
 
   const handleOpenChange = (next: boolean) => {
@@ -135,15 +137,23 @@ const InviteDialog = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Position</FormLabel>
-                    <FormControl>
-                      <select className={selectClassName} {...field}>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a position" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
                         {ASSIGNABLE_POSITIONS.map((position) => (
-                          <option key={position} value={position}>
+                          <SelectItem key={position} value={position}>
                             {position}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                    </FormControl>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                     <InputError message={formError?.errors?.position} />
                   </FormItem>

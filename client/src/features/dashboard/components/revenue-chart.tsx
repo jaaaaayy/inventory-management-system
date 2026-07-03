@@ -11,7 +11,15 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { formatCurrency } from "@/lib/utils";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { cn, formatCurrency } from "@/lib/utils";
+import { ChartColumn } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { TSalesOrder } from "@/features/sales-orders/types";
 
@@ -22,7 +30,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
+export function RevenueChart({
+  salesOrders,
+  className,
+}: {
+  salesOrders: TSalesOrder[];
+  className?: string;
+}) {
   const chartData = salesOrders.reduce(
     (acc: { date: string; label: string; revenue: number }[], order) => {
       if (order.status === "Cancelled") {
@@ -56,7 +70,7 @@ export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
   const displayData = chartData.slice(-7);
 
   return (
-    <Card className="col-span-1 lg:col-span-2">
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>Sales Revenue Over Time</CardTitle>
         <CardDescription>Daily revenue for the latest 7 sales days</CardDescription>
@@ -89,9 +103,17 @@ export function RevenueChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
             </BarChart>
           </ChartContainer>
         ) : (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            No sales revenue yet.
-          </div>
+          <Empty className="h-[300px]">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ChartColumn />
+              </EmptyMedia>
+              <EmptyTitle>No sales revenue yet</EmptyTitle>
+              <EmptyDescription>
+                Revenue will appear here once orders come in.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>

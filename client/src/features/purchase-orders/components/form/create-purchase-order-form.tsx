@@ -1,4 +1,14 @@
+import { Link } from "react-router-dom";
+import TableContainer from "@/components/table-container";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -114,8 +124,15 @@ const CreatePurchaseOrderForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="w-1/2 mr-6 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Order Details</CardTitle>
+            <CardDescription>
+              Vendor, dates, and notes for this order.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid items-start gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="vendor"
@@ -281,7 +298,7 @@ const CreatePurchaseOrderForm = () => {
             control={form.control}
             name="notes"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="md:col-span-2">
                 <FormLabel>Notes</FormLabel>
                 <FormControl>
                   <Textarea
@@ -296,25 +313,33 @@ const CreatePurchaseOrderForm = () => {
               </FormItem>
             )}
           />
-        </div>
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="font-medium">Line Items</h1>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => append({ product: "", quantity: 1 })}
-            >
-              <Plus />
-              Add New Row
-            </Button>
-          </div>
-          <Table className="border">
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Line Items</CardTitle>
+            <CardDescription>
+              Products included in this order.
+            </CardDescription>
+            <CardAction>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => append({ product: "", quantity: 1 })}
+              >
+                <Plus />
+                Add New Row
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="space-y-4">
+          <TableContainer>
+          <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="border">Item</TableHead>
-                <TableHead className="border">Quantity</TableHead>
-                <TableHead className="border">Amount</TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Amount</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -333,7 +358,7 @@ const CreatePurchaseOrderForm = () => {
 
                 return (
                   <TableRow key={fieldItem.id}>
-                    <TableCell className="p-0 border">
+                    <TableCell className="p-0">
                       <FormField
                         control={form.control}
                         name={productFieldName}
@@ -420,7 +445,7 @@ const CreatePurchaseOrderForm = () => {
                         )}
                       />
                     </TableCell>
-                    <TableCell className="p-0 border">
+                    <TableCell className="p-0">
                       <FormField
                         control={form.control}
                         name={quantityFieldName}
@@ -441,7 +466,7 @@ const CreatePurchaseOrderForm = () => {
                         )}
                       />
                     </TableCell>
-                    <TableCell className="p-0 border">
+                    <TableCell className="p-0">
                       <div className="p-2 text-right tabular-nums">
                         {amount.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
@@ -449,7 +474,7 @@ const CreatePurchaseOrderForm = () => {
                         })}
                       </div>
                     </TableCell>
-                    <TableCell className="p-0 border">
+                    <TableCell className="p-0">
                       <div className="flex items-center justify-center">
                         <button
                           onClick={() => remove(index)}
@@ -468,10 +493,10 @@ const CreatePurchaseOrderForm = () => {
               })}
             </TableBody>
           </Table>
-          <div className="text-sm font-medium flex gap-2">
-            <span className="flex items-center">
-              Total (<PhilippinePeso className="size-4" />
-              ):{" "}
+          </TableContainer>
+          <div className="ml-auto flex w-full max-w-xs items-center justify-between font-medium">
+            <span className="flex items-center gap-1">
+              Total (<PhilippinePeso className="size-4" />)
             </span>
             <span className="tabular-nums">
               {subtotal.toLocaleString(undefined, {
@@ -480,10 +505,16 @@ const CreatePurchaseOrderForm = () => {
               })}
             </span>
           </div>
+          </CardContent>
+        </Card>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="outline" asChild>
+            <Link to="/purchase/orders">Cancel</Link>
+          </Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Saving..." : "Save"}
+          </Button>
         </div>
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save"}
-        </Button>
       </form>
     </Form>
   );

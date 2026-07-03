@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useAdjustStock } from "../services/mutations";
 
 type AdjustmentType = "increase" | "decrease" | "set";
@@ -25,6 +25,7 @@ interface AdjustStockDialogProps {
   id: string;
   name: string;
   currentQuantity: number;
+  trigger?: ReactNode;
 }
 
 const adjustmentTypes: { value: AdjustmentType; label: string }[] = [
@@ -40,6 +41,7 @@ const AdjustStockDialog = ({
   id,
   name,
   currentQuantity,
+  trigger,
 }: AdjustStockDialogProps) => {
   const [type, setType] = useState<AdjustmentType>("increase");
   const [quantity, setQuantity] = useState("");
@@ -74,9 +76,11 @@ const AdjustStockDialog = ({
   return (
     <Dialog open={openAdjustDialog} onOpenChange={setOpenAdjustDialog}>
       <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Adjust stock
-        </DropdownMenuItem>
+        {trigger ?? (
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            Adjust stock
+          </DropdownMenuItem>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

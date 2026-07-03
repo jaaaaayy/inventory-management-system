@@ -1,40 +1,52 @@
 import { TVendor } from "../types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const VendorDetails = ({ vendor }: { vendor: TVendor }) => {
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Vendor</h1>
-      <div className="grid grid-cols-2 gap-6 text-sm">
-        <div className="space-y-6">
-          <div className="flex gap-6">
-            <div className="space-y-6">
-              <p className="font-medium">Name</p>
-              <p className="font-medium">Email</p>
-              <p className="font-medium">Mobile Number</p>
-              <p className="font-medium">Created</p>
-              <p className="font-medium">Updated</p>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Contact Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-3">
+              <dt className="font-medium text-muted-foreground">Name</dt>
+              <dd>{vendor.name}</dd>
+              <dt className="font-medium text-muted-foreground">Email</dt>
+              <dd>{vendor.email}</dd>
+              <dt className="font-medium text-muted-foreground">
+                Mobile Number
+              </dt>
+              <dd>{vendor.mobileNumber}</dd>
+              <dt className="font-medium text-muted-foreground">Created</dt>
+              <dd>{new Date(vendor.createdAt).toLocaleString()}</dd>
+              <dt className="font-medium text-muted-foreground">Updated</dt>
+              <dd>{new Date(vendor.updatedAt).toLocaleString()}</dd>
+            </dl>
+          </CardContent>
+        </Card>
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle>Address</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-0.5">
+              <p>{vendor.address.addressLine1}</p>
+              {vendor.address.addressLine2 && (
+                <p>{vendor.address.addressLine2}</p>
+              )}
+              <p>{vendor.address.city}</p>
+              <p>{vendor.address.postalCode}</p>
+              <p>{vendor.address.province}</p>
             </div>
-            <div className="space-y-6">
-              <p>{vendor.name}</p>
-              <p>{vendor.email}</p>
-              <p>{vendor.mobileNumber}</p>
-              <p>{new Date(vendor.createdAt).toLocaleString()}</p>
-              <p>{new Date(vendor.updatedAt).toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-        <div className="space-y-6">
-          <p className="font-medium">Address</p>
-          <div>
-            <p>{vendor.address.addressLine1}</p>
-            {vendor.address.addressLine2 && (
-              <p>{vendor.address.addressLine2}</p>
-            )}
-            <p>{vendor.address.city}</p>
-            <p>{vendor.address.postalCode}</p>
-            <p>{vendor.address.province}</p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

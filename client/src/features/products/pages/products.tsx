@@ -1,41 +1,30 @@
-import Header from "@/components/header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import PageHeader from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProductList from "../components/product-list";
 
 const Products = () => {
-
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Products</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Products</h1>
-        </div>
-        <div className="space-y-6">
-          <ProductList />
-        </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Products" },
+        ]}
+        title="Products"
+        description="Manage your product catalog and stock levels."
+        actions={
+          <Button asChild>
+            <Link to="/products/new">
+              <Plus />
+              New Product
+            </Link>
+          </Button>
+        }
+      />
+      <div className="flex grow flex-col p-4 lg:p-6">
+        <ProductList />
       </div>
     </>
   );

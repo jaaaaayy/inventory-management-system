@@ -1,4 +1,12 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -48,8 +56,15 @@ const CreateCustomerForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
-        <div className="grid md:grid-cols-2 items-start gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Contact Information</CardTitle>
+            <CardDescription>
+              How to reach this customer.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid items-start gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="firstName"
@@ -128,6 +143,16 @@ const CreateCustomerForm = () => {
               </FormItem>
             )}
           />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Address</CardTitle>
+            <CardDescription>
+              Where orders for this customer are delivered.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid items-start gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="address.addressLine1"
@@ -217,8 +242,12 @@ const CreateCustomerForm = () => {
               </FormItem>
             )}
           />
-        </div>
-        <div>
+          </CardContent>
+        </Card>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="outline" asChild>
+            <Link to="/sales/customers">Cancel</Link>
+          </Button>
           <Button type="submit" disabled={isPending}>
             {isPending ? "Saving..." : "Save"}
           </Button>

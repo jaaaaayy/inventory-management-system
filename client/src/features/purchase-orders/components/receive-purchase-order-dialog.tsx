@@ -9,14 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { useUpdatePurchaseOrderStatus } from "../services/mutations";
 
 interface ReceivePurchaseOrderDialogProps {
   openReceiveDialog: boolean;
   setOpenReceiveDialog: Dispatch<SetStateAction<boolean>>;
-  setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>;
+  setOpenActionsDropdown?: Dispatch<SetStateAction<boolean>>;
   id: string;
+  trigger?: ReactNode;
 }
 
 const ReceivePurchaseOrderDialog = ({
@@ -24,6 +25,7 @@ const ReceivePurchaseOrderDialog = ({
   setOpenReceiveDialog,
   setOpenActionsDropdown,
   id,
+  trigger,
 }: ReceivePurchaseOrderDialogProps) => {
   const { mutateAsync: updateStatusMutation, isPending } =
     useUpdatePurchaseOrderStatus(
@@ -39,9 +41,11 @@ const ReceivePurchaseOrderDialog = ({
   return (
     <Dialog open={openReceiveDialog} onOpenChange={setOpenReceiveDialog}>
       <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Mark as Received
-        </DropdownMenuItem>
+        {trigger ?? (
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            Mark as Received
+          </DropdownMenuItem>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

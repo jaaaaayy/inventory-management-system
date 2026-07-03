@@ -1,55 +1,31 @@
 import Error from "@/components/error";
-import Header from "@/components/header";
 import Loading from "@/components/loading";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import PageHeader from "@/components/page-header";
+import { useParams } from "react-router-dom";
 import CategoryDetails from "../components/category-details";
+import CategoryViewActions from "../components/category-view-actions";
 import { useFetchCategory } from "../services/queries";
 
 const ViewCategory = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const { isLoading, isPending, isError, error, data } = useFetchCategory(
     params.id
   );
 
+  const category = data?.category;
+
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/categories">Categories</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{data?.category?.name}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Categories", to: "/categories" },
+          { label: category?.name ?? "Category" },
+        ]}
+        title={category?.name ?? "Category"}
+        actions={category && <CategoryViewActions id={category._id} />}
+      />
       <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
-        <Button variant="ghost" onClick={() => navigate("/categories")}>
-          <ArrowLeft />
-          Back to Categories
-        </Button>
         {isLoading || isPending ? (
           <Loading feature="category" />
         ) : isError && error ? (

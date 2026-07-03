@@ -1,22 +1,11 @@
 import Error from "@/components/error";
-import Header from "@/components/header";
 import Loading from "@/components/loading";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useFetchVendor } from "../services/queries";
+import PageHeader from "@/components/page-header";
+import { useParams } from "react-router-dom";
 import EditVendorForm from "../components/form/edit-vendor-form";
+import { useFetchVendor } from "../services/queries";
 
 const EditVendor = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const { isLoading, isPending, isError, error, data } = useFetchVendor(
     params.id
@@ -24,43 +13,22 @@ const EditVendor = () => {
 
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/vendors">Vendors</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Edit Vendor</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
-        <Button variant="ghost" onClick={() => navigate("/vendors")}>
-          <ArrowLeft />
-          Back to Vendors
-        </Button>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Vendors", to: "/vendors" },
+          { label: "Edit Vendor" },
+        ]}
+        title="Edit Vendor"
+        description="Update this vendor's details."
+      />
+      <div className="p-4 lg:p-6 grow min-h-0 flex flex-col">
         {isLoading || isPending ? (
           <Loading feature="vendor" />
         ) : isError && error ? (
           <Error message={error.message} />
         ) : (
-          <div className="space-y-6">
-            <h1 className="text-2xl font-semibold">Edit Vendor</h1>
-            <div>
-              <EditVendorForm vendor={data.vendor} />
-            </div>
-          </div>
+          <EditVendorForm vendor={data.vendor} />
         )}
       </div>
     </>

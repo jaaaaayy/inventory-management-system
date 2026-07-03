@@ -12,9 +12,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <UserProvider>{children}</UserProvider>
+        <Toaster />
       </ThemeProvider>
       <ReactQueryDevtools />
-      <Toaster />
     </QueryClientProvider>
   );
 }

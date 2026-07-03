@@ -1,15 +1,16 @@
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { useDeleteProduct } from "../services/mutations";
 
 interface DeleteProductDialogProps {
@@ -17,6 +18,8 @@ interface DeleteProductDialogProps {
   setOpenDeleteDialog: Dispatch<SetStateAction<boolean>>;
   setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>;
   id: string;
+  trigger?: ReactNode;
+  onDeleted?: () => void;
 }
 
 const DeleteProductDialog = ({
@@ -24,6 +27,8 @@ const DeleteProductDialog = ({
   setOpenDeleteDialog,
   setOpenActionsDropdown,
   id,
+  trigger,
+  onDeleted,
 }: DeleteProductDialogProps) => {
   const { mutateAsync: deleteProductMutation, isPending } = useDeleteProduct(
     id,
@@ -33,41 +38,44 @@ const DeleteProductDialog = ({
 
   const handleDeleteProduct = async () => {
     await deleteProductMutation();
+    onDeleted?.();
   };
 
   return (
-    <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Delete product
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+      <AlertDialogTrigger asChild>
+        {trigger ?? (
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={(e) => e.preventDefault()}
+          >
+            Delete product
+          </DropdownMenuItem>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete this product?</AlertDialogTitle>
+          <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
             product and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => setOpenDeleteDialog(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
             disabled={isPending}
-            onClick={handleDeleteProduct}
+            onClick={(e) => {
+              e.preventDefault();
+              handleDeleteProduct();
+            }}
           >
-            {isPending ? "Confirming..." : "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            {isPending ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

@@ -1,3 +1,4 @@
+import TableContainer from "@/components/table-container";
 import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,14 @@ import { useFetchSalesOrderList } from "@/features/sales-orders/services/queries
 import { TSalesOrder } from "@/features/sales-orders/types";
 import { formatCurrency } from "@/lib/utils";
 import { exportToCsv } from "@/lib/csv";
-import { Download } from "lucide-react";
+import { Download, ShoppingCart } from "lucide-react";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useState } from "react";
 import { defaultFromDate, defaultToDate } from "../types";
 import DateRange from "./date-range";
@@ -113,6 +121,7 @@ const SalesReport = () => {
             </div>
 
             {filtered.length > 0 ? (
+              <TableContainer>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -141,10 +150,19 @@ const SalesReport = () => {
                   ))}
                 </TableBody>
               </Table>
+              </TableContainer>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No sales in this date range.
-              </p>
+              <Empty className="rounded-md border">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <ShoppingCart />
+                  </EmptyMedia>
+                  <EmptyTitle>No sales in this date range</EmptyTitle>
+                  <EmptyDescription>
+                    Try widening the date range to see more orders.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
           </>
         )}

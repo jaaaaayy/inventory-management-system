@@ -1,10 +1,10 @@
-import Header from "@/components/header";
+import PageHeader from "@/components/page-header";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import SalesReport from "../components/sales-report";
 import InventoryValuationReport from "../components/inventory-valuation-report";
 import LowStockReport from "../components/low-stock-report";
@@ -13,23 +13,35 @@ import StockMovementsReport from "../components/stock-movements-report";
 const Reports = () => {
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>Reports</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow space-y-6">
-        <h1 className="text-2xl font-semibold">Reports</h1>
-        <div className="space-y-6">
-          <SalesReport />
-          <InventoryValuationReport />
-          <LowStockReport />
-          <StockMovementsReport />
-        </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Reports" },
+        ]}
+        title="Reports"
+        description="Analyze sales, inventory value, and stock activity."
+      />
+      <div className="p-4 lg:p-6 grow">
+        <Tabs defaultValue="sales">
+          <TabsList className="w-full max-w-xl">
+            <TabsTrigger value="sales">Sales</TabsTrigger>
+            <TabsTrigger value="valuation">Valuation</TabsTrigger>
+            <TabsTrigger value="low-stock">Low Stock</TabsTrigger>
+            <TabsTrigger value="movements">Movements</TabsTrigger>
+          </TabsList>
+          <TabsContent value="sales">
+            <SalesReport />
+          </TabsContent>
+          <TabsContent value="valuation">
+            <InventoryValuationReport />
+          </TabsContent>
+          <TabsContent value="low-stock">
+            <LowStockReport />
+          </TabsContent>
+          <TabsContent value="movements">
+            <StockMovementsReport />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

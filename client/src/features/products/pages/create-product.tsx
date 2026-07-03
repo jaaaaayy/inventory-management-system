@@ -1,51 +1,20 @@
-import Header from "@/components/header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/page-header";
 import CreateProductForm from "../components/form/create-product-form";
 
 const CreateProduct = () => {
-  const navigate = useNavigate();
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/products">Products</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>New product</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow space-y-6">
-        <Button variant="ghost" onClick={() => navigate("/products")}>
-          <ArrowLeft />
-          Back to products
-        </Button>
-        <h1 className="text-2xl font-semibold">New product</h1>
-        <div>
-          <CreateProductForm />
-        </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Products", to: "/products" },
+          { label: "New Product" },
+        ]}
+        title="New Product"
+        description="Add a new product to your catalog."
+      />
+      <div className="p-4 lg:p-6 grow">
+        <CreateProductForm />
       </div>
     </>
   );

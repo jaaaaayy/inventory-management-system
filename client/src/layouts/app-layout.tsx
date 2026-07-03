@@ -1,14 +1,14 @@
 import AppSidebar from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 
 const AppLayout = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="grow flex flex-col min-h-screen">
+      <SidebarInset className="min-h-screen">
         <Outlet />
-      </main>
+      </SidebarInset>
     </SidebarProvider>
   );
 };

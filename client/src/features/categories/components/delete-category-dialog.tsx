@@ -1,15 +1,16 @@
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { useDeleteCategory } from "../services/mutations";
 
 interface DeleteCategoryDialogProps {
@@ -17,6 +18,8 @@ interface DeleteCategoryDialogProps {
   setOpenDeleteDialog: Dispatch<SetStateAction<boolean>>;
   setOpenActionsDropdown: Dispatch<SetStateAction<boolean>>;
   id: string;
+  trigger?: ReactNode;
+  onDeleted?: () => void;
 }
 
 const DeleteCategoryDialog = ({
@@ -24,6 +27,8 @@ const DeleteCategoryDialog = ({
   setOpenDeleteDialog,
   setOpenActionsDropdown,
   id,
+  trigger,
+  onDeleted,
 }: DeleteCategoryDialogProps) => {
   const { mutateAsync: deleteCategoryMutation, isPending } = useDeleteCategory(
     id,
@@ -33,41 +38,44 @@ const DeleteCategoryDialog = ({
 
   const handleDeleteCategory = async () => {
     await deleteCategoryMutation();
+    onDeleted?.();
   };
 
   return (
-    <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          Delete category
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+      <AlertDialogTrigger asChild>
+        {trigger ?? (
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={(e) => e.preventDefault()}
+          >
+            Delete category
+          </DropdownMenuItem>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete this category?</AlertDialogTitle>
+          <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
             category and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={() => setOpenDeleteDialog(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
             disabled={isPending}
-            onClick={handleDeleteCategory}
+            onClick={(e) => {
+              e.preventDefault();
+              handleDeleteCategory();
+            }}
           >
-            {isPending ? "Confirming..." : "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            {isPending ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

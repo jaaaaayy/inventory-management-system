@@ -16,8 +16,6 @@ import {
   TTeamFormError,
 } from "../types";
 
-const successStyle = { style: { backgroundColor: "green", color: "white" } };
-const errorStyle = { style: { backgroundColor: "red", color: "white" } };
 
 export const useUpdateMember = () => {
   const queryClient = useQueryClient();
@@ -32,10 +30,10 @@ export const useUpdateMember = () => {
     }) => updateMember(id, update),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
-      toast.success(data.message, successStyle);
+      toast.success(data.message);
     },
     onError: (error: TTeamFormError) => {
-      toast.error(error.message, errorStyle);
+      toast.error(error.message);
     },
   });
 };
@@ -47,10 +45,10 @@ export const useRemoveMember = () => {
     mutationFn: (id: string) => removeMember(id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
-      toast.success(data.message, successStyle);
+      toast.success(data.message);
     },
     onError: (error: TTeamFormError) => {
-      toast.error(error.message, errorStyle);
+      toast.error(error.message);
     },
   });
 };
@@ -64,7 +62,7 @@ export const useCreateInvitation = (
     mutationFn: (invite: TInviteFormSchema) => createInvitation(invite),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["invitations"] });
-      toast.success(data.message, successStyle);
+      toast.success(data.message);
     },
     onError: (error: TTeamFormError) => {
       if (error.errors && Object.keys(error.errors).length > 0) {
@@ -72,7 +70,7 @@ export const useCreateInvitation = (
         return;
       }
 
-      toast.error(error.message, errorStyle);
+      toast.error(error.message);
     },
   });
 };
@@ -84,10 +82,10 @@ export const useRevokeInvitation = () => {
     mutationFn: (id: string) => revokeInvitation(id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["invitations"] });
-      toast.success(data.message, successStyle);
+      toast.success(data.message);
     },
     onError: (error: TTeamFormError) => {
-      toast.error(error.message, errorStyle);
+      toast.error(error.message);
     },
   });
 };
@@ -110,7 +108,7 @@ export const useAcceptInvitation = (
     onSuccess: (data) => {
       setUser(data.user);
       navigate("/dashboard", { replace: true });
-      toast.success(data.message, successStyle);
+      toast.success(data.message);
     },
     onError: (error: TTeamFormError) => {
       if (error.errors && Object.keys(error.errors).length > 0) {
@@ -118,7 +116,7 @@ export const useAcceptInvitation = (
         return;
       }
 
-      toast.error(error.message, errorStyle);
+      toast.error(error.message);
     },
   });
 };

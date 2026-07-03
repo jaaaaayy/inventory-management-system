@@ -1,41 +1,30 @@
-import Header from "@/components/header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import PageHeader from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import CategoryList from "../components/category-list";
 
 const Categories = () => {
-
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Categories</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Categories</h1>
-        </div>
-        <div className="space-y-6">
-          <CategoryList />
-        </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Categories" },
+        ]}
+        title="Categories"
+        description="Organize your products into categories."
+        actions={
+          <Button asChild>
+            <Link to="/categories/new">
+              <Plus />
+              New Category
+            </Link>
+          </Button>
+        }
+      />
+      <div className="flex grow flex-col p-4 lg:p-6">
+        <CategoryList />
       </div>
     </>
   );

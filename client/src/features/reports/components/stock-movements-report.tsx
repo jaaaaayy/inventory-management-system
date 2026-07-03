@@ -1,3 +1,4 @@
+import TableContainer from "@/components/table-container";
 import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,14 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { exportToCsv } from "@/lib/csv";
-import { Download } from "lucide-react";
+import { Download, History } from "lucide-react";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useState } from "react";
 import { useFetchStockMovementsReport } from "../services/queries";
 import { defaultFromDate, defaultToDate, TReportStockMovement } from "../types";
@@ -85,6 +93,7 @@ const StockMovementsReport = () => {
         ) : isLoading || isPending ? (
           <Loading feature="stock movements" />
         ) : movements.length > 0 ? (
+          <TableContainer>
           <Table>
             <TableHeader>
               <TableRow>
@@ -126,10 +135,19 @@ const StockMovementsReport = () => {
               ))}
             </TableBody>
           </Table>
+          </TableContainer>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No stock movements in this date range.
-          </p>
+          <Empty className="rounded-md border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <History />
+              </EmptyMedia>
+              <EmptyTitle>No stock movements</EmptyTitle>
+              <EmptyDescription>
+                No stock changes were recorded in this date range.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>

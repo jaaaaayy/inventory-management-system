@@ -1,3 +1,4 @@
+import TableContainer from "@/components/table-container";
 import Error from "@/components/error";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,14 @@ import {
 import { useFetchProductList } from "@/features/products/services/queries";
 import { TProduct } from "@/features/products/types";
 import { exportToCsv } from "@/lib/csv";
-import { Download } from "lucide-react";
+import { Download, PackageCheck } from "lucide-react";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const LowStockReport = () => {
   const { isLoading, isPending, isError, error, data } = useFetchProductList();
@@ -71,6 +79,7 @@ const LowStockReport = () => {
         ) : isLoading || isPending ? (
           <Loading feature="low stock report" />
         ) : lowStock.length > 0 ? (
+          <TableContainer>
           <Table>
             <TableHeader>
               <TableRow>
@@ -95,10 +104,19 @@ const LowStockReport = () => {
               ))}
             </TableBody>
           </Table>
+          </TableContainer>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No products are at or below their reorder point.
-          </p>
+          <Empty className="rounded-md border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <PackageCheck />
+              </EmptyMedia>
+              <EmptyTitle>Stock levels look healthy</EmptyTitle>
+              <EmptyDescription>
+                No products are at or below their reorder point.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>

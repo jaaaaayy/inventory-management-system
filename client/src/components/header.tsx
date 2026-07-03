@@ -4,11 +4,11 @@ import { ReactNode } from "react";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return (
-    <header className="bg-background sticky top-0 z-10 min-h-14 lg:min-h-16 border-b flex items-center p-4 lg:px-6">
-      <SidebarTrigger />
+    <header className="bg-background sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b px-4 lg:h-16 lg:px-6">
+      <SidebarTrigger className="-ml-1" />
       <Separator
         orientation="vertical"
-        className="mx-2 data-[orientation=vertical]:h-4"
+        className="mr-2 data-vertical:h-4 data-vertical:self-center"
       />
       {children}
     </header>

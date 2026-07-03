@@ -16,20 +16,10 @@ export const useCreateCategory = (reset: UseFormReset<TCategoryFormSchema>) => {
       reset();
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       navigate("/categories");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -48,20 +38,10 @@ export const useUpdateCategory = (
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       queryClient.invalidateQueries({ queryKey: ["category", id] });
       navigate("/categories");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -79,20 +59,10 @@ export const useDeleteCategory = (
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setOpenDeleteDialog(false);
       setOpenActionsDropdown(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

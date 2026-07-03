@@ -21,12 +21,7 @@ export const useCreateCustomer = (
       reset();
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       navigate("/sales/customers");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -40,12 +35,7 @@ export const useCreateCustomer = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -67,12 +57,7 @@ export const useUpdateCustomer = (
       queryClient.invalidateQueries({ queryKey: ["customer", id] });
 
       navigate("/sales/customers");
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -86,12 +71,7 @@ export const useUpdateCustomer = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -109,20 +89,10 @@ export const useDeleteCustomer = (
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       setOpenDeleteDialog(false);
       setOpenActionsDropdown(false);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

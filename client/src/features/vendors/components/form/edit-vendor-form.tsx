@@ -1,4 +1,12 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -42,10 +50,15 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-2 gap-6 items-start"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendor Information</CardTitle>
+            <CardDescription>
+              How to reach this supplier.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid items-start gap-6 md:grid-cols-2">
         <FormField
           control={form.control}
           name="name"
@@ -98,6 +111,16 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
             </FormItem>
           )}
         />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Address</CardTitle>
+            <CardDescription>
+              Where this vendor is located.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid items-start gap-6 md:grid-cols-2">
         <FormField
           control={form.control}
           name="address.addressLine1"
@@ -187,7 +210,12 @@ const EditVendorForm = ({ vendor }: { vendor: TVendor }) => {
             </FormItem>
           )}
         />
-        <div>
+          </CardContent>
+        </Card>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="outline" asChild>
+            <Link to="/vendors">Cancel</Link>
+          </Button>
           <Button type="submit" disabled={isPending}>
             {isPending ? "Updating..." : "Update"}
           </Button>

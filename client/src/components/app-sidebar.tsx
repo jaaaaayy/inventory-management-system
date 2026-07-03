@@ -8,7 +8,6 @@ import {
   ShoppingCart,
   ShoppingBag,
   FileText,
-  Settings,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { NavUser } from "./nav-user";
@@ -36,6 +35,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarRail,
   useSidebar,
 } from "./ui/sidebar";
 import { useUser } from "@/hooks/use-user";
@@ -51,77 +51,58 @@ type NavItem = {
   items?: NavSubItem[];
 };
 
-const data: { navMain: NavItem[] } = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Products",
-      url: "/products",
-      icon: Package,
-    },
-    {
-      title: "Sales",
-      url: "/sales",
-      icon: ShoppingCart,
-      items: [
-        {
-          title: "Customers",
-          url: "/sales/customers",
-        },
-        {
-          title: "Sales Orders",
-          url: "/sales/orders",
-        },
-      ],
-    },
-    {
-      title: "Purchases",
-      url: "/purchase",
-      icon: ShoppingBag,
-      items: [
-        {
-          title: "Vendors",
-          url: "/vendors",
-        },
-        {
-          title: "Purchase Orders",
-          url: "/purchase/orders",
-        },
-      ],
-    },
-    {
-      title: "Categories",
-      url: "/categories",
-      icon: Folder,
-    },
-    {
-      title: "Reports",
-      url: "/reports",
-      icon: FileText,
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
-      items: [
-        {
-          title: "Organization",
-          url: "/settings/organization",
-          permission: "organization:update",
-        },
-        {
-          title: "Team",
-          url: "/settings/team",
-          permission: "member:read",
-        },
-      ],
-    },
-  ],
-};
+const navMain: NavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Home,
+  },
+  {
+    title: "Products",
+    url: "/products",
+    icon: Package,
+  },
+  {
+    title: "Categories",
+    url: "/categories",
+    icon: Folder,
+  },
+  {
+    title: "Sales",
+    url: "/sales",
+    icon: ShoppingCart,
+    items: [
+      {
+        title: "Customers",
+        url: "/sales/customers",
+      },
+      {
+        title: "Sales Orders",
+        url: "/sales/orders",
+      },
+    ],
+  },
+  {
+    title: "Purchases",
+    url: "/purchase",
+    icon: ShoppingBag,
+    items: [
+      {
+        title: "Vendors",
+        url: "/vendors",
+      },
+      {
+        title: "Purchase Orders",
+        url: "/purchase/orders",
+      },
+    ],
+  },
+  {
+    title: "Reports",
+    url: "/reports",
+    icon: FileText,
+  },
+];
 
 const AppSidebar = () => {
   const { user } = useUser();
@@ -131,7 +112,7 @@ const AppSidebar = () => {
 
   const isActive = (url: string) => location.pathname.startsWith(url);
 
-  const navItems = data.navMain
+  const navItems = navMain
     .map((item) =>
       item.items
         ? {
@@ -170,6 +151,9 @@ const AppSidebar = () => {
                         <DropdownMenuTrigger asChild>
                           <SidebarMenuButton
                             tooltip={item.title}
+                            isActive={item.items.some((subItem) =>
+                              isActive(subItem.url)
+                            )}
                             className="w-full"
                           >
                             <item.icon />
@@ -197,7 +181,13 @@ const AppSidebar = () => {
                       </DropdownMenu>
                     </SidebarMenuItem>
                   ) : (
-                    <Collapsible key={item.title} className="group/collapsible">
+                    <Collapsible
+                      key={item.title}
+                      defaultOpen={item.items.some((subItem) =>
+                        isActive(subItem.url)
+                      )}
+                      className="group/collapsible"
+                    >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton>
@@ -246,6 +236,7 @@ const AppSidebar = () => {
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 };

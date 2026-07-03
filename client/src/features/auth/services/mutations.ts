@@ -17,21 +17,11 @@ export const useLogin = (reset: UseFormReset<TLoginFormSchema>) => {
     onSuccess: (data) => {
       reset();
       setUser(data.user);
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
       navigate("/dashboard", { replace: true });
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -51,12 +41,7 @@ export const useRegister = (
       setUser(data.user);
 
       navigate("/dashboard", { replace: true });
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
     },
     onError: (error: TFormError) => {
       if (error.errors && Object.entries(error.errors).length > 0) {
@@ -70,12 +55,7 @@ export const useRegister = (
         return;
       }
 
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };
@@ -91,21 +71,11 @@ export const useLogout = () => {
       localStorage.clear();
       setUser(null);
       queryClient.clear();
-      toast.success(data.message, {
-        style: {
-          backgroundColor: "green",
-          color: "white",
-        },
-      });
+      toast.success(data.message);
       navigate("/", { replace: true });
     },
     onError: (error) => {
-      toast.error(error.message, {
-        style: {
-          backgroundColor: "red",
-          color: "white",
-        },
-      });
+      toast.error(error.message);
     },
   });
 };

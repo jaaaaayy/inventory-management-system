@@ -11,6 +11,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -19,14 +30,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useUser } from "@/hooks/use-user";
 import { usePermissions } from "@/hooks/use-has-permission";
 import { useRemoveMember, useUpdateMember } from "../services/mutations";
 import { ASSIGNABLE_POSITIONS } from "../schemas";
 import { TMember } from "../types";
-
-const selectClassName =
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring";
 
 export const MemberActions = ({ member }: { member: TMember }) => {
   const { user } = useUser();
@@ -105,17 +120,21 @@ export const MemberActions = ({ member }: { member: TMember }) => {
                     {member.user?.lastName}.
                   </DialogDescription>
                 </DialogHeader>
-                <select
-                  className={selectClassName}
+                <Select
                   value={selectedPosition}
-                  onChange={(event) => setSelectedPosition(event.target.value)}
+                  onValueChange={setSelectedPosition}
                 >
-                  {ASSIGNABLE_POSITIONS.map((position) => (
-                    <option key={position} value={position}>
-                      {position}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a position" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASSIGNABLE_POSITIONS.map((position) => (
+                      <SelectItem key={position} value={position}>
+                        {position}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <DialogFooter>
                   <Button
                     variant="secondary"
@@ -144,42 +163,41 @@ export const MemberActions = ({ member }: { member: TMember }) => {
         {canRemove && (
           <>
             <DropdownMenuSeparator />
-            <Dialog open={openRemoveDialog} onOpenChange={setOpenRemoveDialog}>
-              <DialogTrigger asChild>
+            <AlertDialog
+              open={openRemoveDialog}
+              onOpenChange={setOpenRemoveDialog}
+            >
+              <AlertDialogTrigger asChild>
                 <DropdownMenuItem
+                  variant="destructive"
                   onSelect={(e) => e.preventDefault()}
-                  className="text-destructive"
                 >
                   Remove
                 </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Remove member?</DialogTitle>
-                  <DialogDescription>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Remove member?</AlertDialogTitle>
+                  <AlertDialogDescription>
                     This removes {member.user?.email} from the organization.
                     They will lose access immediately.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="secondary"
-                    type="button"
-                    onClick={() => setOpenRemoveDialog(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
                     variant="destructive"
                     disabled={isRemoving}
-                    onClick={handleRemove}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleRemove();
+                    }}
                   >
                     {isRemoving ? "Removing..." : "Remove"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </>
         )}
       </DropdownMenuContent>

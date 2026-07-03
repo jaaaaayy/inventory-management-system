@@ -1,41 +1,30 @@
-import Header from "@/components/header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import PageHeader from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import SalesOrderList from "../components/sales-order-list";
 
 const SalesOrders = () => {
-
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Sales Orders</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
-      <div className="p-4 lg:p-6 grow space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Sales Orders</h1>
-        </div>
-        <div className="space-y-6">
-          <SalesOrderList />
-        </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Sales Orders" },
+        ]}
+        title="Sales Orders"
+        description="Track and fulfill your customer orders."
+        actions={
+          <Button asChild>
+            <Link to="/sales/orders/new">
+              <Plus />
+              New Sales Order
+            </Link>
+          </Button>
+        }
+      />
+      <div className="flex grow flex-col p-4 lg:p-6">
+        <SalesOrderList />
       </div>
     </>
   );

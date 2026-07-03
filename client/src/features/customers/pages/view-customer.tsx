@@ -1,55 +1,34 @@
 import Error from "@/components/error";
-import Header from "@/components/header";
 import Loading from "@/components/loading";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import PageHeader from "@/components/page-header";
+import { useParams } from "react-router-dom";
 import CustomerDetails from "../components/customer-details";
+import CustomerViewActions from "../components/customer-view-actions";
 import { useFetchCustomer } from "../services/queries";
 
 const ViewCustomer = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const { isLoading, isPending, isError, error, data } = useFetchCustomer(
     params.id
   );
 
+  const customer = data?.customer;
+  const customerName = customer
+    ? `${customer.firstName} ${customer.lastName}`
+    : "Customer";
+
   return (
     <>
-      <Header>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/sales/customers">Customers</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{data?.customer?.firstName} {data?.customer?.lastName}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Header>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Customers", to: "/sales/customers" },
+          { label: customerName },
+        ]}
+        title={customerName}
+        actions={customer && <CustomerViewActions id={customer._id} />}
+      />
       <div className="p-4 lg:p-6 grow min-h-0 space-y-6">
-        <Button variant="ghost" onClick={() => navigate("/sales/customers")}>
-          <ArrowLeft />
-          Back to Customers
-        </Button>
         {isLoading || isPending ? (
           <Loading feature="customer" />
         ) : isError && error ? (

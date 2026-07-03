@@ -1,5 +1,8 @@
+import TableContainer from "@/components/table-container";
+import { Link } from "react-router-dom";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -17,87 +20,99 @@ import { useFetchStockMovementsReport } from "@/features/reports/services/querie
 import { TReportStockMovement } from "@/features/reports/types";
 import { cn } from "@/lib/utils";
 
-export function RecentStockMovements() {
+export function RecentStockMovements({ className }: { className?: string }) {
   const { isLoading, isPending, isError, error, data } =
     useFetchStockMovementsReport();
 
   const movements: TReportStockMovement[] = (data?.movements ?? []).slice(0, 8);
 
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>Recent Stock Movements</CardTitle>
         <CardDescription>
           Latest stock changes across all products.
         </CardDescription>
+        <CardAction>
+          <Link
+            to="/reports"
+            className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            View all
+          </Link>
+        </CardAction>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead className="text-right">Change</TableHead>
-              <TableHead className="text-right">Qty After</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isError && error ? (
+        <TableContainer>
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Could not load stock movements.
-                </TableCell>
+                <TableHead>Date</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="text-right">Change</TableHead>
+                <TableHead className="text-right">Qty After</TableHead>
               </TableRow>
-            ) : isLoading || isPending ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : movements.length > 0 ? (
-              movements.map((movement) => (
-                <TableRow key={movement._id}>
-                  <TableCell>
-                    {new Date(movement.createdAt).toLocaleString()}
-                  </TableCell>
-                  <TableCell>{movement.product?.name ?? "—"}</TableCell>
-                  <TableCell>{movement.type}</TableCell>
+            </TableHeader>
+            <TableBody>
+              {isError && error ? (
+                <TableRow>
                   <TableCell
-                    className={cn(
-                      "text-right tabular-nums",
-                      movement.delta > 0
-                        ? "text-emerald-500"
-                        : movement.delta < 0
-                        ? "text-red-500"
-                        : ""
-                    )}
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
                   >
-                    {movement.delta > 0 ? `+${movement.delta}` : movement.delta}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {movement.quantityAfter}
+                    Could not load stock movements.
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  No stock movements yet.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : isLoading || isPending ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : movements.length > 0 ? (
+                movements.map((movement) => (
+                  <TableRow key={movement._id}>
+                    <TableCell>
+                      {new Date(movement.createdAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{movement.product?.name ?? "—"}</TableCell>
+                    <TableCell>{movement.type}</TableCell>
+                    <TableCell
+                      className={cn(
+                        "text-right tabular-nums",
+                        movement.delta > 0
+                          ? "text-emerald-500"
+                          : movement.delta < 0
+                          ? "text-red-500"
+                          : ""
+                      )}
+                    >
+                      {movement.delta > 0
+                        ? `+${movement.delta}`
+                        : movement.delta}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {movement.quantityAfter}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No stock movements yet.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </CardContent>
     </Card>
   );

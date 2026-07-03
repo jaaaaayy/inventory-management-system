@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Error from "@/components/error";
-import Loading from "@/components/loading";
 import Searchbar from "@/components/searchbar";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "../columns";
@@ -14,24 +13,21 @@ const MembersList = () => {
     return <Error message={error.message} />;
   }
 
-  if (isLoading || isPending) {
-    return <Loading feature="members" />;
-  }
-
   return (
-    <div className="space-y-4">
-      <Searchbar
-        feature="member"
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
-      <DataTable
-        columns={columns}
-        data={data.members}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
-    </div>
+    <DataTable
+      columns={columns}
+      data={data?.members ?? []}
+      globalFilter={globalFilter}
+      setGlobalFilter={setGlobalFilter}
+      isLoading={isLoading || isPending}
+      toolbar={
+        <Searchbar
+          feature="member"
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      }
+    />
   );
 };
 

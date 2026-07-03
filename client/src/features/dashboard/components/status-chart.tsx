@@ -13,8 +13,17 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { ChartPie } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 import { TSalesOrder } from "@/features/sales-orders/types";
+import { cn } from "@/lib/utils";
 
 const chartConfig = {
   orders: {
@@ -40,7 +49,13 @@ const chartConfig = {
 
 const statusKeys = ["Pending", "Shipped", "Delivered", "Cancelled"] as const;
 
-export function StatusChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
+export function StatusChart({
+  salesOrders,
+  className,
+}: {
+  salesOrders: TSalesOrder[];
+  className?: string;
+}) {
   const statusCounts = salesOrders.reduce<Record<string, number>>((acc, order) => {
     const status = order.status || "Pending";
     acc[status] = (acc[status] || 0) + 1;
@@ -59,7 +74,7 @@ export function StatusChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
   const totalOrders = chartData.reduce((total, item) => total + item.orders, 0);
 
   return (
-    <Card className="flex flex-col col-span-1">
+    <Card className={cn("flex flex-col", className)}>
       <CardHeader className="items-center pb-0">
         <CardTitle>Order Statuses</CardTitle>
         <CardDescription>Breakdown of orders by fulfillment status</CardDescription>
@@ -122,9 +137,17 @@ export function StatusChart({ salesOrders }: { salesOrders: TSalesOrder[] }) {
             </PieChart>
           </ChartContainer>
         ) : (
-          <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-            No orders yet.
-          </div>
+          <Empty className="h-[300px]">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ChartPie />
+              </EmptyMedia>
+              <EmptyTitle>No orders yet</EmptyTitle>
+              <EmptyDescription>
+                Order statuses will appear here once orders come in.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
       </CardContent>
     </Card>
